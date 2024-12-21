@@ -26,7 +26,7 @@ function Login() {
                   Reset your password by entering your email
                 </span>
               </div>
-              <form id="forgotPasswordForm" action="#" method="POST" className="flex flex-col gap-4">
+              <form id="forgotPasswordForm" action="" method="POST" className="flex flex-col gap-4">
                 <div>
                   <label
                     htmlFor="email"
@@ -73,7 +73,7 @@ function Login() {
                   Access EduClass using your details
                 </span>
               </div>
-              <form  id="loginForm" action="/dashboard" method="POST" className="flex flex-col gap-4">
+              <form  id="loginForm" action="" method="POST" className="flex flex-col gap-4">
                 <div>
                   <div className="flex justify-start pb-2">
                     <label
