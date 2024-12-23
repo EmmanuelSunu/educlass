@@ -1,5 +1,5 @@
 import { useState } from "react";
-import dashboard from "./dashboard";
+import { Link } from "react-router-dom";
 import Logo from "./assets/images/logo.svg";
 import InputField from "./components/InputField";
 import ButtonProps from "./components/ButtonProps";
@@ -9,9 +9,10 @@ function Login() {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
 
   return (
-    <div className="flex flex-row-reverse bg-grey-200 md:flex w-full">
-      <div className="w-1/3 bg-white h-screen p-10 flex flex-col justify-center items-center">
-        <div className="bg-white w-4/5 p-5 rounded">
+    <div className="flex flex-col bg-grey-200">
+      <div className="w-full lg:flex-row bg-white h-screen p-8 lg:p-0 flex flex-col justify-center items-center">
+        <div className="hidden lg:flex w-full lg:w-full bg-login h-screen bg-cover bg-no-repeat"></div>
+        <div className="bg-white w-full lg:p-10 lg:w-1/3 p-0 h-max">
           <img
             src={Logo}
             alt="EduClass Logo"
@@ -26,7 +27,12 @@ function Login() {
                   Reset your password by entering your email
                 </span>
               </div>
-              <form id="forgotPasswordForm" action="" method="POST" className="flex flex-col gap-4">
+              <form
+                id="forgotPasswordForm"
+                action=""
+                method="POST"
+                className="flex flex-col gap-4"
+              >
                 <div>
                   <label
                     htmlFor="email"
@@ -41,26 +47,26 @@ function Login() {
                     isRequired={true}
                   />
                 </div>
-                <div  className="flex flex-row-reverse justify-between">
-                <ButtonProps
-                  type="submit"
-                  variant="primary"
-                  size="large"
-                  className="flex items-center"
-                >
-                  Reset Password
-                  <IoIosArrowRoundForward className="size-6" />
-                </ButtonProps>
-                <ButtonProps
-                  type="button"
-                  variant="secondary"
-                  size="large"
-                  className="flex items-center"
-                  onClick={() => setIsForgotPassword(false)}
-                >
-                   <IoIosArrowRoundBack className="size-6" />
-                  Login
-                </ButtonProps>
+                <div className="flex flex-row-reverse justify-between">
+                  <ButtonProps
+                    type="submit"
+                    variant="primary"
+                    size="large"
+                    className="flex items-center"
+                  >
+                    Reset Password
+                    <IoIosArrowRoundForward className="size-6" />
+                  </ButtonProps>
+                  <ButtonProps
+                    type="button"
+                    variant="secondary"
+                    size="large"
+                    className="flex items-center"
+                    onClick={() => setIsForgotPassword(false)}
+                  >
+                    <IoIosArrowRoundBack className="size-6" />
+                    Login
+                  </ButtonProps>
                 </div>
               </form>
             </>
@@ -73,7 +79,12 @@ function Login() {
                   Access EduClass using your details
                 </span>
               </div>
-              <form  id="loginForm" action="" method="POST" className="flex flex-col gap-4">
+              <form
+                id="loginForm"
+                action=""
+                method="POST"
+                className="flex flex-col gap-4"
+              >
                 <div>
                   <div className="flex justify-start pb-2">
                     <label
@@ -115,21 +126,22 @@ function Login() {
                     isRequired={true}
                   />
                 </div>
-                <ButtonProps
-                  type="submit"
-                  variant="primary"
-                  size="large"
-                  className="flex items-center"
-                >
-                  Login
-                  <IoIosArrowRoundForward className="size-6" />
-                </ButtonProps>
+                <Link to="/user/" className="w-full">
+                  <ButtonProps
+                    type="submit"
+                    variant="primary"
+                    size="large"
+                    className="flex items-center w-full"
+                  >
+                    Login
+                    <IoIosArrowRoundForward className="size-6" />
+                  </ButtonProps>
+                </Link>
               </form>
             </>
           )}
         </div>
       </div>
-      <div className="w-2/3 bg-login pd-10 h-screen bg-cover bg-no-repeat"></div>
     </div>
   );
 }

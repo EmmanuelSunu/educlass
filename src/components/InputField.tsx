@@ -19,7 +19,9 @@ const InputField = ({
         leading-5 h-10
         transition duration-150 ease-out  
         hover:border-primary hover:ease-in hover:drop-shadow-md
-        outline-none focus:border-primary focus:transition-all 
+        outline-none focus:border-primary focus:transition-all
+        invalid:border-pink-500 invalid:text-pink-600
+        focus:invalid:border-pink-500 focus:invalid:ring-pink-500 
         ${className}
         `}
     />
