@@ -6,7 +6,7 @@ import { FaBars, FaRegBell, FaRegUser } from "react-icons/fa";
 function Header() {
   return (
     <>
-      <div className="fixed lg:hidden flex justify-between w-full px-2 h-max py-4 items-center border-slate-300 border-b bg-white">
+      <div className="fixed lg:hidden flex justify-between w-auto px-2 h-max py-4 items-center border-slate-300 border-b bg-white">
         {/* left menu-item */}
         <div className="flex w-2/5 gap-5 justify-between items-center">
           <Link to="#">

@@ -1,13 +1,19 @@
 import React from "react";
-import SideBar from "../components/SideBar.tsx";
-function DashboardLayout() {
+import SideBar from "./l/Sidebar";
+
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+}
+
+function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <>
-      <div className="hidden lg:flex">
+    <div className="lg:flex lg:flex-row">
       <SideBar />
-      <div className="flex h-screen bg-slate-200"></div>
+      <div className="flex-1 h-screen bg-slate-100 p-6 overflow-auto">
+        {children}
       </div>
-    </>
+    </div>
   );
 }
+
 export default DashboardLayout;

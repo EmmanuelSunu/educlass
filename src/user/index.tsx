@@ -1,9 +1,14 @@
-import React from "react";
-import Layout from "./layout";
+// pages/Overview.tsx
+import DashboardLayout from "./layout";
 
-function Dashboard(){
-    return(
-        <Layout/>
-    );
+function Overview() {
+  return (
+    <DashboardLayout>
+      {/* Your page content goes here */}
+      <h1>Welcome to Test</h1>
+      <p>This is your dashboard content</p>
+    </DashboardLayout>
+  );
 }
-export default Dashboard;
+
+export default Overview;

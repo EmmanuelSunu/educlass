@@ -13,7 +13,7 @@ function MenuItem({ to, icon, label }: MenuItemProps) {
       className={({ isActive }) =>
         `flex items-center justify-start gap-3 w-full p-2 py-3 pl-4
          rounded-md fill-slate-400 text-slate-400 font-medium 
-         hover:bg-slate-100 hover:text-primary hover:fill-primary hover:ease-in
+         hover:bg-slate-100 hover:text-primary hover:font-semibold hover:fill-primary hover:ease-in
          ${
            isActive
              ? "bg-slate-100 text-h6 !text-primary fill-primary !font-semibold transition duration-150 ease-out"

@@ -126,7 +126,7 @@ function Login() {
                     isRequired={true}
                   />
                 </div>
-                <Link to="/user/" className="w-full">
+                <Link to="/user/l/" className="w-full">
                   <ButtonProps
                     type="submit"
                     variant="primary"
