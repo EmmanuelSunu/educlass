@@ -1,0 +1,42 @@
+[
+  {
+    "id": "C101",
+    "level": "Undergraduate",
+    "program": "BSc ICT",
+    "students": [
+      { "id": "S001", "name": "Alice" },
+      { "id": "S002", "name": "Bob" },
+      { "id": "S003", "name": "Charlie" }
+    ]
+  },
+  {
+    "id": "C102",
+    "level": "Postgraduate",
+    "program": "MSc CS",
+    "students": [
+      { "id": "S004", "name": "David" },
+      { "id": "S005", "name": "Eve" }
+    ]
+  },
+  {
+    "id": "C103",
+    "level": "Undergraduate",
+    "program": "BSc Software Engineering",
+    "students": [
+      { "id": "S006", "name": "Frank" },
+      { "id": "S007", "name": "Grace" },
+      { "id": "S008", "name": "Hannah" },
+      { "id": "S009", "name": "Ian" }
+    ]
+  },
+  {
+    "id": "C104",
+    "level": "Postgraduate",
+    "program": "MSc Data Science",
+    "students": [
+      { "id": "S010", "name": "Jack" },
+      { "id": "S011", "name": "Kate" },
+      { "id": "S012", "name": "Liam" }
+    ]
+  }
+]

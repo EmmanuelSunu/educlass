@@ -29,7 +29,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
               className="gap-2"
             >
               <RiAddLine className="w-5 h-5" />
-              {buttonTitle}
+              <span className="font-semibold text-h6">{buttonTitle}</span>
             </ButtonProps>
           )}
         </div>

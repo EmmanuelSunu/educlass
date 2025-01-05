@@ -1,7 +1,7 @@
-// pages/Overview.tsx
+// pages/Dashboard.tsx
 import DashboardLayout from "./layout";
 
-function Overview() {
+function Dashboard() {
   return (
     <DashboardLayout>
       {/* Your page content goes here */}
@@ -11,4 +11,4 @@ function Overview() {
   );
 }
 
-export default Overview;
+export default Dashboard;

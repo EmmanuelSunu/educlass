@@ -1,8 +1,8 @@
-// pages/Overview.tsx
+// pages/Dashboard.tsx
 import DashboardLayout from "../layout";
 import ExamCard from "../../../components/examCard";
 
-function Overview() {
+function Dashboard() {
   const handleAddHeadbarButton = () => {
     // Handle adding exam logic here
     console.log("Add exam clicked");
@@ -13,6 +13,7 @@ function Overview() {
     { id: 2, title: "Database Management", code: "DBM72831" },
     { id: 3, title: "Web Technologies", code: "WEB92847" },
     { id: 4, title: "Human Interactions", code: "WEB99047" },
+    { id: 4, title: "Ethical & Legal Issues In Computing", code: "WEB99047" },
   ];
 
   const handleViewExam = (examId: number) => {
@@ -22,7 +23,7 @@ function Overview() {
 
   return (
     <DashboardLayout
-      title="Overview"
+      title="Dashboard"
       showAddHeadbarButton={true}
       onAddHeadbarButton={handleAddHeadbarButton}
       buttonTitle="Add Exams"
@@ -33,7 +34,6 @@ function Overview() {
           <ExamCard
             key={exam.id}
             title={exam.title}
-            code={exam.code}
             onView={() => handleViewExam(exam.id)}
           />
         ))}
@@ -42,4 +42,4 @@ function Overview() {
   );
 }
 
-export default Overview;
+export default Dashboard;

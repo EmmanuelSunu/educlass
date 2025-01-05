@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import Logo from "./assets/images/logo.svg";
 import InputField from "./components/InputField";
 import ButtonProps from "./components/ButtonProps";
+import URLS from "./user/l/url";
 import { IoIosArrowRoundForward, IoIosArrowRoundBack } from "react-icons/io";
+
 
 function Login() {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -126,7 +128,7 @@ function Login() {
                     isRequired={true}
                   />
                 </div>
-                <Link to="/user/l/" className="w-full">
+                <Link to={URLS.DASHBOARD}className="w-full">
                   <ButtonProps
                     type="submit"
                     variant="primary"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Logo from "../../assets/images/logo.svg";
-import MenuItem from "../../components/menui-itens";
+import MenuItem from "../../components/menu-itens";
+import URLS from "./url";
 import {
   RiDashboardHorizontalLine,
   RiArticleLine,
@@ -69,28 +70,28 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           <div className="flex flex-col h-screen justify-between">
             <nav className="flex flex-col mt-4 space-y-1">
               <MenuItem
-                to="/user/l/overview/"
+                to={URLS.DASHBOARD}
                 icon={<RiDashboardHorizontalLine />}
-                label="Overview"
+                label="Dashboard"
               />
               <MenuItem
-                to="/user/l/schedules"
+                to={URLS.SCHEDULE}
                 icon={<RiCalendarEventLine />}
                 label="Schedules"
               />
               <MenuItem to="/user/l/exams" icon={<RiArticleLine />} label="Exams" />
               <MenuItem
-                to="/user/l/students"
+                to={URLS.CLASS}
                 icon={<RiGraduationCapLine />}
-                label="Students"
+                label="Class"
               />
               <MenuItem
-                to="/user/l/grading"
+                to={URLS.GRADING}
                 icon={<RiMedalLine />}
                 label="Grading"
               />
               <MenuItem
-                to="/user/l/settings"
+                to={URLS.SETTINGS}
                 icon={<RiSettings3Line />}
                 label="Settings"
               />

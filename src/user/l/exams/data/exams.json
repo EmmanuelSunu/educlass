@@ -1,0 +1,157 @@
+[
+  {
+    "id": 1,
+    "title": "Calculus Final Exams",
+    "type": "exam",
+    "duration": "3 hours",
+    "startTime": "10:00 GMT",
+    "endTime": "16:00 GMT",
+    "status": "scheduled",
+    "dueDate": "2024-12-01",
+    "description": "Final exam covering all topics from the semester.",
+    "questions": [
+      {
+        "id": "1",
+        "type": "essay",
+        "questionText": "What is the derivative of x^2?",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "2",
+        "type": "essay",
+        "questionText": "The integral of x dx is ___.",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "3",
+        "type": "essay",
+        "questionText": "Explain the concept of a limit in calculus.",
+        "questionAnswer": "Something good here"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Physics Lab Report",
+    "type": "lab report",
+    "duration": "2 hours",
+    "startTime": "10:00 GMT",
+    "endTime": "16:00 GMT",
+    "status": "completed",
+    "dueDate": "2024-12-08",
+    "description": "Lab report on the experiment of Newton's second law.",
+    "questions": [
+      {
+        "id": "1",
+        "type": "multi-choice",
+        "questionText": "What is the unit of force in the SI system?",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "2",
+        "type": "fill-ins",
+        "questionText": "The formula for force is ___.",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "3",
+        "type": "essay",
+        "questionText": "Explain the concept of friction in physics.",
+        "questionAnswer": "Something good here"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Biology Quiz",
+    "type": "quiz",
+    "duration": "1 hour",
+    "startTime": "10:00 GMT",
+    "endTime": "17:00 GMT",
+    "status": "scheduled",
+    "dueDate": "2024-12-10",
+    "description": "Quiz covering the topics of cells and genetics.",
+    "questions": [
+      {
+        "id": "1",
+        "type": "multi-choice",
+        "questionText": "What is the function of the mitochondria?",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "2",
+        "type": "fill-ins",
+        "questionText": "The process of cell division is called ___.",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "3",
+        "type": "essay",
+        "questionText": "Explain the concept of natural selection.",
+        "questionAnswer": "Something good here"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Math Homework",
+    "type": "homework",
+    "duration": "3 hours",
+    "startTime": "10:00 GMT",
+    "endTime": "18:00 GMT",
+    "status": "in-progress",
+    "dueDate": "2024-12-15",
+    "description": "Homework covering the topics of algebra and geometry.",
+    "questions": [
+      {
+        "id": "1",
+        "type": "multi-choice",
+        "questionText": "What is the value of x in the equation 2x + 5 = 11?",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "2",
+        "type": "fill-ins",
+        "questionText": "The formula for the area of a circle is ___.",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "3",
+        "type": "essay",
+        "questionText": "Explain the concept of a function in mathematics.",
+        "questionAnswer": "Something good here"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "English Essay",
+    "type": "essay",
+    "duration": "4 hours",
+    "startTime": "10:00 GMT",
+    "endTime": "18:00 GMT",
+    "status": "completed",
+    "dueDate": "2024-12-18",
+    "description": "Essay on the topic of Shakespeare's Romeo and Juliet.",
+    "questions": [
+      {
+        "id": "1",
+        "type": "essay",
+        "questionText": "Analyze the theme of love in Romeo and Juliet.",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "2",
+        "type": "essay",
+        "questionText": "Discuss the character development of Juliet in the play.",
+        "questionAnswer": "Something good here"
+      },
+      {
+        "id": "3",
+        "type": "essay",
+        "questionText": "Explain the significance of the tragic ending in Romeo and Juliet.",
+        "questionAnswer": "Something good here"
+      }
+    ]
+  }
+]

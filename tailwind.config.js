@@ -28,6 +28,7 @@ export default {
         accent: '#D97706',
         dark: '#364a63',
         muted: '#6B7280', // For less prominent text
+        lightGray: '#F6F8FA'
       },
   },
   plugins: [],
