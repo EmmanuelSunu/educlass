@@ -32,11 +32,14 @@ function App() {
             <Route path="/user/l/settings" element={<LecturerSettings />} />
             <Route path="/user/l/class" element={<LecturerClass />} />
             <Route path="/exams/details/:id" element={<ExamDetailsPage />} />
-            
+
             {/* Student Routes */}
             <Route path="/user/s/dashboard" element={<StudentDashboard />} />
             <Route path="/user/s/schedules" element={<StudentSchedule />} />
             <Route path="/user/s/exams" element={<StudentExams />} />
+            <Route path="/user/s/exams/details/:id" element={<React.lazy(() => import('./user/s/exams/details'))} />} />
+            <Route path="/user/s/exams/take/:id" element={<React.lazy(() => import('./user/s/exams/take'))} />} />
+            <Route path="/user/s/exams/results/:id" element={<React.lazy(() => import('./user/s/exams/results'))} />} />
             <Route path="/user/s/settings" element={<StudentSettings />} />
         </Routes>
       </>
