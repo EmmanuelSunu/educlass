@@ -5,7 +5,7 @@ import HeaderBar from "./headerbar";
 interface DashboardLayoutProps {
   children: React.ReactNode;
   title: string;
-  buttonTitle?: string;
+  buttonTitle:string;
   showAddHeadbarButton?: boolean;
   onAddHeadbarButton?: () => void;
 }
