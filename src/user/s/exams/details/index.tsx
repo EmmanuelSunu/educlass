@@ -215,9 +215,9 @@ const examsData = [
     endTime: "23:59",
     status: "scheduled",
     questions: [
-      { text: "What is the difference between a compiler and an interpreter?", options: ["Option 1", "Option 2", "Option 3", "Option 4"] },
-      { text: "Explain the concept of object-oriented programming.", options: [] },
-      { text: "What are the advantages of using version control systems?", options: ["Option 1", "Option 2", "Option 3", "Option 4"] }
+      { text: "What is the difference between a compiler and an interpreter?", questionType: "essay", options: ["Option 1", "Option 2", "Option 3", "Option 4"] },
+      { text: "Explain the concept of object-oriented programming.", questionType: "essay", options: [] },
+      { text: "What are the advantages of using version control systems?", questionType: "objective", options: ["Option 1", "Option 2", "Option 3", "Option 4"] }
     ]
   },
   // Add more mock exams as needed
