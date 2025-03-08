@@ -21,28 +21,54 @@ function ExamDetails() {
   const [isAvailable, setIsAvailable] = useState(false);
 
   useEffect(() => {
-    // Find exam in standard exams data
     console.log("Looking for exam with ID:", id);
-    let exam = examsData.find(e => e.id === Number(id));
+    const exam = examsData.find(exam => exam.id === Number(id));
     console.log("Found exam:", exam);
 
     if (exam) {
       setExamDetails(exam);
 
-      // For testing purposes: Override the exam dates to make it available
-      // In a real app, you would use the actual dates
+      // Check if exam is available based on date and time
       const now = new Date();
-      const tomorrow = new Date();
-      tomorrow.setDate(now.getDate() + 1);
-      
-      // Make the exam available for testing
-      setIsAvailable(true);
-    } else {
-      console.error("Exam not found with ID:", id);
-    }
+      const examDate = new Date(exam.dueDate);
 
-    setLoading(false);
-  }, [id]);
+      // Check if current date matches exam date
+      const isSameDate = 
+        now.getFullYear() === examDate.getFullYear() && 
+        now.getMonth() === examDate.getMonth() && 
+        now.getDate() === examDate.getDate();
+
+      if (!isSameDate) {
+        console.log("Exam date doesn't match current date", {
+          examDate: exam.dueDate,
+          currentDate: now.toISOString().split('T')[0]
+        });
+        setIsAvailable(false);
+        return;
+      }
+
+      // If dates match, check if current time is within exam time window
+      const [startHour, startMinute] = exam.startTime.split(':').map(Number);
+      const [endHour, endMinute] = exam.endTime.split(':').map(Number);
+
+      const startTimeMinutes = startHour * 60 + startMinute;
+      const endTimeMinutes = endHour * 60 + endMinute;
+      const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
+
+      const isTimeWithinWindow = currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes;
+
+      console.log("Checking time availability", {
+        startTime: `${startHour}:${startMinute}`,
+        endTime: `${endHour}:${endMinute}`,
+        currentTime: `${now.getHours()}:${now.getMinutes()}`,
+        isWithinTimeWindow: isTimeWithinWindow
+      });
+
+      setIsAvailable(isTimeWithinWindow);
+    } else {
+      navigate('/user/s/exams');
+    }
+  }, [id, navigate]);
 
   const handleStartExam = () => {
     navigate(`/user/s/exams/take/${id}`);
