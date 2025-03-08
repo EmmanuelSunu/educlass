@@ -86,29 +86,29 @@ function Login() {
               </div>
               <div className="mb-4">
                 <label className="text-span text-dark font-medium mb-2 block">I am a:</label>
-                <div className="flex space-x-4">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="userType"
-                      value="lecturer"
-                      checked={userType === "lecturer"}
-                      onChange={() => setUserType("lecturer")}
-                      className="mr-2"
-                    />
-                    <span>Lecturer</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="userType"
-                      value="student"
-                      checked={userType === "student"}
-                      onChange={() => setUserType("student")}
-                      className="mr-2"
-                    />
-                    <span>Student</span>
-                  </label>
+                <div className="flex items-center justify-between bg-slate-100 rounded-full p-1 w-64 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setUserType("lecturer")}
+                    className={`py-2 px-6 rounded-full text-sm font-medium transition-all duration-200 ${
+                      userType === "lecturer"
+                        ? "bg-primary text-white shadow-sm"
+                        : "text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    Lecturer
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setUserType("student")}
+                    className={`py-2 px-6 rounded-full text-sm font-medium transition-all duration-200 ${
+                      userType === "student"
+                        ? "bg-primary text-white shadow-sm"
+                        : "text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    Student
+                  </button>
                 </div>
               </div>
               <form
