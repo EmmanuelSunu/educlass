@@ -28,6 +28,7 @@ interface ExamDetails {
 
 function ExamDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [examDetails, setExamDetails] = useState<ExamDetails | null>(null);
 
   useEffect(() => {
