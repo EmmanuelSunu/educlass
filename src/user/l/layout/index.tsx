@@ -1,4 +1,3 @@
-
 import React, { ReactNode, useState } from "react";
 import Sidebar from "../Sidebar";
 import MobileNavBar from "../../../components/MobileNavBar";
@@ -57,8 +56,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 const LecturerLayout = ({ children }: { children: ReactNode }) => (
   <DashboardLayout 
     title="Lecturer Dashboard" 
-    showAddHeadbarButton={true}
-    buttonTitle="Add"
+    showAddHeadbarButton={false}
+    buttonTitle=""
   >
     {children}
   </DashboardLayout>

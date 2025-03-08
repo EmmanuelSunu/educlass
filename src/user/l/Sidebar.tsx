@@ -1,16 +1,19 @@
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { MdOutlineDashboard, MdSchool } from 'react-icons/md';
+import { BsGear } from 'react-icons/bs';
+import { MdOutlineAssignment } from 'react-icons/md';
+import Logo from '../../assets/logo.png';
 
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { BsCalendar4Week, BsGear, BsClipboardCheck } from "react-icons/bs";
-import { MdOutlineDashboard, MdSchool } from "react-icons/md";
-import { FaRegClipboard } from "react-icons/fa";
-import Logo from "../../assets/images/logo.svg";
+interface SidebarProps {
+  isSidebarOpen: boolean;
+}
 
-const Sidebar = ({ isSidebarOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
-  const isActive = (path) => {
+  const isActive = (path: string) => {
     return pathname.includes(path);
   };
 
@@ -40,18 +43,6 @@ const Sidebar = ({ isSidebarOpen }) => {
           </Link>
 
           <Link
-            to="/user/l/schedules"
-            className={`flex items-center px-4 py-3 text-slate-600 rounded-lg transition-colors ${
-              isActive("/schedules")
-                ? "bg-blue-50 text-primary font-medium"
-                : "hover:bg-slate-100"
-            }`}
-          >
-            <BsCalendar4Week className="text-xl mr-3" />
-            <span>Schedules</span>
-          </Link>
-
-          <Link
             to="/user/l/exams"
             className={`flex items-center px-4 py-3 text-slate-600 rounded-lg transition-colors ${
               isActive("/exams")
@@ -59,20 +50,8 @@ const Sidebar = ({ isSidebarOpen }) => {
                 : "hover:bg-slate-100"
             }`}
           >
-            <FaRegClipboard className="text-xl mr-3" />
-            <span>Exams & Assignments</span>
-          </Link>
-
-          <Link
-            to="/user/l/grading"
-            className={`flex items-center px-4 py-3 text-slate-600 rounded-lg transition-colors ${
-              isActive("/grading")
-                ? "bg-blue-50 text-primary font-medium"
-                : "hover:bg-slate-100"
-            }`}
-          >
-            <BsClipboardCheck className="text-xl mr-3" />
-            <span>Grading</span>
+            <MdOutlineAssignment className="text-xl mr-3" />
+            <span>Exams</span>
           </Link>
 
           <Link
