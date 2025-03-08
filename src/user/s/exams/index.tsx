@@ -92,6 +92,7 @@ function StudentExams() {
   }, []);
 
   const handleExamClick = (exam) => {
+    console.log("Navigating to exam details:", exam.id); // Added console log for debugging
     navigate(`/user/s/exams/details/${exam.id}`, { state: { exam } });
   };
 

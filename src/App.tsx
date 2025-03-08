@@ -38,7 +38,7 @@ function App() {
             <Route path="/user/s/dashboard" element={<StudentDashboard />} />
             <Route path="/user/s/schedules" element={<StudentSchedule />} />
             <Route path="/user/s/exams" element={<StudentExams />} />
-            <Route path="/user/s/exams/details/:id" element={<ExamDetailsPage />} />
+            <Route path="/user/s/exams/details/:id" element={<React.lazy(() => import('./user/s/exams/details'))  default />} />
             <Route path="/user/s/exams/take/:id" element={<React.Suspense fallback={<div>Loading...</div>}>{React.createElement(React.lazy(() => import('./user/s/exams/take')))}</React.Suspense>} />
             <Route path="/user/s/exams/results/:id" element={<React.Suspense fallback={<div>Loading...</div>}>{React.createElement(React.lazy(() => import('./user/s/exams/results')))}</React.Suspense>} />
             <Route path="/user/s/settings" element={<StudentSettings />} />
