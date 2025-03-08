@@ -165,10 +165,7 @@ function ExamDetails() {
   );
 }
 
-export default ExamDetails;
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import DashboardLayout from "../../layout";
+export default ExamDetails; "../../layout";
 
 // Mock data for development
 const examsData = [
