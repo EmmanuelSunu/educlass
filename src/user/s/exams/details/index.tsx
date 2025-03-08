@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../layout";
 import { useNavigate, useParams } from "react-router-dom";
-import examsData from "../../../../user/s/exams/mock-data";
+// Using the local mock data instead of importing
 
-function ExamDetails() {
+function ExamDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [examDetails, setExamDetails] = useState(null);
@@ -45,34 +45,54 @@ function ExamDetails() {
       const endTimeMinutes = endHour * 60 + endMinute;
       const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
 
-      const isTimeWithinWindow = currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes;
+      setIsAvailable(currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes);
 
-      console.log("Checking time availability", {
-        startTime: `${startHour}:${startMinute}`,
-        endTime: `${endHour}:${endMinute}`,
+      console.log("Time availability check:", {
         currentTime: `${now.getHours()}:${now.getMinutes()}`,
-        isWithinTimeWindow: isTimeWithinWindow
+        startTime: exam.startTime,
+        endTime: exam.endTime,
+        isAvailable: currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes
       });
-
-      setIsAvailable(isTimeWithinWindow);
-    } else {
-      navigate('/user/s/exams');
     }
-  }, [id, navigate]);
+
+    setLoading(false);
+  }, [id]);
 
   const handleStartExam = () => {
     navigate(`/user/s/exams/take/${id}`);
   };
 
-  if (!examDetails) {
+  if (loading) {
     return (
-      <DashboardLayout 
-        title="Loading..." 
+      <DashboardLayout
+        title="Loading..."
         showAddHeadbarButton={false}
         buttonTitle=""
       >
-        <div className="flex items-center justify-center h-64">
-          <div className="text-lg text-slate-600">Loading...</div>
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!examDetails) {
+    return (
+      <DashboardLayout
+        title="Exam Not Found"
+        showAddHeadbarButton={false}
+        buttonTitle=""
+      >
+        <div className="bg-white rounded-lg shadow p-6">
+          <p className="text-center text-slate-700">The exam you're looking for could not be found.</p>
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => navigate('/user/s/exams')}
+              className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded"
+            >
+              Back to Exams
+            </button>
+          </div>
         </div>
       </DashboardLayout>
     );
@@ -84,24 +104,23 @@ function ExamDetails() {
       showAddHeadbarButton={false}
       buttonTitle=""
     >
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      <div className="container mx-auto p-4 md:p-6"> {/* Added container for better centering */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"> {/* Improved spacing and responsiveness */}
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-800">{examDetails.title}</h2>
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">{examDetails.title}</h2>
-            <p className="text-slate-600">{examDetails.className}</p>
-          </div>
-          <div className="mt-4 md:mt-0">
             {isAvailable ? (
               <button
                 onClick={handleStartExam}
-                className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded"
+                className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded w-full sm:w-auto"
+                {/* Added w-full for smaller screens */}
               >
                 Start Exam
               </button>
             ) : (
               <button
                 disabled
-                className="bg-slate-300 text-slate-500 font-medium py-2 px-4 rounded cursor-not-allowed"
+                className="bg-slate-300 text-slate-500 font-medium py-2 px-4 rounded cursor-not-allowed w-full sm:w-auto"
+                {/* Added w-full for smaller screens */}
               >
                 Not Available Now
               </button>
@@ -109,31 +128,46 @@ function ExamDetails() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="bg-slate-50 p-4 rounded-lg">
-            <p className="text-slate-700 font-medium">Type</p>
-            <p className="text-slate-900 capitalize">{examDetails.type}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <h3 className="font-semibold text-slate-800 mb-2">Exam Details</h3>
+            <ul className="space-y-2">
+              <li className="flex justify-between">
+                <span className="text-slate-600">Type:</span>
+                <span className="font-medium text-slate-800 capitalize">{examDetails.type}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-slate-600">Duration:</span>
+                <span className="font-medium text-slate-800">{examDetails.duration}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-slate-600">Date:</span>
+                <span className="font-medium text-slate-800">{new Date(examDetails.dueDate).toLocaleDateString()}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-slate-600">Time Window:</span>
+                <span className="font-medium text-slate-800">{examDetails.startTime} - {examDetails.endTime}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-slate-600">Questions:</span>
+                <span className="font-medium text-slate-800">{examDetails.questions ? examDetails.questions.length : 0}</span>
+              </li>
+            </ul>
           </div>
-          <div className="bg-slate-50 p-4 rounded-lg">
-            <p className="text-slate-700 font-medium">Duration</p>
-            <p className="text-slate-900">{examDetails.duration}</p>
-          </div>
-          <div className="bg-slate-50 p-4 rounded-lg">
-            <p className="text-slate-700 font-medium">Date</p>
-            <p className="text-slate-900">{examDetails.dueDate}</p>
-          </div>
-          <div className="bg-slate-50 p-4 rounded-lg">
-            <p className="text-slate-700 font-medium">Time</p>
-            <p className="text-slate-900">{examDetails.startTime} - {examDetails.endTime}</p>
+
+          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <h3 className="font-semibold text-slate-800 mb-2">Instructions</h3>
+            <ul className="list-disc pl-5 space-y-1 text-slate-700">
+              <li>Ensure you have a stable internet connection before starting.</li>
+              <li>Once started, the exam timer cannot be paused.</li>
+              <li>You can navigate between questions during the exam.</li>
+              <li>Your answers are automatically saved as you proceed.</li>
+              <li>Submit your exam before the time expires.</li>
+            </ul>
           </div>
         </div>
 
-        <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-2 text-slate-800">Description</h3>
-          <p className="text-slate-700">{examDetails.description}</p>
-        </div>
-
-        <div>
+        <div className="mb-4"> {/* Added for better spacing on smaller screens */}
           <h3 className="text-xl font-semibold mb-4 text-slate-800">Exam Questions Preview</h3>
           {examDetails.questions && examDetails.questions.length > 0 ? (
             <div className="space-y-4">
@@ -165,4 +199,25 @@ function ExamDetails() {
   );
 }
 
-export default ExamDetails;
+export default ExamDetailsPage;
+
+// Mock data for development
+const examsData = [
+  {
+    id: 101,
+    title: "Midterm Exam: Introduction to Computer Science",
+    className: "CS101",
+    type: "exam",
+    duration: "90 minutes",
+    dueDate: new Date().toISOString().split('T')[0], // Today's date for demo
+    startTime: "09:00",
+    endTime: "23:59",
+    status: "scheduled",
+    questions: [
+      { text: "What is the difference between a compiler and an interpreter?", questionType: "essay", options: ["Option 1", "Option 2", "Option 3", "Option 4"] },
+      { text: "Explain the concept of object-oriented programming.", questionType: "essay", options: [] },
+      { text: "What are the advantages of using version control systems?", questionType: "objective", options: ["Option 1", "Option 2", "Option 3", "Option 4"] }
+    ]
+  },
+  // Add more mock exams as needed
+];
