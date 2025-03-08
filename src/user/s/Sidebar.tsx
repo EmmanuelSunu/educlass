@@ -50,13 +50,13 @@ export function Sidebar() {
 
       <aside
         className={`
-          fixed md:static w-72 bg-white border-r-2 border-gray-200 h-screen 
+          fixed md:static w-72 bg-white border-r border-slate-200 h-screen 
           z-40 transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        <div className="p-4 flex flex-col h-screen overflow-y-auto">
-          <div className="pb-4 w-full">
+        <div className="p-6 flex flex-col h-screen overflow-y-auto">
+          <div className="pb-6 w-full">
             <img src={Logo} alt="Logo" className="w-28" />
           </div>
           <div className="flex flex-col h-screen justify-between">
