@@ -36,7 +36,9 @@ const ExamCard: React.FC<ExamCardProps> = ({
 
   return (
     <div
-      className={`border rounded-md p-6 flex flex-col gap-4 bg-white shadow-sm hover:shadow-md transition-shadow ${className}`}
+      onClick={handleViewDetails}
+      className={`border rounded-md p-6 flex flex-col gap-4 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer ${className}`}
+      aria-label={`View ${title} details`}
     >
       {/* Row 1: Title and Status */}
       <div className="flex justify-between items-center">
@@ -58,13 +60,7 @@ const ExamCard: React.FC<ExamCardProps> = ({
           <RiTimeLine className="text-lg text-gray-500" />
           <span className="capitalize">{duration}</span>
         </div>
-        <button
-          onClick={handleViewDetails}
-          className="text-lg text-blue-600 hover:text-blue-700 transition-colors"
-          aria-label={`View ${title} details`}
-        >
-          <RiEyeLine />
-        </button>
+        {/*Removed the button as the entire card is now clickable */}
       </div>
     </div>
   );
