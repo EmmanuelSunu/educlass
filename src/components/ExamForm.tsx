@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RiAddLine, RiDeleteBinLine } from 'react-icons/ri';
 
 export interface ExamDetails {
@@ -7,6 +6,8 @@ export interface ExamDetails {
   title: string;
   type: 'exam' | 'test' | 'assignment';
   duration: string;
+  durationHours?: number; // Added durationHours
+  durationMinutes?: number; // Added durationMinutes
   startTime: string;
   endTime: string;
   status: 'scheduled' | 'in-progress' | 'completed';
@@ -33,7 +34,32 @@ const ExamForm: React.FC<ExamFormProps> = ({
   onCancel 
 }) => {
   const [activeTab, setActiveTab] = useState('details');
-  
+
+  useEffect(() => {
+    if (!examDetails.durationHours && !examDetails.durationMinutes) {
+      const durationRegex = /(\d+)\s*hour[s]?(?:\s*and\s*(\d+)\s*minute[s]?)?/i;
+      const match = examDetails.duration.match(durationRegex);
+
+      if (match) {
+        const hours = parseInt(match[1]) || 0;
+        const minutes = match[2] ? parseInt(match[2]) : 0;
+
+        onExamChange({
+          ...examDetails,
+          durationHours: hours,
+          durationMinutes: minutes
+        });
+      } else {
+        onExamChange({
+          ...examDetails,
+          durationHours: 1,
+          durationMinutes: 0
+        });
+      }
+    }
+  }, []);
+
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     onExamChange({
@@ -41,7 +67,34 @@ const ExamForm: React.FC<ExamFormProps> = ({
       [name]: value
     });
   };
-  
+
+  const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const numValue = parseInt(value) || 0;
+
+    const updatedExam = {
+      ...examDetails,
+      [name]: numValue
+    };
+
+    const hours = name === 'durationHours' ? numValue : (examDetails.durationHours || 0);
+    const minutes = name === 'durationMinutes' ? numValue : (examDetails.durationMinutes || 0);
+
+    let durationStr = '';
+    if (hours > 0) {
+      durationStr += `${hours} hour${hours !== 1 ? 's' : ''}`;
+    }
+    if (minutes > 0) {
+      durationStr += hours > 0 ? ` and ${minutes} minute${minutes !== 1 ? 's' : ''}` : `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+    }
+    if (durationStr === '') {
+      durationStr = '0 minutes';
+    }
+
+    updatedExam.duration = durationStr;
+    onExamChange(updatedExam);
+  };
+
   const handleAddQuestion = () => {
     const newQuestion = {
       id: examDetails.questions.length > 0 
@@ -50,33 +103,33 @@ const ExamForm: React.FC<ExamFormProps> = ({
       questionText: '',
       questionAnswer: ''
     };
-    
+
     onExamChange({
       ...examDetails,
       questions: [...examDetails.questions, newQuestion]
     });
   };
-  
+
   const handleQuestionChange = (index: number, field: 'questionText' | 'questionAnswer', value: string) => {
     const updatedQuestions = [...examDetails.questions];
     updatedQuestions[index] = {
       ...updatedQuestions[index],
       [field]: value
     };
-    
+
     onExamChange({
       ...examDetails,
       questions: updatedQuestions
     });
   };
-  
+
   const handleRemoveQuestion = (id: number) => {
     onExamChange({
       ...examDetails,
       questions: examDetails.questions.filter(q => q.id !== id)
     });
   };
-  
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="mb-6 border-b">
@@ -103,7 +156,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
           </button>
         </div>
       </div>
-      
+
       {activeTab === 'details' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -119,7 +172,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 required
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
               <select
@@ -134,20 +187,35 @@ const ExamForm: React.FC<ExamFormProps> = ({
               </select>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
-              <input
-                type="text"
-                name="duration"
-                value={examDetails.duration}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="e.g. 2 hours"
-              />
+            <div className="flex space-x-4"> {/* Changed to flex for better layout */}
+              <div className="w-1/2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Duration (Hours)</label>
+                <input
+                  type="number"
+                  name="durationHours"
+                  value={examDetails.durationHours || 0}
+                  onChange={handleDurationChange}
+                  min="0"
+                  max="24"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div className="w-1/2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Duration (Minutes)</label>
+                <input
+                  type="number"
+                  name="durationMinutes"
+                  value={examDetails.durationMinutes || 0}
+                  onChange={handleDurationChange}
+                  min="0"
+                  max="59"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
               <input
@@ -160,7 +228,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               />
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
@@ -172,7 +240,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
               <input
@@ -184,7 +252,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               />
             </div>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea
@@ -198,7 +266,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
           </div>
         </div>
       )}
-      
+
       {activeTab === 'questions' && (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
@@ -212,7 +280,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               Add Question
             </button>
           </div>
-          
+
           {examDetails.questions.length === 0 ? (
             <div className="text-center py-10 text-gray-500">
               No questions added yet. Click "Add Question" to start.
@@ -230,7 +298,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                       <RiDeleteBinLine className="h-5 w-5" />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Question Text</label>
@@ -242,7 +310,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                         placeholder="Enter your question"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Expected Answer</label>
                       <textarea
@@ -260,7 +328,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
           )}
         </div>
       )}
-      
+
       <div className="mt-8 flex justify-end space-x-3">
         <button
           type="button"

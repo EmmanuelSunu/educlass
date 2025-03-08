@@ -1,4 +1,3 @@
-
 export interface Exam {
   id: number;
   title: string;
@@ -10,11 +9,24 @@ export interface Exam {
   dueDate: string;
 }
 
-export interface ExamDetails extends Exam {
+export interface ExamDetails {
+  id: number;
+  title: string;
+  type: 'exam' | 'test' | 'assignment';
+  duration: string;
+  durationHours?: number;
+  durationMinutes?: number;
+  startTime: string;
+  endTime: string;
+  status: 'scheduled' | 'in-progress' | 'completed';
+  dueDate: string;
   description: string;
-  questions: {
-    id: number;
-    questionText: string;
-    questionAnswer: string;
-  }[];
+  questions: Question[];
+}
+
+export interface Question {
+  id: string;
+  type: 'essay' | 'multi-choice' | 'fill-ins';
+  questionText: string;
+  questionAnswer: string;
 }
