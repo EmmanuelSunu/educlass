@@ -13,7 +13,8 @@ import {
   RiLogoutCircleRLine,
   RiSettings3Line,
 } from "react-icons/ri";
-import { Link, useLocation } from 'react-router-dom'; // Added for routing
+import { MdOutlineGrading } from "react-icons/md"; // Added import
+import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarProps {
   className?: string;
@@ -21,20 +22,18 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation(); // Added to get current pathname
+  const location = useLocation();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  // Close sidebar when clicking outside on mobile
   const handleOverlayClick = () => {
     setIsOpen(false);
   };
 
   return (
     <>
-      {/* Mobile Hamburger Button */}
       <button
         onClick={toggleSidebar}
         className="fixed top-4 right-4 z-50 p-2 rounded-lg bg-white shadow-lg md:hidden hover:bg-slate-100"
@@ -47,7 +46,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         )}
       </button>
 
-      {/* Mobile Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-slate-900/50 z-30 md:hidden transition-opacity duration-300"
@@ -56,7 +54,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`
           fixed md:static w-72 bg-white border-r-2 border-gray-200 h-screen 
