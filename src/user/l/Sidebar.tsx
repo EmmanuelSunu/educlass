@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { MdOutlineDashboard, MdSchool } from 'react-icons/md';
 import { BsGear } from 'react-icons/bs';
 import { MdOutlineAssignment } from 'react-icons/md';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/images/logo.svg';
 
 interface SidebarProps {
   isSidebarOpen: boolean;
