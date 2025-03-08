@@ -7,6 +7,7 @@ import LecturerGrading from "./user/l/grading/";
 import LecturerSettings from "./user/l/settings";
 import LecturerClass from "./user/l/class";
 import ExamDetailsPage from "./user/l/exams/details";
+import CreateExam from "./user/l/exams/create";
 function App() {
   return (
     <Router>
@@ -16,6 +17,7 @@ function App() {
             <Route path="/user/l/dashboard" element={<Dashboard />} />
             <Route path="/user/l/schedules" element={<LecturerSchedule />} />
             <Route path="/user/l/exams" element={<LecturerExams />} />
+            <Route path="/user/l/exams/create" element={<CreateExam />} />
             <Route path="/user/l/grading" element={<LecturerGrading />} />
             <Route path="/user/l/settings" element={<LecturerSettings />} />
             <Route path="/user/l/class" element={<LecturerClass />} />
