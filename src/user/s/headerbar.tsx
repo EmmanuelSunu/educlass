@@ -1,3 +1,4 @@
+
 import React from "react";
 import HeaderBar from "../../components/HeaderBar";
 
@@ -8,8 +9,8 @@ interface HeaderBarProps {
   onAddHeadbarButton?: () => void;
 }
 
-const LecturerHeaderBar: React.FC<HeaderBarProps> = (props) => {
+const StudentHeaderBar: React.FC<HeaderBarProps> = (props) => {
   return <HeaderBar {...props} />;
 };
 
-export default LecturerHeaderBar;
+export default StudentHeaderBar;
