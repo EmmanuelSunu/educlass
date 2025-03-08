@@ -1,41 +1,58 @@
 
 import React from "react";
-import ButtonProps from "./ButtonProps";
-import { RiAddLine } from "react-icons/ri";
+import styled from "styled-components";
+
+// HeaderBar component
+export const HeaderBarComp = styled.header`
+  background-color: #f0f0f0;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+export const HeaderTitle = styled.h1`
+  margin: 0;
+  font-size: 1.5rem;
+`;
+
+export const HeaderButton = styled.button`
+  background-color: #4CAF50;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
 
 interface HeaderBarProps {
   title: string;
-  buttonTitle: string;
+  buttonTitle?: string;
   showAddHeadbarButton?: boolean;
   onAddHeadbarButton?: () => void;
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = ({
   title,
-  buttonTitle,
+  buttonTitle = "Add",
   showAddHeadbarButton = false,
   onAddHeadbarButton,
 }) => {
   return (
-    <header className="bg-white w-full px-6 py-4 border-b border-slate-100 shadow-sm md:block">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl md:text-2xl font-semibold text-slate-800">{title}</h1>
-
-        <div className="flex items-center gap-4">
-          {showAddHeadbarButton && (
-            <ButtonProps
-              variant="primary"
-              size="regular"
-              onClick={onAddHeadbarButton}
-              className="gap-2 bg-primary hover:bg-primary/90 rounded-full shadow-sm transition-all"
-            >
-              <RiAddLine className="w-5 h-5" />
-              <span className="font-medium hidden md:inline">{buttonTitle}</span>
-            </ButtonProps>
-          )}
-        </div>
-      </div>
-    </header>
+    <HeaderBarComp className="bg-white border-b border-slate-200 py-4 px-6">
+      <HeaderTitle className="text-xl font-semibold text-slate-800">
+        {title}
+      </HeaderTitle>
+      {showAddHeadbarButton && (
+        <HeaderButton
+          className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+          onClick={onAddHeadbarButton}
+        >
+          {buttonTitle}
+        </HeaderButton>
+      )}
+    </HeaderBarComp>
   );
 };
 

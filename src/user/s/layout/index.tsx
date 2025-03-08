@@ -1,22 +1,22 @@
 
 import React, { ReactNode, useState } from "react";
 import Sidebar from "../Sidebar";
-import HeaderBar from "../../../components/HeaderBar";
 import MobileNavBar from "../../../components/MobileNavBar";
+import HeaderBar from "../../../components/HeaderBar";
 
 interface DashboardLayoutProps {
   children: ReactNode;
   title: string;
-  buttonTitle?: string;
   showAddHeadbarButton?: boolean;
+  buttonTitle?: string;
   onAddHeadbarButton?: () => void;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   children,
   title,
-  buttonTitle = "",
   showAddHeadbarButton = false,
+  buttonTitle = "Add",
   onAddHeadbarButton,
 }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,13 +27,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   return (
     <div className="flex h-screen bg-slate-50">
-      {/* Mobile Navigation Bar */}
-      <MobileNavBar onToggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+      {/* Sidebar */}
+      <Sidebar isSidebarOpen={isSidebarOpen} />
 
-      {/* Sidebar - hidden on mobile unless toggled */}
-      <div className={`${isSidebarOpen ? 'block' : 'hidden'} md:block fixed inset-0 z-10 md:relative md:z-0`}>
-        <Sidebar />
-      </div>
+      {/* Mobile Navigation */}
+      <MobileNavBar
+        isSidebarOpen={isSidebarOpen}
+        onToggleSidebar={toggleSidebar}
+      />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden md:ml-72 pt-14 md:pt-0">
@@ -53,5 +54,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   );
 };
 
-export { DashboardLayout, HeaderBar };
+const StudentLayout = ({ children }: { children: ReactNode }) => (
+  <DashboardLayout 
+    title="Student Dashboard" 
+    showAddHeadbarButton={false}
+    buttonTitle=""
+  >
+    {children}
+  </DashboardLayout>
+);
+
+export { DashboardLayout, StudentLayout, HeaderBar };
 export default DashboardLayout;

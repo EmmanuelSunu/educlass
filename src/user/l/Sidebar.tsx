@@ -1,107 +1,106 @@
-import React, { useState } from "react";
+
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { BsCalendar4Week, BsGear, BsClipboardCheck } from "react-icons/bs";
+import { MdOutlineDashboard, MdSchool } from "react-icons/md";
+import { FaRegClipboard } from "react-icons/fa";
 import Logo from "../../assets/images/logo.svg";
-import MenuItem from "../../components/menu-itens";
-import URLS from "./url";
-import {
-  RiDashboardHorizontalLine,
-  RiArticleLine,
-  RiGraduationCapLine,
-  RiCalendarEventLine,
-  RiMedalLine,
-  RiMenuLine,
-  RiCloseLine,
-  RiLogoutCircleRLine,
-  RiSettings3Line,
-} from "react-icons/ri";
-import { MdOutlineGrading } from "react-icons/md"; // Added import
-import { Link, useLocation } from 'react-router-dom';
 
-interface SidebarProps {
-  className?: string;
-}
-
-const Sidebar: React.FC<SidebarProps> = ({ className }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Sidebar = ({ isSidebarOpen }) => {
   const location = useLocation();
+  const pathname = location.pathname;
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleOverlayClick = () => {
-    setIsOpen(false);
+  const isActive = (path) => {
+    return pathname.includes(path);
   };
 
   return (
-    <>
-      <button
-        onClick={toggleSidebar}
-        className="fixed top-4 right-4 z-50 p-2 rounded-lg bg-white shadow-lg md:hidden hover:bg-slate-100"
-        aria-label={isOpen ? "Close menu" : "Open menu"}
-      >
-        {isOpen ? (
-          <RiCloseLine className="w-6 h-6 text-slate-600" />
-        ) : (
-          <RiMenuLine className="w-6 h-6 text-slate-600" />
-        )}
-      </button>
-
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-slate-900/50 z-30 md:hidden transition-opacity duration-300"
-          onClick={handleOverlayClick}
-          aria-hidden="true"
-        />
-      )}
-
-      <aside
-        className={`
-          fixed md:static w-72 bg-white border-r-2 border-gray-200 h-screen 
-          z-40 transition-transform duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-          ${className || ""}
-        `}
-      >
-        <div className="p-4 flex flex-col h-screen overflow-y-auto">
-          <div className="pb-4 w-full">
-            <img src={Logo} alt="Logo" className="w-28" />
-          </div>
-          <div className="flex flex-col h-screen justify-between">
-            <nav className="flex flex-col mt-4 space-y-1">
-              <MenuItem
-                to={URLS.DASHBOARD}
-                icon={<RiDashboardHorizontalLine />}
-                label="Dashboard"
-              />
-              <MenuItem
-                to={URLS.SCHEDULE}
-                icon={<RiCalendarEventLine />}
-                label="Schedules"
-              />
-              <MenuItem to="/user/l/exams" icon={<RiArticleLine />} label="Exams" />
-              <MenuItem
-                to={URLS.CLASS}
-                icon={<RiGraduationCapLine />}
-                label="Class"
-              />
-              <MenuItem
-                to={URLS.GRADING}
-                icon={<RiMedalLine />}
-                label="Grading"
-              />
-              <MenuItem
-                to={URLS.SETTINGS}
-                icon={<RiSettings3Line />}
-                label="Settings"
-              />
-            </nav>
-            <div className="pt-0 border-slate-200 border-t-2">
-              <MenuItem to="/" icon={<RiLogoutCircleRLine />} label="Logout" />
-            </div>
-          </div>
+    <aside
+      className={`fixed inset-y-0 left-0 z-20 w-72 bg-white border-r border-slate-200 transform ${
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      } md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto`}
+    >
+      <div className="p-6">
+        <div className="flex items-center mb-8">
+          <img src={Logo} alt="Logo" className="h-8 w-auto mr-2" />
+          <span className="text-xl font-bold text-slate-800">EduClass</span>
         </div>
-      </aside>
-    </>
+
+        <nav className="space-y-1">
+          <Link
+            to="/user/l/dashboard"
+            className={`flex items-center px-4 py-3 text-slate-600 rounded-lg transition-colors ${
+              isActive("/dashboard")
+                ? "bg-blue-50 text-primary font-medium"
+                : "hover:bg-slate-100"
+            }`}
+          >
+            <MdOutlineDashboard className="text-xl mr-3" />
+            <span>Dashboard</span>
+          </Link>
+
+          <Link
+            to="/user/l/schedules"
+            className={`flex items-center px-4 py-3 text-slate-600 rounded-lg transition-colors ${
+              isActive("/schedules")
+                ? "bg-blue-50 text-primary font-medium"
+                : "hover:bg-slate-100"
+            }`}
+          >
+            <BsCalendar4Week className="text-xl mr-3" />
+            <span>Schedules</span>
+          </Link>
+
+          <Link
+            to="/user/l/exams"
+            className={`flex items-center px-4 py-3 text-slate-600 rounded-lg transition-colors ${
+              isActive("/exams")
+                ? "bg-blue-50 text-primary font-medium"
+                : "hover:bg-slate-100"
+            }`}
+          >
+            <FaRegClipboard className="text-xl mr-3" />
+            <span>Exams & Assignments</span>
+          </Link>
+
+          <Link
+            to="/user/l/grading"
+            className={`flex items-center px-4 py-3 text-slate-600 rounded-lg transition-colors ${
+              isActive("/grading")
+                ? "bg-blue-50 text-primary font-medium"
+                : "hover:bg-slate-100"
+            }`}
+          >
+            <BsClipboardCheck className="text-xl mr-3" />
+            <span>Grading</span>
+          </Link>
+
+          <Link
+            to="/user/l/class"
+            className={`flex items-center px-4 py-3 text-slate-600 rounded-lg transition-colors ${
+              isActive("/class")
+                ? "bg-blue-50 text-primary font-medium"
+                : "hover:bg-slate-100"
+            }`}
+          >
+            <MdSchool className="text-xl mr-3" />
+            <span>Classes</span>
+          </Link>
+
+          <Link
+            to="/user/l/settings"
+            className={`flex items-center px-4 py-3 text-slate-600 rounded-lg transition-colors ${
+              isActive("/settings")
+                ? "bg-blue-50 text-primary font-medium"
+                : "hover:bg-slate-100"
+            }`}
+          >
+            <BsGear className="text-xl mr-3" />
+            <span>Settings</span>
+          </Link>
+        </nav>
+      </div>
+    </aside>
   );
 };
 

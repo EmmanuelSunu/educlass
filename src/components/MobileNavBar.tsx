@@ -3,11 +3,14 @@ import React from "react";
 import { RiMenuLine, RiCloseLine } from "react-icons/ri";
 
 interface MobileNavBarProps {
-  onToggleSidebar: () => void;
   isSidebarOpen: boolean;
+  onToggleSidebar: () => void;
 }
 
-const MobileNavBar: React.FC<MobileNavBarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
+const MobileNavBar: React.FC<MobileNavBarProps> = ({
+  isSidebarOpen,
+  onToggleSidebar,
+}) => {
   return (
     <div className="block md:hidden">
       <button
@@ -16,12 +19,12 @@ const MobileNavBar: React.FC<MobileNavBarProps> = ({ onToggleSidebar, isSidebarO
         aria-label="Toggle Sidebar"
       >
         {isSidebarOpen ? (
-          <RiCloseLine className="text-2xl" />
+          <RiCloseLine className="h-6 w-6 text-slate-600" />
         ) : (
-          <RiMenuLine className="text-2xl" />
+          <RiMenuLine className="h-6 w-6 text-slate-600" />
         )}
       </button>
-      
+
       {/* Overlay when sidebar is open on mobile */}
       {isSidebarOpen && (
         <div 
