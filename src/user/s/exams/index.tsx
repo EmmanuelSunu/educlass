@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
@@ -21,7 +20,7 @@ function formatDate(dateString) {
 
 function StudentExams() {
   const navigate = useNavigate();
-  const [exams, setExams] = useState([]);
+  const [availableExams, setAvailableExams] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +28,7 @@ function StudentExams() {
     const studentExams = examsData.filter(exam => 
       studentClassIds.includes(exam.classId)
     );
-    
+
     // Add more test exams for the student
     const additionalExams = [
       {
@@ -45,7 +44,12 @@ function StudentExams() {
         dueDate: "2023-11-15",
         description: "Midterm programming concepts exam covering arrays, loops, and functions",
         classId: 1,
-        className: "Introduction to Programming"
+        className: "Introduction to Programming",
+        questions: [
+          { text: "Question 1?", options: ["A", "B", "C", "D"] },
+          { text: "Question 2?", options: ["A", "B", "C", "D"] },
+          { text: "Question 3?", options: ["A", "B", "C", "D"] }
+        ]
       },
       {
         id: 202,
@@ -60,7 +64,11 @@ function StudentExams() {
         dueDate: "2023-11-20",
         description: "Quick quiz on database normalization and SQL queries",
         classId: 3,
-        className: "Database Systems"
+        className: "Database Systems",
+        questions: [
+          { text: "Question 4?", options: ["A", "B", "C", "D"] },
+          { text: "Question 5?", options: ["A", "B", "C", "D"] }
+        ]
       },
       {
         id: 203,
@@ -78,19 +86,19 @@ function StudentExams() {
         className: "Web Development"
       }
     ];
-    
-    setExams([...studentExams, ...additionalExams]);
+
+    setAvailableExams([...studentExams, ...additionalExams]);
     setLoading(false);
   }, []);
 
-  const handleExamClick = (examId) => {
-    navigate(`/user/s/exams/details/${examId}`);
+  const handleExamClick = (exam) => {
+    navigate(`/user/s/exams/details/${exam.id}`, { state: { exam } });
   };
 
   const getExamStatusLabel = (exam) => {
     const now = new Date();
     const dueDate = new Date(exam.dueDate + " " + exam.endTime);
-    
+
     if (now > dueDate) {
       return { label: "Completed", color: "bg-green-100 text-green-800" };
     } else {
@@ -106,24 +114,24 @@ function StudentExams() {
           View and take exams from your enrolled classes
         </p>
       </div>
-      
+
       {loading ? (
         <div className="flex items-center justify-center h-64">
           <div className="text-lg text-slate-600">Loading exams...</div>
         </div>
-      ) : exams.length === 0 ? (
+      ) : availableExams.length === 0 ? (
         <div className="bg-gray-50 rounded-lg p-6 text-center">
           <p className="text-gray-600">No exams available at this time.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
-          {exams.map((exam) => {
+          {availableExams.map((exam) => {
             const statusInfo = getExamStatusLabel(exam);
-            
+
             return (
               <div
                 key={exam.id}
-                onClick={() => handleExamClick(exam.id)}
+                onClick={() => handleExamClick(exam)}
                 className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
               >
                 <div className="flex justify-between items-start mb-2">
@@ -134,11 +142,11 @@ function StudentExams() {
                     {statusInfo.label}
                   </span>
                 </div>
-                
+
                 <p className="text-sm text-gray-500 mb-3">
                   {exam.className}
                 </p>
-                
+
                 <div className="grid grid-cols-2 gap-2 mt-3">
                   <div className="flex items-center text-sm text-gray-600">
                     <FiCalendar className="mr-2" />
