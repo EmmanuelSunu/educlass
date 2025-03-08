@@ -25,19 +25,45 @@ const Breadcrumb: React.FC = () => {
     security: "Password & Security"
   };
 
+  // Determine user type (lecturer or student) from the path
+  const userType = pathnames.length > 1 && (pathnames[1] === 'l' || pathnames[1] === 's') 
+    ? pathnames[1] 
+    : '';
+
+  // Skip the initial segments (user/l or user/s) and start from dashboard
+  const relevantPathnames = pathnames.slice(2);
+  
+  // Handle the case where the current page is dashboard
+  if (relevantPathnames.length === 0 || 
+     (relevantPathnames.length === 1 && relevantPathnames[0] === 'dashboard')) {
+    return (
+      <div className="w-full bg-white px-6 py-2 border-b border-slate-200">
+        <nav className="flex text-sm">
+          <span className="text-slate-600 font-medium">Dashboard</span>
+        </nav>
+      </div>
+    );
+  }
+  
   return (
     <div className="w-full bg-white px-6 py-2 border-b border-slate-200">
       <nav className="flex text-sm">
-        <Link to="/" className="text-primary hover:text-primary/80 font-medium">
-          Home
+        <Link 
+          to={`/user/${userType}/dashboard`} 
+          className="text-primary hover:text-primary/80 font-medium"
+        >
+          Dashboard
         </Link>
         
-        {pathnames.map((name, index) => {
+        {relevantPathnames.map((name, index) => {
+          // Skip dashboard in the path if it exists
+          if (name === 'dashboard') return null;
+          
           // Don't create a link for numeric IDs
           const isNumeric = !isNaN(Number(name));
           
-          // Build the link path
-          const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`;
+          // Build the link path - need to add the prefix back
+          const routeTo = `/user/${userType}/${relevantPathnames.slice(0, index + 1).join('/')}`;
           
           // Display name (use mapping or fallback to capitalized name)
           const displayName = isNumeric 
@@ -49,7 +75,7 @@ const Breadcrumb: React.FC = () => {
               <span className="mx-2 text-slate-400 flex items-center">
                 <HiChevronRight />
               </span>
-              {index === pathnames.length - 1 ? (
+              {index === relevantPathnames.length - 1 ? (
                 <span className="text-slate-600 font-medium">{displayName}</span>
               ) : (
                 <Link
