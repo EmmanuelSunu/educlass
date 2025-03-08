@@ -452,3 +452,360 @@ function TakeExamPage() {
 }
 
 export default TakeExamPage;
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import DashboardLayout from "../../layout";
+import { FiAlertTriangle } from "react-icons/fi";
+
+function TakeExamPage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [examDetails, setExamDetails] = useState(null);
+  const [responses, setResponses] = useState({});
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [examStatus, setExamStatus] = useState("loading"); // loading, not-started, in-progress, time-error
+  const [autoSaveInterval, setAutoSaveInterval] = useState(null);
+  const textareaRef = useRef(null);
+
+  // Format time from seconds to MM:SS or HH:MM:SS
+  const formatTimeRemaining = () => {
+    if (timeRemaining <= 0) return "00:00";
+
+    const hours = Math.floor(timeRemaining / 3600);
+    const minutes = Math.floor((timeRemaining % 3600) / 60);
+    const seconds = timeRemaining % 60;
+
+    if (hours > 0) {
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  // Mock function for demo - in real app this would connect to backend
+  const handleSubmitExam = () => {
+    setIsSubmitting(true);
+    // Simulate API call
+    setTimeout(() => {
+      navigate(`/user/s/exams/results/${id}`);
+    }, 1500);
+  }
+
+  // Mock data load - in real app would fetch from API
+  useEffect(() => {
+    // Fetch exam details from API
+    console.log("Loading exam with ID:", id);
+    
+    // Mock data for development
+    const mockExam = {
+      id: Number(id),
+      title: "Sample Exam",
+      instructions: "Answer all questions to the best of your ability.",
+      duration: 60, // in minutes
+      questions: [
+        {
+          id: 1,
+          text: "What is the capital of France?",
+          type: "multiple-choice",
+          options: ["London", "Berlin", "Paris", "Madrid"],
+          correctAnswer: 2 // Index of correct answer
+        },
+        {
+          id: 2,
+          text: "Explain the concept of Object-Oriented Programming.",
+          type: "essay"
+        },
+        {
+          id: 3,
+          text: "Which of the following are mammals?",
+          type: "multiple-select",
+          options: ["Dolphin", "Shark", "Bat", "Penguin"],
+          correctAnswers: [0, 2] // Indices of correct answers
+        }
+      ]
+    };
+
+    setExamDetails(mockExam);
+    setShuffledQuestions(mockExam.questions);
+    setTimeRemaining(mockExam.duration * 60);
+    
+    // For demo purposes, assume the exam is in-progress
+    setExamStatus("in-progress");
+  }, [id]);
+
+  // If exam is in progress, render the exam interface
+  if (examStatus === "in-progress" && examDetails) {
+    const currentQuestion = shuffledQuestions[currentQuestionIndex];
+    
+    return (
+      <DashboardLayout
+        title={examDetails.title}
+        showAddHeadbarButton={false}
+        buttonTitle=""
+      >
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Main exam area */}
+          <div className="flex-1 bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+            {/* Timer and progress indicator */}
+            <div className="flex justify-between items-center mb-6">
+              <div className="text-sm text-slate-600">
+                Question {currentQuestionIndex + 1} of {shuffledQuestions.length}
+              </div>
+              <div className="bg-primary/10 px-3 py-1 rounded-full text-primary font-medium">
+                Time Remaining: {formatTimeRemaining()}
+              </div>
+            </div>
+            
+            {/* Question */}
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-slate-800 mb-2">
+                {currentQuestion.text}
+              </h2>
+              
+              {/* Question type specific rendering */}
+              {currentQuestion.type === "multiple-choice" && (
+                <div className="space-y-3 mt-4">
+                  {currentQuestion.options.map((option, index) => (
+                    <div key={index} className="flex items-center">
+                      <input
+                        type="radio"
+                        id={`option-${index}`}
+                        name={`question-${currentQuestion.id}`}
+                        value={index}
+                        checked={responses[currentQuestion.id] === index}
+                        onChange={() => {
+                          setResponses({
+                            ...responses,
+                            [currentQuestion.id]: index
+                          });
+                          setSaveMessage("Response saved");
+                          setTimeout(() => setSaveMessage(""), 2000);
+                        }}
+                        className="h-4 w-4 text-primary focus:ring-primary border-slate-300"
+                      />
+                      <label htmlFor={`option-${index}`} className="ml-2 block text-slate-700">
+                        {option}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {currentQuestion.type === "essay" && (
+                <div className="mt-4">
+                  <textarea
+                    ref={textareaRef}
+                    placeholder="Type your answer here..."
+                    value={responses[currentQuestion.id] || ""}
+                    onChange={(e) => {
+                      setResponses({
+                        ...responses,
+                        [currentQuestion.id]: e.target.value
+                      });
+                      setSaveMessage("Response saved");
+                      setTimeout(() => setSaveMessage(""), 2000);
+                    }}
+                    className="w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 h-40"
+                  />
+                </div>
+              )}
+              
+              {currentQuestion.type === "multiple-select" && (
+                <div className="space-y-3 mt-4">
+                  {currentQuestion.options.map((option, index) => (
+                    <div key={index} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={`option-${index}`}
+                        name={`question-${currentQuestion.id}`}
+                        value={index}
+                        checked={
+                          responses[currentQuestion.id] &&
+                          responses[currentQuestion.id].includes(index)
+                        }
+                        onChange={(e) => {
+                          const currentSelections = responses[currentQuestion.id] || [];
+                          const newSelections = e.target.checked
+                            ? [...currentSelections, index]
+                            : currentSelections.filter(item => item !== index);
+                          
+                          setResponses({
+                            ...responses,
+                            [currentQuestion.id]: newSelections
+                          });
+                          setSaveMessage("Response saved");
+                          setTimeout(() => setSaveMessage(""), 2000);
+                        }}
+                        className="h-4 w-4 text-primary focus:ring-primary border-slate-300 rounded"
+                      />
+                      <label htmlFor={`option-${index}`} className="ml-2 block text-slate-700">
+                        {option}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {saveMessage && (
+                <div className="mt-2 text-sm text-green-600">{saveMessage}</div>
+              )}
+            </div>
+            
+            {/* Navigation buttons */}
+            <div className="flex justify-between mt-6">
+              <button
+                onClick={() => {
+                  if (currentQuestionIndex > 0) {
+                    setCurrentQuestionIndex(currentQuestionIndex - 1);
+                  }
+                }}
+                disabled={currentQuestionIndex === 0}
+                className="px-4 py-2 bg-white border border-slate-300 rounded-md text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              
+              {currentQuestionIndex < shuffledQuestions.length - 1 ? (
+                <button
+                  onClick={() => {
+                    if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                      setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    }
+                  }}
+                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+                >
+                  Next
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    // Show confirmation dialog
+                    if (window.confirm("Are you sure you want to submit your exam? This action cannot be undone.")) {
+                      handleSubmitExam();
+                    }
+                  }}
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                >
+                  Finish Exam
+                </button>
+              )}
+            </div>
+          </div>
+          
+          {/* Question navigator */}
+          <div className="w-full md:w-64 bg-white p-6 rounded-lg shadow-sm border border-slate-200 h-fit">
+            <h3 className="text-lg font-medium text-slate-800 mb-4">Questions</h3>
+            
+            <div className="grid grid-cols-4 gap-2">
+              {shuffledQuestions.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentQuestionIndex(index)}
+                  className={`h-10 w-10 flex items-center justify-center rounded-md ${
+                    currentQuestionIndex === index
+                      ? "bg-primary text-white"
+                      : responses[shuffledQuestions[index].id] !== undefined
+                      ? "bg-green-50 border border-green-200 text-slate-700"
+                      : "bg-gray-50 text-slate-700"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+            
+            <div className="mt-6 pt-4 border-t border-slate-200">
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center">
+                  <div className="h-4 w-4 bg-primary rounded-sm mr-2"></div>
+                  <span className="text-sm text-slate-600">Current</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="h-4 w-4 bg-green-50 border border-green-200 rounded-sm mr-2"></div>
+                  <span className="text-sm text-slate-600">Answered</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="h-4 w-4 bg-gray-50 rounded-sm mr-2"></div>
+                  <span className="text-sm text-slate-600">Unanswered</span>
+                </div>
+              </div>
+
+              <button
+                onClick={handleSubmitExam}
+                className="w-full mt-6 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 disabled:opacity-50"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Exam"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // If exam time boundaries are invalid
+  if (examStatus === "time-error") {
+    return (
+      <DashboardLayout
+        title="Exam Not Available"
+        showAddHeadbarButton={false}
+        buttonTitle=""
+      >
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+          <div className="flex flex-col items-center justify-center h-64">
+            <FiAlertTriangle className="text-5xl text-yellow-500 mb-4" />
+            <div className="text-xl font-bold text-slate-800 mb-2">Exam Not Available</div>
+            <div className="text-slate-600 text-center max-w-md">
+              This exam is not available at this time. Please check the exam schedule and try again during the scheduled time.
+            </div>
+            <button
+              onClick={() => navigate('/user/s/exams')}
+              className="mt-6 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+            >
+              Back to Exams
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // If exam hasn't started yet, show start screen
+  if (examStatus === "not-started") {
+    return (
+      <DashboardLayout
+        title={examDetails.title}
+        showAddHeadbarButton={false}
+        buttonTitle=""
+      >
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+          <h1 className="text-2xl font-bold text-slate-800 mb-4">{examDetails.title}</h1>
+          {/* Start screen content would go here */}
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Loading state
+  return (
+    <DashboardLayout
+      title="Loading Exam..."
+      showAddHeadbarButton={false}
+      buttonTitle=""
+    >
+      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 flex justify-center items-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-slate-600">Loading exam details...</p>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+export default TakeExamPage;

@@ -329,3 +329,207 @@ function ExamResultsPage() {
 }
 
 export default ExamResultsPage;
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import DashboardLayout from "../../layout";
+import { FiCheckCircle, FiXCircle } from "react-icons/fi";
+
+function ExamResults() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Mock loading the results data
+    setTimeout(() => {
+      // Mock results data
+      const mockResults = {
+        examId: Number(id),
+        examTitle: "Midterm Exam: Introduction to Computer Science",
+        totalQuestions: 10,
+        correctAnswers: 8,
+        score: 80,
+        passingScore: 60,
+        dateTaken: new Date().toISOString(),
+        timeSpent: "45 minutes",
+        questions: [
+          {
+            question: "What is the difference between a compiler and an interpreter?",
+            yourAnswer: "A compiler translates the entire code before execution, while an interpreter executes the code line by line.",
+            isCorrect: true,
+            points: 10,
+            feedback: "Excellent answer!"
+          },
+          {
+            question: "Which of the following is NOT a primitive data type in JavaScript?",
+            yourAnswer: "Array",
+            correctAnswer: "Array",
+            isCorrect: true,
+            points: 10,
+            feedback: ""
+          },
+          {
+            question: "What does CSS stand for?",
+            yourAnswer: "Cascading Style Sheet",
+            correctAnswer: "Cascading Style Sheets",
+            isCorrect: false,
+            points: 0,
+            feedback: "Close, but the correct term is 'Sheets' (plural)."
+          }
+        ]
+      };
+      
+      setResults(mockResults);
+      setLoading(false);
+    }, 1500);
+  }, [id]);
+
+  if (loading) {
+    return (
+      <DashboardLayout
+        title="Loading Results..."
+        showAddHeadbarButton={false}
+        buttonTitle=""
+      >
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 flex justify-center items-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-slate-600">Loading your exam results...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!results) {
+    return (
+      <DashboardLayout
+        title="Results Not Found"
+        showAddHeadbarButton={false}
+        buttonTitle=""
+      >
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+          <div className="flex flex-col items-center justify-center h-64">
+            <FiXCircle className="text-5xl text-red-500 mb-4" />
+            <div className="text-xl font-bold text-slate-800 mb-2">Results Not Found</div>
+            <div className="text-slate-600 text-center max-w-md">
+              We couldn't find the results for this exam. If you've just completed the exam, please wait a few moments and try refreshing the page.
+            </div>
+            <button
+              onClick={() => navigate('/user/s/exams')}
+              className="mt-6 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+            >
+              Back to Exams
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  const isPassed = results.score >= results.passingScore;
+
+  return (
+    <DashboardLayout
+      title="Exam Results"
+      showAddHeadbarButton={false}
+      buttonTitle=""
+    >
+      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+        <div className="flex flex-col items-center justify-center mb-8">
+          <h1 className="text-2xl font-bold text-slate-800 mb-2">{results.examTitle}</h1>
+          
+          <div className={`mt-6 p-4 rounded-full ${isPassed ? 'bg-green-100' : 'bg-red-100'}`}>
+            {isPassed ? (
+              <FiCheckCircle className={`text-5xl ${isPassed ? 'text-green-500' : 'text-red-500'}`} />
+            ) : (
+              <FiXCircle className={`text-5xl ${isPassed ? 'text-green-500' : 'text-red-500'}`} />
+            )}
+          </div>
+          
+          <div className="mt-4 text-center">
+            <div className="text-4xl font-bold mb-1">{results.score}%</div>
+            <div className={`text-lg ${isPassed ? 'text-green-600' : 'text-red-600'} font-medium`}>
+              {isPassed ? 'Passed' : 'Failed'}
+            </div>
+            <div className="text-sm text-slate-500 mt-1">
+              Passing score: {results.passingScore}%
+            </div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-slate-50 p-4 rounded-lg">
+            <div className="text-sm text-slate-500">Total Questions</div>
+            <div className="text-xl font-semibold text-slate-800">{results.totalQuestions}</div>
+          </div>
+          
+          <div className="bg-slate-50 p-4 rounded-lg">
+            <div className="text-sm text-slate-500">Correct Answers</div>
+            <div className="text-xl font-semibold text-slate-800">{results.correctAnswers}</div>
+          </div>
+          
+          <div className="bg-slate-50 p-4 rounded-lg">
+            <div className="text-sm text-slate-500">Time Spent</div>
+            <div className="text-xl font-semibold text-slate-800">{results.timeSpent}</div>
+          </div>
+        </div>
+        
+        <h2 className="text-xl font-semibold text-slate-800 mb-4">Question Breakdown</h2>
+        
+        <div className="space-y-6">
+          {results.questions.map((q, index) => (
+            <div key={index} className={`p-4 rounded-lg border ${q.isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+              <div className="flex items-start">
+                <div className={`mr-3 mt-1 ${q.isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+                  {q.isCorrect ? <FiCheckCircle size={20} /> : <FiXCircle size={20} />}
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-slate-800">Question {index + 1}</div>
+                  <div className="text-slate-700 mt-1">{q.question}</div>
+                  
+                  <div className="mt-3">
+                    <div className="text-sm text-slate-500">Your answer:</div>
+                    <div className="text-slate-700 mt-1">{q.yourAnswer}</div>
+                  </div>
+                  
+                  {!q.isCorrect && q.correctAnswer && (
+                    <div className="mt-3">
+                      <div className="text-sm text-green-600">Correct answer:</div>
+                      <div className="text-slate-700 mt-1">{q.correctAnswer}</div>
+                    </div>
+                  )}
+                  
+                  {q.feedback && (
+                    <div className="mt-3 p-2 bg-white rounded border border-slate-200">
+                      <div className="text-sm text-slate-500">Feedback:</div>
+                      <div className="text-slate-700 mt-1">{q.feedback}</div>
+                    </div>
+                  )}
+                  
+                  <div className="mt-2 text-right">
+                    <span className="text-sm font-medium">
+                      {q.points} / {q.isCorrect ? q.points : q.points} points
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => navigate('/user/s/exams')}
+            className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+          >
+            Back to Exams
+          </button>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+export default ExamResults;

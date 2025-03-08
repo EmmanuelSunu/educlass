@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Suspense} from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./login";
 import Dashboard from "./user/l/dashboard";
@@ -15,6 +15,9 @@ import StudentDashboard from "./user/s/dashboard";
 import StudentSchedule from "./user/s/schedules";
 import StudentExams from "./user/s/exams";
 import StudentSettings from "./user/s/settings";
+import StudentExamDetails from "./user/s/exams/details";
+import StudentExamTake from "./user/s/exams/take";
+import StudentExamResults from "./user/s/exams/results";
 
 function App() {
   return (
@@ -38,9 +41,21 @@ function App() {
             <Route path="/user/s/dashboard" element={<StudentDashboard />} />
             <Route path="/user/s/schedules" element={<StudentSchedule />} />
             <Route path="/user/s/exams" element={<StudentExams />} />
-            <Route path="/user/s/exams/details/:id" element={<React.Suspense fallback={<div>Loading...</div>}>{React.createElement(React.lazy(() => import('./user/s/exams/details')))}</React.Suspense>} />
-            <Route path="/user/s/exams/take/:id" element={<React.Suspense fallback={<div>Loading...</div>}>{React.createElement(React.lazy(() => import('./user/s/exams/take')))}</React.Suspense>} />
-            <Route path="/user/s/exams/results/:id" element={<React.Suspense fallback={<div>Loading...</div>}>{React.createElement(React.lazy(() => import('./user/s/exams/results')))}</React.Suspense>} />
+            <Route path="/user/s/exams/details/:id" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <StudentExamDetails />
+              </Suspense>
+            } />
+            <Route path="/user/s/exams/take/:id" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <StudentExamTake />
+              </Suspense>
+            } />
+            <Route path="/user/s/exams/results/:id" element={
+              <Suspense fallback={<div>Loading...</div>}>
+                <StudentExamResults />
+              </Suspense>
+            } />
             <Route path="/user/s/settings" element={<StudentSettings />} />
         </Routes>
       </>
