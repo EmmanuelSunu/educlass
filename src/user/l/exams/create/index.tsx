@@ -76,23 +76,6 @@ function CreateExam() {
     );
   }
 
-  const handleSave = async () => {
-    if (!examDetails) return;
-
-    try {
-      console.log('Saving exam:', examDetails);
-      if (id) {
-        alert('Exam updated successfully!');
-      } else {
-        alert('Exam created successfully!');
-      }
-      navigate('/user/l/exams');
-    } catch (error) {
-      console.error('Error saving exam:', error);
-      alert('Failed to save exam. Please try again.');
-    }
-  };
-
   return (
     <DashboardLayout
       title={id ? "Edit Exam" : "Create Exam"}
