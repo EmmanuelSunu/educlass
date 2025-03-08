@@ -1,6 +1,7 @@
 import React from "react";
 import SideBar from "./Sidebar";
 import HeaderBar from "./headerbar";
+import Breadcrumb from "../../components/Breadcrumb";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -27,6 +28,7 @@ function DashboardLayout({
           onAddHeadbarButton={onAddHeadbarButton}
           buttonTitle={buttonTitle}
         />
+        <Breadcrumb />
         <main className="flex-1 p-6 overflow-auto">
           {children}
         </main>
