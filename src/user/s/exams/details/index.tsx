@@ -109,7 +109,7 @@ function ExamDetailsPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-slate-800">{examDetails.title}</h2>
           <div>
             {isAvailable ? (
-              {/* Added w-full for smaller screens */}
+              /* Added w-full for smaller screens */
               <button
                 onClick={handleStartExam}
                 className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded w-full sm:w-auto"
@@ -117,7 +117,7 @@ function ExamDetailsPage() {
                 Start Exam
               </button>
             ) : (
-              {/* Added w-full for smaller screens */}
+              /* Added w-full for smaller screens */
               <button
                 disabled
                 className="bg-slate-300 text-slate-500 font-medium py-2 px-4 rounded cursor-not-allowed w-full sm:w-auto"
