@@ -163,3 +163,142 @@ function ExamDetailsPage() {
 }
 
 export default ExamDetailsPage;
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import DashboardLayout from "../../layout";
+import examsData from "../../../l/exams/data/exams.json";
+import { FiCalendar, FiClock, FiFileText } from "react-icons/fi";
+import { MdOutlineAccessTime } from "react-icons/md";
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    month: 'short', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
+}
+
+function ExamDetailsPage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [exam, setExam] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [canTakeExam, setCanTakeExam] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      const foundExam = examsData.find((e) => e.id === Number(id));
+      if (foundExam) {
+        setExam(foundExam);
+        
+        // Check if exam is available to take
+        const now = new Date();
+        const dueDate = new Date(foundExam.dueDate + " " + foundExam.endTime);
+        const startDate = new Date(foundExam.dueDate + " " + foundExam.startTime);
+        
+        // Exam is available if current time is between start and end time
+        if (now >= startDate && now <= dueDate) {
+          setCanTakeExam(true);
+        }
+      } else {
+        navigate("/user/s/exams");
+      }
+    }
+    setLoading(false);
+  }, [id, navigate]);
+
+  const handleTakeExam = () => {
+    navigate(`/user/s/exams/take/${id}`);
+  };
+
+  if (loading || !exam) {
+    return (
+      <DashboardLayout title="Exam Details">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg text-slate-600">Loading exam details...</div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  return (
+    <DashboardLayout title={exam.title}>
+      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">{exam.title}</h1>
+            <p className="text-sm text-gray-600">{exam.className}</p>
+          </div>
+          <div className="mt-4 md:mt-0">
+            {canTakeExam ? (
+              <button
+                onClick={handleTakeExam}
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition"
+              >
+                Start Exam
+              </button>
+            ) : (
+              <div className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md">
+                {new Date() > new Date(exam.dueDate + " " + exam.endTime) 
+                  ? "Exam Period Ended" 
+                  : "Not Yet Available"}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-gray-50 p-4 rounded-md">
+            <div className="flex items-center mb-2">
+              <FiFileText className="text-primary mr-2" />
+              <span className="text-sm font-medium text-gray-700">Type</span>
+            </div>
+            <p className="text-gray-600 capitalize">{exam.type}</p>
+          </div>
+          
+          <div className="bg-gray-50 p-4 rounded-md">
+            <div className="flex items-center mb-2">
+              <FiCalendar className="text-primary mr-2" />
+              <span className="text-sm font-medium text-gray-700">Date</span>
+            </div>
+            <p className="text-gray-600">{formatDate(exam.dueDate)}</p>
+          </div>
+          
+          <div className="bg-gray-50 p-4 rounded-md">
+            <div className="flex items-center mb-2">
+              <FiClock className="text-primary mr-2" />
+              <span className="text-sm font-medium text-gray-700">Available</span>
+            </div>
+            <p className="text-gray-600">{exam.startTime} - {exam.endTime}</p>
+          </div>
+          
+          <div className="bg-gray-50 p-4 rounded-md">
+            <div className="flex items-center mb-2">
+              <MdOutlineAccessTime className="text-primary mr-2" />
+              <span className="text-sm font-medium text-gray-700">Duration</span>
+            </div>
+            <p className="text-gray-600">{exam.duration}</p>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-lg font-medium text-gray-800 mb-3">Description</h2>
+          <p className="text-gray-600">{exam.description || "No description available."}</p>
+        </div>
+
+        <div>
+          <h2 className="text-lg font-medium text-gray-800 mb-3">Instructions</h2>
+          <ul className="list-disc list-inside text-gray-600 space-y-2">
+            <li>This exam contains {exam.questions?.length || 0} questions.</li>
+            <li>You have {exam.duration} to complete this exam once started.</li>
+            <li>All answers will be auto-saved as you progress.</li>
+            <li>Submit your exam before the time limit expires.</li>
+          </ul>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+export default ExamDetailsPage;
