@@ -30,7 +30,56 @@ function StudentExams() {
       studentClassIds.includes(exam.classId)
     );
     
-    setExams(studentExams);
+    // Add more test exams for the student
+    const additionalExams = [
+      {
+        id: 201,
+        title: "Midterm Programming Exam",
+        type: "exam",
+        duration: "2 hours",
+        durationHours: 2,
+        durationMinutes: 0,
+        startTime: "09:00",
+        endTime: "12:00",
+        status: "scheduled",
+        dueDate: "2023-11-15",
+        description: "Midterm programming concepts exam covering arrays, loops, and functions",
+        classId: 1,
+        className: "Introduction to Programming"
+      },
+      {
+        id: 202,
+        title: "Database Design Quiz",
+        type: "test",
+        duration: "30 minutes",
+        durationHours: 0,
+        durationMinutes: 30,
+        startTime: "14:00",
+        endTime: "16:00",
+        status: "scheduled",
+        dueDate: "2023-11-20",
+        description: "Quick quiz on database normalization and SQL queries",
+        classId: 3,
+        className: "Database Systems"
+      },
+      {
+        id: 203,
+        title: "Web Development Final Project",
+        type: "assignment",
+        duration: "48 hours",
+        durationHours: 48,
+        durationMinutes: 0,
+        startTime: "00:00",
+        endTime: "23:59",
+        status: "scheduled",
+        dueDate: "2023-12-05",
+        description: "Final project submission for the Web Development course",
+        classId: 5,
+        className: "Web Development"
+      }
+    ];
+    
+    setExams([...studentExams, ...additionalExams]);
     setLoading(false);
   }, []);
 
@@ -57,56 +106,47 @@ function StudentExams() {
           View and take exams from your enrolled classes
         </p>
       </div>
-
+      
       {loading ? (
         <div className="flex items-center justify-center h-64">
           <div className="text-lg text-slate-600">Loading exams...</div>
         </div>
       ) : exams.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-          <div className="text-lg text-slate-600 mb-2">No exams available</div>
-          <div className="text-sm text-slate-500">
-            You don't have any exams scheduled at the moment.
-          </div>
+        <div className="bg-gray-50 rounded-lg p-6 text-center">
+          <p className="text-gray-600">No exams available at this time.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {exams.map((exam) => {
-            const status = getExamStatusLabel(exam);
+            const statusInfo = getExamStatusLabel(exam);
             
             return (
               <div
                 key={exam.id}
-                className="bg-white rounded-lg shadow-sm p-5 cursor-pointer transition hover:shadow-md"
                 onClick={() => handleExamClick(exam.id)}
+                className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <div className="flex items-center text-primary">
-                    <BsBook className="mr-2" size={18} />
-                    <span className="text-xs font-medium uppercase">
-                      {exam.type}
-                    </span>
-                  </div>
-                  <span className={`text-xs px-2 py-1 rounded-full ${status.color}`}>
-                    {status.label}
+                  <h3 className="text-lg font-medium text-gray-800">
+                    {exam.title}
+                  </h3>
+                  <span className={`px-2 py-1 text-xs rounded-full ${statusInfo.color}`}>
+                    {statusInfo.label}
                   </span>
                 </div>
                 
-                <h3 className="font-medium text-gray-800 mb-1">{exam.title}</h3>
-                <div className="text-sm text-gray-600 mb-3">{exam.className}</div>
+                <p className="text-sm text-gray-500 mb-3">
+                  {exam.className}
+                </p>
                 
-                <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                  <div className="flex items-center">
-                    <FiCalendar className="mr-2 text-gray-400" size={14} />
-                    <span>{formatDate(exam.dueDate)}</span>
+                <div className="grid grid-cols-2 gap-2 mt-3">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <FiCalendar className="mr-2" />
+                    <span>Due: {formatDate(exam.dueDate)}</span>
                   </div>
-                  <div className="flex items-center">
-                    <MdOutlineAccessTime className="mr-2 text-gray-400" size={14} />
+                  <div className="flex items-center text-sm text-gray-600">
+                    <FiClock className="mr-2" />
                     <span>{exam.duration}</span>
-                  </div>
-                  <div className="flex items-center col-span-2">
-                    <FiClock className="mr-2 text-gray-400" size={14} />
-                    <span>Available: {exam.startTime} - {exam.endTime}</span>
                   </div>
                 </div>
               </div>
