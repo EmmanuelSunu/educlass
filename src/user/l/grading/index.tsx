@@ -1,10 +1,12 @@
 // pages/Grading.tsx
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
 
 function Grading() {
+  const navigate = useNavigate();
+  
   const handleAddHeadbarButton = () => {
-    // Handle adding exam logic here
-    console.log("Add exam clicked");
+    navigate('/user/l/exams/create');
   };
 
   return (

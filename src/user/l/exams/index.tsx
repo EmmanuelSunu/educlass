@@ -1,5 +1,6 @@
 // pages/Exams.tsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
 import ExamCard from "../../../components/examCard";
 import examsData from "./data/exams.json";
@@ -40,8 +41,10 @@ function Exams() {
     dueDate: ""
   });
 
+  const navigate = useNavigate();
+  
   const handleAddHeadbarButton = () => {
-    setIsAddModalOpen(true);
+    navigate('/user/l/exams/create');
   };
 
   const handleAddExam = () => {

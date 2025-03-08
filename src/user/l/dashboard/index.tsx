@@ -1,11 +1,13 @@
 // pages/Dashboard.tsx
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
 import ExamCard from "../../../components/examCard";
 
 function Dashboard() {
+  const navigate = useNavigate();
+  
   const handleAddHeadbarButton = () => {
-    // Handle adding exam logic here
-    console.log("Add exam clicked");
+    navigate('/user/l/exams/create');
   };
 
   const exams = [
