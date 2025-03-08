@@ -44,12 +44,26 @@ const ExamCard: React.FC<ExamCardProps> = ({
   const handleCardClick = () => {
     navigate(`/user/l/exams/details/${id}`);
   };
+  
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering card click
+    navigate(`/user/l/exams/create/${id}`);
+  };
 
   return (
     <div
       onClick={handleCardClick}
-      className="bg-white rounded-lg shadow-sm border border-slate-200 p-5 hover:shadow-md transition-all duration-200 cursor-pointer"
+      className="bg-white rounded-lg shadow-sm border border-slate-200 p-5 hover:shadow-md transition-all duration-200 cursor-pointer relative"
     >
+      <button 
+        onClick={handleEditClick}
+        className="absolute top-3 right-3 bg-blue-500 text-white p-1 rounded-md hover:bg-blue-600 transition-colors"
+        aria-label="Edit exam"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      </button>
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center gap-2">
           {typeIcons[type]}

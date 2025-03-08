@@ -12,16 +12,20 @@ function CreateExam() {
 
   useEffect(() => {
     if (id) {
+      // We're in edit mode
       const exam = examsData.find(
         (exam) => exam.id === Number(id)
       );
 
       if (exam) {
+        console.log('Editing exam:', exam);
         setExamDetails(exam);
       } else {
+        console.log('Exam not found with id:', id);
         navigate('/user/l/exams');
       }
     } else {
+      // We're in create mode
       setExamDetails({
         id: Math.max(...examsData.map(exam => exam.id)) + 1,
         title: "",
@@ -71,6 +75,23 @@ function CreateExam() {
       </DashboardLayout>
     );
   }
+
+  const handleSave = async () => {
+    if (!examDetails) return;
+
+    try {
+      console.log('Saving exam:', examDetails);
+      if (id) {
+        alert('Exam updated successfully!');
+      } else {
+        alert('Exam created successfully!');
+      }
+      navigate('/user/l/exams');
+    } catch (error) {
+      console.error('Error saving exam:', error);
+      alert('Failed to save exam. Please try again.');
+    }
+  };
 
   return (
     <DashboardLayout
