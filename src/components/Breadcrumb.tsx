@@ -11,6 +11,7 @@ const Breadcrumb: React.FC = () => {
   const breadcrumbMap: Record<string, string> = {
     user: "User",
     l: "Lecturer",
+    s: "Student",
     dashboard: "Dashboard",
     exams: "Exams",
     create: "Create",

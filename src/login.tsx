@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "./assets/images/logo.svg";
 import InputField from "./components/InputField";
 import ButtonProps from "./components/ButtonProps";
-import URLS from "./user/l/url";
+import LECTURER_URLS from "./user/l/url";
+import STUDENT_URLS from "./user/s/url";
 import { IoIosArrowRoundForward, IoIosArrowRoundBack } from "react-icons/io";
 
 
 function Login() {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [userType, setUserType] = useState<"lecturer" | "student">("lecturer");
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col bg-grey-200">
@@ -81,11 +84,47 @@ function Login() {
                   Access EduClass using your details
                 </span>
               </div>
+              <div className="mb-4">
+                <label className="text-span text-dark font-medium mb-2 block">I am a:</label>
+                <div className="flex space-x-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="userType"
+                      value="lecturer"
+                      checked={userType === "lecturer"}
+                      onChange={() => setUserType("lecturer")}
+                      className="mr-2"
+                    />
+                    <span>Lecturer</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="userType"
+                      value="student"
+                      checked={userType === "student"}
+                      onChange={() => setUserType("student")}
+                      className="mr-2"
+                    />
+                    <span>Student</span>
+                  </label>
+                </div>
+              </div>
               <form
                 id="loginForm"
                 action=""
                 method="POST"
                 className="flex flex-col gap-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  // Redirect based on user type
+                  if (userType === "lecturer") {
+                    navigate(LECTURER_URLS.DASHBOARD);
+                  } else {
+                    navigate(STUDENT_URLS.DASHBOARD);
+                  }
+                }}
               >
                 <div>
                   <div className="flex justify-start pb-2">
@@ -128,17 +167,15 @@ function Login() {
                     isRequired={true}
                   />
                 </div>
-                <Link to={URLS.DASHBOARD}className="w-full">
-                  <ButtonProps
-                    type="submit"
-                    variant="primary"
-                    size="large"
-                    className="flex items-center w-full"
-                  >
-                    Login
-                    <IoIosArrowRoundForward className="size-6" />
-                  </ButtonProps>
-                </Link>
+                <ButtonProps
+                  type="submit"
+                  variant="primary"
+                  size="large"
+                  className="flex items-center w-full"
+                >
+                  Login
+                  <IoIosArrowRoundForward className="size-6" />
+                </ButtonProps>
               </form>
             </>
           )}
