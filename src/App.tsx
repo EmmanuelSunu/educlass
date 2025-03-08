@@ -18,6 +18,7 @@ function App() {
             <Route path="/user/l/schedules" element={<LecturerSchedule />} />
             <Route path="/user/l/exams" element={<LecturerExams />} />
             <Route path="/user/l/exams/create" element={<CreateExam />} />
+            <Route path="/user/l/exams/details/:id" element={<ExamDetailsPage />} />
             <Route path="/user/l/grading" element={<LecturerGrading />} />
             <Route path="/user/l/settings" element={<LecturerSettings />} />
             <Route path="/user/l/class" element={<LecturerClass />} />
