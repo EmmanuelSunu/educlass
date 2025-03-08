@@ -1,39 +1,26 @@
-
 import React from "react";
-import SideBar from "./Sidebar";
-import Breadcrumb from "../../components/Breadcrumb";
+import HeaderBar from "../../components/HeaderBar";
+import { Sidebar } from "./Sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   title: string;
-  showAddHeadbarButton?: boolean;
-  onAddHeadbarButton?: () => void;
-  buttonTitle?: string;
+  showAddHeadbarButton: boolean;
+  buttonTitle: string;
 }
 
 function DashboardLayout({
   children,
   title,
-  showAddHeadbarButton = false,
-  onAddHeadbarButton,
+  showAddHeadbarButton,
   buttonTitle,
 }: DashboardLayoutProps) {
   return (
-    <div className="flex h-screen bg-slate-100">
-      <SideBar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-semibold text-slate-800">{title}</h1>
-          {showAddHeadbarButton && (
-            <button
-              onClick={onAddHeadbarButton}
-              className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
-            >
-              {buttonTitle}
-            </button>
-          )}
-        </header>
-        <Breadcrumb />
+    <div className="h-screen flex flex-col bg-slate-50">
+      <HeaderBar />
+
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar />
         <main className="flex-1 p-6 overflow-auto">{children}</main>
       </div>
     </div>
