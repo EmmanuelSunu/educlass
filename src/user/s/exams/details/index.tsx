@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../layout";
 import { useNavigate, useParams } from "react-router-dom";
-import examsData from "../../../../user/s/exams/mock-data";
+// Using the local mock data instead of importing
 
 function ExamDetails() {
   const { id } = useParams();
