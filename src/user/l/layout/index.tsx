@@ -1,33 +1,8 @@
 import React, { ReactNode, useState } from "react";
-import styled from "styled-components";
 import Sidebar from "../Sidebar";
-import HeaderBar from "../headerbar"; 
 import MobileNavBar from "../../../components/MobileNavBar";
-
-// Original HeaderBar component remains unchanged
-const HeaderBarComp = styled.header`
-  background-color: #f0f0f0; /* Example light background */
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
-
-const HeaderTitle = styled.h1`
-  margin: 0;
-  font-size: 1.5rem;
-`;
-
-const HeaderButton = styled.button`
-  background-color: #4CAF50; /* Example green button */
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
-
+import HeaderBarComp from "../../../components/HeaderBar";
+import { HeaderTitle, HeaderButton } from "../../../components/HeaderBar";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -78,7 +53,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   );
 };
 
-// Example usage in Lecturer and Student layouts
 const LecturerLayout = ({ children }: { children: ReactNode }) => (
   <DashboardLayout title="Lecturer Dashboard" showAddHeadbarButton buttonTitle="Add">
     {children}
@@ -90,6 +64,5 @@ const StudentLayout = ({ children }: { children: ReactNode }) => (
     {children}
   </DashboardLayout>
 );
-
 
 export { DashboardLayout, LecturerLayout, StudentLayout, HeaderBarComp as HeaderBar };

@@ -12,7 +12,7 @@ const MobileNavBar: React.FC<MobileNavBarProps> = ({ onToggleSidebar, isSidebarO
     <div className="block md:hidden">
       <button
         onClick={onToggleSidebar}
-        className="fixed top-4 left-4 z-20 p-2 rounded-md hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400"
+        className="fixed top-4 right-4 z-30 p-2 rounded-md hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400"
         aria-label="Toggle Sidebar"
       >
         {isSidebarOpen ? (
@@ -25,7 +25,7 @@ const MobileNavBar: React.FC<MobileNavBarProps> = ({ onToggleSidebar, isSidebarO
       {/* Overlay when sidebar is open on mobile */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-5"
+          className="fixed inset-0 bg-black bg-opacity-50 z-20"
           onClick={onToggleSidebar}
           aria-hidden="true"
         />
