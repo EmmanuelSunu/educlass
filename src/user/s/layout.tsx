@@ -1,5 +1,5 @@
 import React from "react";
-import HeaderBar from "../../components/headerbar";
+import HeaderBar from "../../components/HeaderBar";
 import { Sidebar } from "./Sidebar";
 
 interface DashboardLayoutProps {
