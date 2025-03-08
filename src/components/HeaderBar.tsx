@@ -2,55 +2,62 @@
 import React from "react";
 import styled from "styled-components";
 
-// HeaderBar component
 export const HeaderBarComp = styled.header`
   background-color: #f0f0f0;
   padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e0e0e0;
 `;
 
-export const HeaderTitle = styled.h1`
-  margin: 0;
+export const Title = styled.h1`
   font-size: 1.5rem;
+  margin: 0;
+  color: #333;
 `;
 
-export const HeaderButton = styled.button`
-  background-color: #4CAF50;
+export const ButtonContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+export const Button = styled.button`
+  background-color: #2A9F06;
   color: white;
-  padding: 0.5rem 1rem;
   border: none;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #228205;
+  }
 `;
 
 interface HeaderBarProps {
   title: string;
   buttonTitle?: string;
-  showAddHeadbarButton?: boolean;
-  onAddHeadbarButton?: () => void;
+  showAddButton?: boolean;
+  onAddButtonClick?: () => void;
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = ({
   title,
-  buttonTitle = "Add",
-  showAddHeadbarButton = false,
-  onAddHeadbarButton,
+  buttonTitle = "Add New",
+  showAddButton = true,
+  onAddButtonClick,
 }) => {
   return (
-    <HeaderBarComp className="bg-white border-b border-slate-200 py-4 px-6">
-      <HeaderTitle className="text-xl font-semibold text-slate-800">
-        {title}
-      </HeaderTitle>
-      {showAddHeadbarButton && (
-        <HeaderButton
-          className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-          onClick={onAddHeadbarButton}
-        >
-          {buttonTitle}
-        </HeaderButton>
+    <HeaderBarComp className="bg-white dark:bg-gray-800 shadow-sm">
+      <Title className="text-gray-900 dark:text-white">{title}</Title>
+      {showAddButton && (
+        <ButtonContainer>
+          <Button onClick={onAddButtonClick} className="bg-primary-500 hover:bg-primary-600">
+            {buttonTitle}
+          </Button>
+        </ButtonContainer>
       )}
     </HeaderBarComp>
   );
