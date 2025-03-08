@@ -23,14 +23,27 @@ export default {
         span: ['0.875rem', { lineHeight: '1.25rem', fontWeight: '400' }], // For spans or small text
       },
       colors: {
-        primary: '#2A9F06',
+        primary: {
+          DEFAULT: '#2A9F06',
+          50: '#EAFAE0',
+          100: '#D6F5C1',
+          200: '#AEEB83',
+          300: '#86E045',
+          400: '#5ED607',
+          500: '#2A9F06',
+          600: '#228205',
+          700: '#1A6504',
+          800: '#124803',
+          900: '#0A2A01',
+          950: '#041200'
+        },
         secondary: '#64748B',
         accent: '#D97706',
         dark: '#364a63',
         muted: '#6B7280', // For less prominent text
         lightGray: '#F6F8FA'
       },
+    },
   },
   plugins: [],
 }
-};

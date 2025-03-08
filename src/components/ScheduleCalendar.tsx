@@ -4,6 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Schedule } from '../user/l/schedules/types';
+import './calendar-styles.css';
 
 interface ScheduleCalendarProps {
   schedules: Schedule[];
@@ -28,13 +29,13 @@ const convertToCalendarEvents = (schedules: Schedule[]) => {
 const getEventColor = (type: string) => {
   switch (type) {
     case 'class':
-      return '#4F46E5'; // Indigo
+      return '#2A9F06'; // Primary (for classes)
     case 'examination':
       return '#DC2626'; // Red
     case 'test':
-      return '#EA580C'; // Orange
+      return '#F59E0B'; // Amber
     case 'meeting':
-      return '#059669'; // Green
+      return '#3B82F6'; // Blue
     default:
       return '#6B7280'; // Gray
   }
@@ -46,7 +47,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   onDateSelect,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 mb-6">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -54,6 +55,12 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
           left: 'prev,next today',
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        }}
+        buttonText={{
+          today: 'Today',
+          month: 'Month',
+          week: 'Week',
+          day: 'Day'
         }}
         events={convertToCalendarEvents(schedules)}
         editable={true}
@@ -72,27 +79,27 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
             onEventClick(schedule);
           }
         }}
-        eventClassNames="cursor-pointer"
+        eventClassNames="cursor-pointer rounded-md"
         slotMinTime="07:00:00"
         slotMaxTime="22:00:00"
       />
 
-      <div className="mt-4 flex gap-4">
+      <div className="mt-6 border-t pt-4 border-slate-100">
         <div className="text-sm">
-          <h3 className="font-medium mb-2">Schedule Types:</h3>
-          <div className="flex flex-wrap gap-3">
+          <h3 className="font-semibold mb-3 text-slate-700">Schedule Types:</h3>
+          <div className="flex flex-wrap gap-4">
             {[
               { type: 'class', label: 'Class' },
               { type: 'examination', label: 'Exam' },
               { type: 'test', label: 'Test' },
               { type: 'meeting', label: 'Meeting' }
             ].map(({ type, label }) => (
-              <div key={type} className="flex items-center gap-1">
+              <div key={type} className="flex items-center gap-2">
                 <div
-                  className="w-3 h-3 rounded-full"
+                  className="w-4 h-4 rounded-full"
                   style={{ backgroundColor: getEventColor(type) }}
                 />
-                <span>{label}</span>
+                <span className="text-slate-600">{label}</span>
               </div>
             ))}
           </div>
