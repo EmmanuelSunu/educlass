@@ -56,11 +56,15 @@ function ExamDetailsPage() {
     completed: "bg-green-100 text-green-600",
   };
 
+  const handleEditClick = () => {
+    navigate(`/user/l/exams/create/${examDetails.id}`);
+  };
+
   return (
     <DashboardLayout
-      title="Classes"
-      showAddHeadbarButton={true}
-      buttonTitle="Add Class"
+      title="Exam Details"
+      showAddHeadbarButton={false}
+      buttonTitle=""
     >
       <div className="p-6 bg-white rounded-md shadow-md flex flex-col gap-5">
         <div className="border border-slate-200 rounded-lg p-8">
@@ -70,13 +74,24 @@ function ExamDetailsPage() {
                 <h6 className="text-h6 text-slate-500">Title</h6>
                 <h5 className="text-h5 mb-4 text-dark">{examDetails.title}</h5>
               </div>
-              <span
-                className={`px-3 py-1 rounded-full text-sm capitalize ${
-                  statusColors[examDetails.status]
-                }`}
-              >
-                {examDetails.status}
-              </span>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm capitalize ${
+                    statusColors[examDetails.status]
+                  }`}
+                >
+                  {examDetails.status}
+                </span>
+                <button 
+                  onClick={handleEditClick}
+                  className="flex items-center gap-2 bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  <span>Edit Exam</span>
+                </button>
+              </div>
             </div>
             <div className="flex justify-between">
               <div className="flex flex-col gap-1">
