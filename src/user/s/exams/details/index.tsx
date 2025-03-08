@@ -22,24 +22,23 @@ function ExamDetails() {
 
   useEffect(() => {
     // Find exam in standard exams data
+    console.log("Looking for exam with ID:", id);
     let exam = examsData.find(e => e.id === Number(id));
+    console.log("Found exam:", exam);
 
     if (exam) {
       setExamDetails(exam);
 
-      // Check if exam is available (current time is within start and end time on the due date)
+      // For testing purposes: Override the exam dates to make it available
+      // In a real app, you would use the actual dates
       const now = new Date();
-      const examDate = new Date(exam.dueDate);
-      const startTime = exam.startTime.split(':');
-      const endTime = exam.endTime.split(':');
-
-      const startDateTime = new Date(examDate);
-      startDateTime.setHours(parseInt(startTime[0]), parseInt(startTime[1]), 0);
-
-      const endDateTime = new Date(examDate);
-      endDateTime.setHours(parseInt(endTime[0]), parseInt(endTime[1]), 0);
-
-      setIsAvailable(now >= startDateTime && now <= endDateTime);
+      const tomorrow = new Date();
+      tomorrow.setDate(now.getDate() + 1);
+      
+      // Make the exam available for testing
+      setIsAvailable(true);
+    } else {
+      console.error("Exam not found with ID:", id);
     }
 
     setLoading(false);

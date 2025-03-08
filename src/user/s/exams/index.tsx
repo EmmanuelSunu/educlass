@@ -7,7 +7,7 @@ import { BsBook } from "react-icons/bs";
 import { FiCalendar, FiClock } from "react-icons/fi";
 
 // Import mock data for student classes
-const studentClassIds = [1, 3, 5]; // Mock data: classes the student is enrolled in
+import { studentClassIds } from './mock-data';
 
 function formatDate(dateString) {
   const date = new Date(dateString);
