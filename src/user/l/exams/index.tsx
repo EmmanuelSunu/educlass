@@ -137,21 +137,21 @@ function Exams() {
             <h2 className="text-xl font-semibold mb-4 text-slate-800">Add New Exam</h2>
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Title</label>
+              <div className="mb-4">
+                <label className="block text-span text-dark font-medium pb-2">Title</label>
                 <input 
                   type="text"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.title}
                   onChange={(e) => setNewExam({...newExam, title: e.target.value})}
                   placeholder="Exam title"
                 />
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Type</label>
+              <div className="mb-4">
+                <label className="block text-span text-dark font-medium pb-2">Type</label>
                 <select 
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.type}
                   onChange={(e) => setNewExam({...newExam, type: e.target.value as 'exam' | 'test' | 'assignment'})}
                 >
@@ -161,42 +161,42 @@ function Exams() {
                 </select>
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Duration</label>
+              <div className="mb-4">
+                <label className="block text-span text-dark font-medium pb-2">Duration</label>
                 <input 
                   type="text"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.duration}
                   onChange={(e) => setNewExam({...newExam, duration: e.target.value})}
                   placeholder="e.g. 2 hours"
                 />
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Due Date</label>
+              <div className="mb-4">
+                <label className="block text-span text-dark font-medium pb-2">Due Date</label>
                 <input 
                   type="date"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.dueDate}
                   onChange={(e) => setNewExam({...newExam, dueDate: e.target.value})}
                 />
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Start Time</label>
+              <div className="mb-4">
+                <label className="block text-span text-dark font-medium pb-2">Start Time</label>
                 <input 
                   type="time"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.startTime}
                   onChange={(e) => setNewExam({...newExam, startTime: e.target.value})}
                 />
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700">End Time</label>
+              <div className="mb-4">
+                <label className="block text-span text-dark font-medium pb-2">End Time</label>
                 <input 
                   type="time"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.endTime}
                   onChange={(e) => setNewExam({...newExam, endTime: e.target.value})}
                 />

@@ -6,8 +6,8 @@ export interface ExamDetails {
   title: string;
   type: 'exam' | 'test' | 'assignment';
   duration: string;
-  durationHours?: number; // Added durationHours
-  durationMinutes?: number; // Added durationMinutes
+  durationHours?: number;
+  durationMinutes?: number;
   startTime: string;
   endTime: string;
   status: 'scheduled' | 'in-progress' | 'completed';
@@ -160,26 +160,26 @@ const ExamForm: React.FC<ExamFormProps> = ({
       {activeTab === 'details' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <div className="mb-4">
+              <label className="text-span text-dark font-medium block pb-2">Title</label>
               <input
                 type="text"
                 name="title"
                 value={examDetails.title}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                 placeholder="Enter exam title"
                 required
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+            <div className="mb-4">
+              <label className="text-span text-dark font-medium block pb-2">Type</label>
               <select
                 name="type"
                 value={examDetails.type}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
               >
                 <option value="exam">Exam</option>
                 <option value="test">Test</option>
@@ -189,9 +189,9 @@ const ExamForm: React.FC<ExamFormProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex space-x-4"> {/* Changed to flex for better layout */}
-              <div className="w-1/2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Duration (Hours)</label>
+            <div className="flex space-x-4">
+              <div className="w-1/2 mb-4">
+                <label className="text-span text-dark font-medium block pb-2">Duration (Hours)</label>
                 <input
                   type="number"
                   name="durationHours"
@@ -199,11 +199,11 @@ const ExamForm: React.FC<ExamFormProps> = ({
                   onChange={handleDurationChange}
                   min="0"
                   max="24"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                 />
               </div>
-              <div className="w-1/2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Duration (Minutes)</label>
+              <div className="w-1/2 mb-4">
+                <label className="text-span text-dark font-medium block pb-2">Duration (Minutes)</label>
                 <input
                   type="number"
                   name="durationMinutes"
@@ -211,56 +211,56 @@ const ExamForm: React.FC<ExamFormProps> = ({
                   onChange={handleDurationChange}
                   min="0"
                   max="59"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+            <div className="mb-4">
+              <label className="text-span text-dark font-medium block pb-2">Due Date</label>
               <input
                 type="date"
                 name="dueDate"
                 value={examDetails.dueDate}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                 required
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+            <div className="mb-4">
+              <label className="text-span text-dark font-medium block pb-2">Start Time</label>
               <input
                 type="time"
                 name="startTime"
                 value={examDetails.startTime}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+            <div className="mb-4">
+              <label className="text-span text-dark font-medium block pb-2">End Time</label>
               <input
                 type="time"
                 name="endTime"
                 value={examDetails.endTime}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <div className="mb-4">
+            <label className="text-span text-dark font-medium block pb-2">Description</label>
             <textarea
               name="description"
               value={examDetails.description}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
               placeholder="Enter exam description"
             />
           </div>
@@ -300,24 +300,24 @@ const ExamForm: React.FC<ExamFormProps> = ({
                   </div>
 
                   <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Question Text</label>
+                    <div className="mb-4">
+                      <label className="text-span text-dark font-medium block pb-2">Question Text</label>
                       <textarea
                         value={question.questionText}
                         onChange={(e) => handleQuestionChange(index, 'questionText', e.target.value)}
                         rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                         placeholder="Enter your question"
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Expected Answer</label>
+                    <div className="mb-4">
+                      <label className="text-span text-dark font-medium block pb-2">Expected Answer</label>
                       <textarea
                         value={question.questionAnswer}
                         onChange={(e) => handleQuestionChange(index, 'questionAnswer', e.target.value)}
                         rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                         placeholder="Enter expected answer"
                       />
                     </div>
