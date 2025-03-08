@@ -29,7 +29,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     <div className="flex h-screen bg-slate-50">
       {/* Mobile Navigation Bar */}
       <MobileNavBar onToggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-      
+
       {/* Sidebar - hidden on mobile unless toggled */}
       <div className={`${isSidebarOpen ? 'block' : 'hidden'} md:block fixed inset-0 z-10 md:relative md:z-0`}>
         <Sidebar />
@@ -38,12 +38,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden md:ml-72 pt-14 md:pt-0">
         <div className="hidden md:block">
-          <HeaderBar 
-            title={title}
-            buttonTitle={buttonTitle}
-            showAddHeadbarButton={showAddHeadbarButton}
-            onAddHeadbarButton={onAddHeadbarButton}
-          />
+          <HeaderBar title={title} buttonTitle={buttonTitle} showAddHeadbarButton={showAddHeadbarButton} onAddHeadbarButton={onAddHeadbarButton} />
         </div>
         <main className="flex-1 p-4 md:p-6 overflow-y-auto">
           {children}
@@ -53,4 +48,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   );
 };
 
-export default DashboardLayout;
+const StudentLayout = ({ children }: { children: ReactNode }) => (
+  <DashboardLayout title="Student Dashboard">
+    {children}
+  </DashboardLayout>
+);
+
+export { DashboardLayout, StudentLayout, HeaderBar };

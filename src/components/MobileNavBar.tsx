@@ -1,6 +1,6 @@
 
-import React, { useState } from "react";
-import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
+import React from "react";
+import { RiMenuLine, RiCloseLine } from "react-icons/ri";
 
 interface MobileNavBarProps {
   onToggleSidebar: () => void;
@@ -9,22 +9,27 @@ interface MobileNavBarProps {
 
 const MobileNavBar: React.FC<MobileNavBarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
   return (
-    <div className="md:hidden fixed top-0 left-0 right-0 bg-white z-20 border-b border-slate-100 shadow-sm">
-      <div className="flex items-center justify-between p-4">
-        <button
+    <div className="block md:hidden">
+      <button
+        onClick={onToggleSidebar}
+        className="fixed top-4 left-4 z-20 p-2 rounded-md hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400"
+        aria-label="Toggle Sidebar"
+      >
+        {isSidebarOpen ? (
+          <RiCloseLine className="text-2xl" />
+        ) : (
+          <RiMenuLine className="text-2xl" />
+        )}
+      </button>
+      
+      {/* Overlay when sidebar is open on mobile */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-5"
           onClick={onToggleSidebar}
-          className="text-slate-700 focus:outline-none"
-          aria-label="Toggle menu"
-        >
-          {isSidebarOpen ? (
-            <RiCloseLine className="h-6 w-6" />
-          ) : (
-            <RiMenu3Line className="h-6 w-6" />
-          )}
-        </button>
-        <div className="text-slate-800 font-medium">EduClass</div>
-        <div className="w-6"></div> {/* Empty div for balanced spacing */}
-      </div>
+          aria-hidden="true"
+        />
+      )}
     </div>
   );
 };
