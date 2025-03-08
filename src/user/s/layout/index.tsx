@@ -21,10 +21,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       
-      <div className="flex-1 flex flex-col md:ml-64">
+      <div className="flex-1 flex flex-col md:ml-72">
         <header className="bg-white shadow-sm border-b border-slate-200 h-16 flex items-center px-4 md:px-6">
           <div className="flex items-center justify-between w-full">
-            <h1 className="text-xl font-semibold text-slate-800">{title}</h1>
+            <h1 className="text-xl font-semibold text-slate-800 md:ml-0 ml-8">{title}</h1>
             {showAddHeadbarButton && (
               <button
                 onClick={onAddButtonClick}
@@ -43,5 +43,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     </div>
   );
 };
+
+export default DashboardLayout;
 
 export default DashboardLayout;
