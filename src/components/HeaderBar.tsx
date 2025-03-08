@@ -27,7 +27,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
               variant="primary"
               size="regular"
               onClick={onAddHeadbarButton}
-              className="gap-2 bg-primary hover:bg-primary/90"
+              className="gap-2 bg-primary hover:bg-primary/90 hidden md:flex"
             >
               <RiAddLine className="w-5 h-5" />
               <span className="font-semibold text-h6">{buttonTitle}</span>
