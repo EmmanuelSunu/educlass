@@ -78,21 +78,42 @@ function TakeExamPage() {
         // Check if exam is within valid time boundaries
         const now = new Date();
         const examDate = new Date(exam.dueDate);
-
-        // Check if exam date is valid
-        if (examDate.toDateString() !== now.toDateString()) {
-          setExamStatus("time-error");
-          return;
-        }
-
-        // Check if current time is within exam time boundaries
-        if (exam.startTime && exam.endTime) {
+        
+        // Check if current date matches exam's due date and time is within exam time boundaries
+        if (exam.dueDate && exam.startTime && exam.endTime) {
+          const examDate = new Date(exam.dueDate);
+          const currentDate = new Date();
+          
+          // Check if the current date matches the exam date
+          const isSameDate = 
+            currentDate.getFullYear() === examDate.getFullYear() && 
+            currentDate.getMonth() === examDate.getMonth() && 
+            currentDate.getDate() === examDate.getDate();
+            
+          // Only check time if it's the right date
+          if (!isSameDate) {
+            console.log("Exam date doesn't match current date", {
+              examDate: exam.dueDate,
+              currentDate: currentDate.toISOString().split('T')[0]
+            });
+            setExamStatus("time-error");
+            return;
+          }
+          
+          // Check time on the correct date
           const [startHour, startMinute] = exam.startTime.split(':').map(Number);
           const [endHour, endMinute] = exam.endTime.split(':').map(Number);
 
           const startTimeMinutes = startHour * 60 + startMinute;
           const endTimeMinutes = endHour * 60 + endMinute;
           const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
+
+          console.log("Checking time boundaries", {
+            startTime: `${startHour}:${startMinute}`,
+            endTime: `${endHour}:${endMinute}`,
+            currentTime: `${now.getHours()}:${now.getMinutes()}`,
+            withinBounds: !(currentTimeMinutes < startTimeMinutes || currentTimeMinutes > endTimeMinutes)
+          });
 
           if (currentTimeMinutes < startTimeMinutes || currentTimeMinutes > endTimeMinutes) {
             setExamStatus("time-error");
