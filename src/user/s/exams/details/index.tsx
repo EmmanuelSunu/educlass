@@ -168,33 +168,7 @@ function ExamDetailsPage() {
           </div>
         </div>
 
-        <div className="mb-4"> {/* Added for better spacing on smaller screens */}
-          <h3 className="text-xl font-semibold mb-4 text-slate-800">Exam Questions Preview</h3>
-          {examDetails.questions && examDetails.questions.length > 0 ? (
-            <div className="space-y-4">
-              {examDetails.questions.map((question, index) => (
-                <div key={index} className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                  <p className="font-medium text-slate-800 mb-2">Question {index + 1}</p>
-                  <p className="text-slate-700">{question.text}</p>
-                  {question.options && question.options.length > 0 && (
-                    <div className="mt-2">
-                      <p className="text-sm text-slate-500 italic mb-1">Options will be available during the exam</p>
-                      <div className="pl-4">
-                        {question.options.map((_, optionIndex) => (
-                          <div key={optionIndex} className="h-4 w-24 bg-slate-200 rounded my-2"></div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-slate-50 p-4 rounded-lg text-slate-700">
-              <p>This exam contains no questions yet.</p>
-            </div>
-          )}
-        </div>
+        {/* Exam preview section has been removed */}
       </div>
     </DashboardLayout>
   );
