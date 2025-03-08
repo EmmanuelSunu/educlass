@@ -36,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
     <>
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 right-4 z-50 p-2 rounded-lg bg-white shadow-lg md:hidden hover:bg-slate-100"
+        className="fixed top-4 right-4 z-50 p-2 rounded-lg bg-white md:hidden hover:bg-slate-100"
         aria-label={isOpen ? "Close menu" : "Open menu"}
       >
         {isOpen ? (
