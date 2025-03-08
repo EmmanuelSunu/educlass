@@ -14,41 +14,11 @@
     "classId": 1,
     "className": "Introduction to Programming",
     "questions": [
-      {
-        "text": "What is the time complexity of QuickSort in the average case?",
-        "options": ["O(n)", "O(n log n)", "O(n²)", "O(log n)"]
-      },
-      {
-        "text": "Which data structure uses LIFO (Last In First Out) principle?",
-        "options": ["Queue", "Stack", "List", "Tree"]
-      },
-      {
-        "text": "What is a recursive function?",
-        "options": [
-          "A function that calls itself",
-          "A function that never terminates",
-          "A function with a loop",
-          "A function that returns nothing"
-        ]
-      },
-      {
-        "text": "Which sorting algorithm has the best average time complexity?",
-        "options": [
-          "Bubble Sort",
-          "Insertion Sort",
-          "Merge Sort",
-          "Selection Sort"
-        ]
-      },
-      {
-        "text": "What does DFS stand for in graph traversal?",
-        "options": [
-          "Data File System",
-          "Deep First Search",
-          "Depth First Search",
-          "Direct First Sampling"
-        ]
-      }
+      { "text": "What is the time complexity of QuickSort in the average case?", "options": ["O(n)", "O(n log n)", "O(n²)", "O(log n)"] },
+      { "text": "Which data structure uses LIFO (Last In First Out) principle?", "options": ["Queue", "Stack", "List", "Tree"] },
+      { "text": "What is a recursive function?", "options": ["A function that calls itself", "A function that never terminates", "A function with a loop", "A function that returns nothing"] },
+      { "text": "Which sorting algorithm has the best average time complexity?", "options": ["Bubble Sort", "Insertion Sort", "Merge Sort", "Selection Sort"] },
+      { "text": "What does DFS stand for in graph traversal?", "options": ["Data File System", "Deep First Search", "Depth First Search", "Direct First Sampling"] }
     ]
   },
   {
@@ -58,10 +28,10 @@
     "duration": "2 hours",
     "durationHours": 2,
     "durationMinutes": 0,
-    "startTime": "13:00",
-    "endTime": "15:00",
+    "startTime": "09:00",
+    "endTime": "11:00",
     "status": "scheduled",
-    "dueDate": "2025-03-8",
+    "dueDate": "2023-10-15",
     "description": "Midterm exam covering chapters 1-5",
     "classId": 1,
     "className": "Introduction to Programming",
