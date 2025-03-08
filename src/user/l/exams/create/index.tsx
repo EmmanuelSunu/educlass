@@ -34,7 +34,9 @@ function CreateExam() {
         status: "scheduled",
         dueDate: "",
         description: "",
-        questions: []
+        questions: [],
+        classId: undefined,
+        className: ""
       });
     }
   }, [id, navigate]);

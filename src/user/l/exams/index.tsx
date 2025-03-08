@@ -94,9 +94,10 @@ function Exams() {
       onAddHeadbarButton={handleAddHeadbarButton}
       buttonTitle="Add Exams"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentExams.map((exam) => (
           <ExamCard
+            key={exam.id}
             id={exam.id}
             title={exam.title}
             type={exam.type}
@@ -105,26 +106,27 @@ function Exams() {
             endTime={exam.endTime}
             status={exam.status}
             dueDate={exam.dueDate}
+            className={exam.className}
           />
         ))}
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center mt-8">
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+          className="px-4 py-2 bg-white border border-slate-200 rounded-md hover:bg-slate-50 disabled:opacity-50 text-slate-700 text-sm font-medium transition-colors duration-200"
         >
           Previous
         </button>
-        <span className="text-sm text-gray-600">
+        <span className="text-sm font-medium text-slate-600">
           Page {currentPage} of {totalPages}
         </span>
         <button
           onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+          disabled={currentPage === totalPages || totalPages === 0}
+          className="px-4 py-2 bg-white border border-slate-200 rounded-md hover:bg-slate-50 disabled:opacity-50 text-slate-700 text-sm font-medium transition-colors duration-200"
         >
           Next
         </button>

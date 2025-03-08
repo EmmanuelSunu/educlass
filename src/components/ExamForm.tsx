@@ -18,6 +18,13 @@ export interface ExamDetails {
     questionText: string;
     questionAnswer: string;
   }[];
+  classId?: number;
+  className?: string;
+}
+
+interface Class {
+  id: number;
+  name: string;
 }
 
 interface ExamFormProps {
@@ -26,6 +33,15 @@ interface ExamFormProps {
   onSave: () => void;
   onCancel: () => void;
 }
+
+// This would normally come from an API or data store
+const mockClasses: Class[] = [
+  { id: 1, name: 'Mathematics 101' },
+  { id: 2, name: 'Physics 201' },
+  { id: 3, name: 'Computer Science 301' },
+  { id: 4, name: 'Biology 101' },
+  { id: 5, name: 'Chemistry 201' }
+];
 
 const ExamForm: React.FC<ExamFormProps> = ({ 
   examDetails, 
@@ -60,8 +76,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
   }, []);
 
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+  const handleInputChange = (name: string, value: string | number) => {
     onExamChange({
       ...examDetails,
       [name]: value
@@ -166,7 +181,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 type="text"
                 name="title"
                 value={examDetails.title}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('title', e.target.value)}
                 className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                 placeholder="Enter exam title"
                 required
@@ -178,7 +193,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               <select
                 name="type"
                 value={examDetails.type}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('type', e.target.value)}
                 className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
               >
                 <option value="exam">Exam</option>
@@ -189,40 +204,32 @@ const ExamForm: React.FC<ExamFormProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex space-x-4">
-              <div className="w-1/2 mb-4">
-                <label className="text-span text-dark font-medium block pb-2">Duration (Hours)</label>
-                <input
-                  type="number"
-                  name="durationHours"
-                  value={examDetails.durationHours || 0}
-                  onChange={handleDurationChange}
-                  min="0"
-                  max="24"
-                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-                />
-              </div>
-              <div className="w-1/2 mb-4">
-                <label className="text-span text-dark font-medium block pb-2">Duration (Minutes)</label>
-                <input
-                  type="number"
-                  name="durationMinutes"
-                  value={examDetails.durationMinutes || 0}
-                  onChange={handleDurationChange}
-                  min="0"
-                  max="59"
-                  className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-                />
-              </div>
+            <div className="mb-4">
+              <label className="text-span text-dark font-medium block pb-2">Class</label>
+              <select
+                name="classId"
+                value={examDetails.classId || ''}
+                onChange={(e) => {
+                  const classId = parseInt(e.target.value, 10);
+                  const selectedClass = mockClasses.find(c => c.id === classId);
+                  handleInputChange('classId', classId);
+                  handleInputChange('className', selectedClass?.name || '');
+                }}
+                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
+              >
+                <option value="">Select a class</option>
+                {mockClasses.map(cls => (
+                  <option key={cls.id} value={cls.id}>{cls.name}</option>
+                ))}
+              </select>
             </div>
-
             <div className="mb-4">
               <label className="text-span text-dark font-medium block pb-2">Due Date</label>
               <input
                 type="date"
                 name="dueDate"
                 value={examDetails.dueDate}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('dueDate', e.target.value)}
                 className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                 required
               />
@@ -236,7 +243,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 type="time"
                 name="startTime"
                 value={examDetails.startTime}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('startTime', e.target.value)}
                 className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
               />
             </div>
@@ -247,7 +254,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 type="time"
                 name="endTime"
                 value={examDetails.endTime}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('endTime', e.target.value)}
                 className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
               />
             </div>
@@ -258,7 +265,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
             <textarea
               name="description"
               value={examDetails.description}
-              onChange={handleInputChange}
+              onChange={(e) => handleInputChange('description', e.target.value)}
               rows={4}
               className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
               placeholder="Enter exam description"

@@ -14,14 +14,16 @@ export interface ExamDetails {
   title: string;
   type: 'exam' | 'test' | 'assignment';
   duration: string;
-  durationHours?: number;
-  durationMinutes?: number;
+  durationHours: number;
+  durationMinutes: number;
   startTime: string;
   endTime: string;
   status: 'scheduled' | 'in-progress' | 'completed';
   dueDate: string;
   description: string;
   questions: Question[];
+  classId?: number;
+  className?: string;
 }
 
 export interface Question {
