@@ -68,19 +68,17 @@ const SchedulesPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleAddHeadbarButton = () => {
-    // Handle adding exam logic here
-    console.log("Add clicked");
-  };
-
   return (
     <DashboardLayout
       title="Schedules"
-      showAddHeadbarButton={false}
-      onAddHeadbarButton={handleAddHeadbarButton}
+      showAddHeadbarButton={true}
+      onAddHeadbarButton={() => {
+        setSelectedSchedule(undefined);
+        setIsModalOpen(true);
+      }}
       buttonTitle="Add Schedule"
     >
-      <div className="mb-6 flex justify-between items-center">
+      <div className="mb-6 flex items-center">
         <div className="flex space-x-2">
           <ButtonProps
             variant={viewMode === "calendar" ? "primary" : "secondary"}
@@ -99,18 +97,6 @@ const SchedulesPage: React.FC = () => {
             Table
           </ButtonProps>
         </div>
-
-        <ButtonProps
-          variant="primary"
-          onClick={() => {
-            setSelectedSchedule(undefined);
-            setIsModalOpen(true);
-          }}
-          className="gap-2"
-        >
-          <RiAddLine />
-          Add Schedule
-        </ButtonProps>
       </div>
 
       {viewMode === "calendar" ? (
