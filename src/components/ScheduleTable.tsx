@@ -17,25 +17,35 @@ const ScheduleTable: React.FC<ScheduleTableProps> = ({
   onDelete,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow p-4 overflow-x-auto">
-      <table className="min-w-full table-auto">
+    <div className="overflow-x-auto rounded-lg border border-gray-200">
+      <table className="min-w-full divide-y divide-gray-200">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Title</th>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Type</th>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Date</th>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Start Time</th>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">End Time</th>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Location</th>
-            <th className="px-4 py-2 text-center text-sm font-medium text-gray-600">Actions</th>
+          <tr className="bg-gray-50">
+            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Title
+            </th>
+            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+              Date
+            </th>
+            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+              Time
+            </th>
+            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+              Location
+            </th>
+            <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+              Type
+            </th>
+            <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           {schedules.map((schedule) => (
             <tr key={schedule.id} className="border-t">
               <td className="px-4 py-2 text-sm text-gray-800">{schedule.title}</td>
-              <td className="px-4 py-2 text-sm text-gray-800 capitalize">{schedule.type}</td>
-              <td className="px-4 py-2 text-sm text-gray-800">{schedule.date}</td>
+              <td className="px-4 py-2 text-sm text-gray-800 capitalize">{schedule.date}</td>
               <td className="px-4 py-2 text-sm text-gray-800">{schedule.startTime}</td>
               <td className="px-4 py-2 text-sm text-gray-800">{schedule.endTime}</td>
               <td className="px-6 py-4 text-sm text-slate-700">{schedule.location || '-'}</td>

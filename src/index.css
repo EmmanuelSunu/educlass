@@ -1,9 +1,0 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  :root {
-    --color-primary: 42 159 6; /* #2A9F06 */
-  }
-}

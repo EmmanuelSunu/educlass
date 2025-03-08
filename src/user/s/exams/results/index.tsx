@@ -115,24 +115,24 @@ function ExamResultsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-gray-50 p-4 rounded-md text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+          <div className="card bg-gray-50 p-4 text-center hover:shadow-md transition-all">
             <div className="text-sm font-medium text-gray-500 mb-1">Score</div>
-            <div className={`text-2xl font-bold ${getScoreColor(results.score, results.maxScore)}`}>
+            <div className={`text-xl sm:text-2xl font-bold ${getScoreColor(results.score, results.maxScore)}`}>
               {results.score}/{results.maxScore}
             </div>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-md text-center">
+          <div className="card bg-gray-50 p-4 text-center hover:shadow-md transition-all">
             <div className="text-sm font-medium text-gray-500 mb-1">Date Taken</div>
-            <div className="text-lg font-medium text-gray-700">
+            <div className="text-base sm:text-lg font-medium text-gray-700">
               {formatDate(results.submittedAt)}
             </div>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-md text-center">
+          <div className="card bg-gray-50 p-4 text-center hover:shadow-md transition-all sm:col-span-2 md:col-span-1">
             <div className="text-sm font-medium text-gray-500 mb-1">Submitted At</div>
-            <div className="text-lg font-medium text-gray-700">
+            <div className="text-base sm:text-lg font-medium text-gray-700">
               {new Date(results.submittedAt).toLocaleTimeString()}
             </div>
           </div>

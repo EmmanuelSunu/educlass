@@ -104,24 +104,21 @@ function ExamDetailsPage() {
       showAddHeadbarButton={false}
       buttonTitle=""
     >
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      <div className="container mx-auto p-4 md:p-6"> {/* Added container for better centering */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"> {/* Improved spacing and responsiveness */}
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-800">{examDetails.title}</h2>
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">{examDetails.title}</h2>
-            <p className="text-slate-600">{examDetails.className}</p>
-          </div>
-          <div className="mt-4 md:mt-0">
             {isAvailable ? (
               <button
                 onClick={handleStartExam}
-                className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded"
+                className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded w-full sm:w-auto" {/* Added w-full for smaller screens */}
               >
                 Start Exam
               </button>
             ) : (
               <button
                 disabled
-                className="bg-slate-300 text-slate-500 font-medium py-2 px-4 rounded cursor-not-allowed"
+                className="bg-slate-300 text-slate-500 font-medium py-2 px-4 rounded cursor-not-allowed w-full sm:w-auto" {/* Added w-full for smaller screens */}
               >
                 Not Available Now
               </button>
