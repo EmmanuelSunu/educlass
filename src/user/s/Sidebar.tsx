@@ -1,53 +1,86 @@
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import Logo from "../../assets/images/logo.svg";
+import { 
+  FiHome, 
+  FiCalendar, 
+  FiFileText, 
+  FiSettings, 
+  FiLogOut, 
+  FiMenu, 
+  FiX 
+} from "react-icons/fi";
 
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { RiDashboardLine, RiCalendarLine, RiFileList3Line, RiSettings4Line } from 'react-icons/ri';
-
-interface SidebarProps {
-  isOpen: boolean;
-  toggleSidebar: () => void;
-}
-
-const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
+function SideBar() {
   const location = useLocation();
-  
-  const menuItems = [
-    { path: '/user/s/dashboard', icon: <RiDashboardLine />, label: 'Dashboard' },
-    { path: '/user/s/schedules', icon: <RiCalendarLine />, label: 'Schedule' },
-    { path: '/user/s/exams', icon: <RiFileList3Line />, label: 'Exams' },
-    { path: '/user/s/settings', icon: <RiSettings4Line />, label: 'Settings' },
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const isActive = (path: string) => {
+    return location.pathname.startsWith(path);
+  };
+
+  const navigation = [
+    { name: "Dashboard", icon: FiHome, path: "/user/s/dashboard" },
+    { name: "Schedules", icon: FiCalendar, path: "/user/s/schedules" },
+    { name: "Exams", icon: FiFileText, path: "/user/s/exams" },
+    { name: "Settings", icon: FiSettings, path: "/user/s/settings" },
   ];
 
   return (
-    <aside className={`bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 h-screen fixed top-0 left-0 z-30 w-64 transition-transform duration-300 ${
-      isOpen ? 'translate-x-0' : '-translate-x-full'
-    } lg:translate-x-0`}>
-      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-700">
-        <Link to="/user/s/dashboard" className="text-xl font-bold text-primary">
-          EduClass
-        </Link>
+    <>
+      {/* Mobile menu button */}
+      <div className="lg:hidden fixed top-4 left-4 z-50">
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="text-slate-500 hover:text-slate-600 focus:outline-none"
+        >
+          {isMobileMenuOpen ? (
+            <FiX className="h-6 w-6" />
+          ) : (
+            <FiMenu className="h-6 w-6" />
+          )}
+        </button>
       </div>
-      <nav className="mt-6 px-4">
-        <ul className="space-y-1">
-          {menuItems.map((item) => (
-            <li key={item.path}>
+
+      {/* Sidebar for desktop */}
+      <div
+        className={`bg-white w-64 shadow-md flex-shrink-0 h-screen fixed lg:relative z-40 transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen ? "left-0" : "-left-64 lg:left-0"
+        }`}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-center h-16 px-6 border-b">
+            <img src={Logo} alt="EduClass Logo" className="h-8" />
+          </div>
+          <div className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            {navigation.map((item) => (
               <Link
+                key={item.name}
                 to={item.path}
-                className={`flex items-center px-4 py-3 rounded-md transition-colors ${
-                  location.pathname === item.path
-                    ? 'bg-primary text-white'
-                    : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200'
+                className={`flex items-center px-4 py-3 text-sm font-medium rounded-md ${
+                  isActive(item.path)
+                    ? "bg-primary text-white"
+                    : "text-slate-600 hover:bg-slate-100"
                 }`}
               >
-                <span className="text-xl mr-3">{item.icon}</span>
-                <span className="font-medium">{item.label}</span>
+                <item.icon className="mr-3 h-5 w-5" />
+                {item.name}
               </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </aside>
+            ))}
+          </div>
+          <div className="p-4 border-t">
+            <Link
+              to="/"
+              className="flex items-center px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-md"
+            >
+              <FiLogOut className="mr-3 h-5 w-5" />
+              Logout
+            </Link>
+          </div>
+        </div>
+      </div>
+    </>
   );
-};
+}
 
-export default Sidebar;
+export default SideBar;
