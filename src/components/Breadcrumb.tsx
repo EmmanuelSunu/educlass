@@ -18,7 +18,10 @@ const Breadcrumb: React.FC = () => {
     schedules: "Schedules",
     grading: "Grading",
     settings: "Settings",
-    class: "Classes"
+    class: "Classes",
+    personal: "Personal Information",
+    notifications: "Notification Preferences",
+    security: "Password & Security"
   };
 
   return (

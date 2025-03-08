@@ -13,6 +13,7 @@ import {
   RiLogoutCircleRLine,
   RiSettings3Line,
 } from "react-icons/ri";
+import { Link, useLocation } from 'react-router-dom'; // Added for routing
 
 interface SidebarProps {
   className?: string;
@@ -20,6 +21,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation(); // Added to get current pathname
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -97,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               />
             </nav>
             <div className="pt-0 border-slate-200 border-t-2">
-            <MenuItem to="/" icon={<RiLogoutCircleRLine />} label="Logout" />
+              <MenuItem to="/" icon={<RiLogoutCircleRLine />} label="Logout" />
             </div>
           </div>
         </div>
