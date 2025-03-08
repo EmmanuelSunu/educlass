@@ -168,7 +168,7 @@ function ExamDetailsPage() {
           </div>
         </div>
 
-        <div>
+        <div className="mb-4"> {/* Added for better spacing on smaller screens */}
           <h3 className="text-xl font-semibold mb-4 text-slate-800">Exam Questions Preview</h3>
           {examDetails.questions && examDetails.questions.length > 0 ? (
             <div className="space-y-4">
