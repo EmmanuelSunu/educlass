@@ -33,28 +33,29 @@ function ExamDetailsPage() {
   const [examDetails, setExamDetails] = useState<Exam | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAvailable, setIsAvailable] = useState(false);
+  const [hasTakenExam, setHasTakenExam] = useState(false); // Added state to track exam participation
 
   useEffect(() => {
     // Type assertion for the imported JSON data
     const typedExamsData = examsData as Exam[];
-    
+
     console.log("Looking for exam with ID:", id);
     const exam = typedExamsData.find(exam => exam.id === Number(id));
     console.log("Found exam:", exam);
-  
+
     if (exam) {
       setExamDetails(exam);
-  
+
       // Check if exam is available based on date and time
       const now = new Date();
       const examDate = new Date(exam.dueDate);
-  
+
       // Check if current date matches exam date
       const isSameDate = 
         now.getFullYear() === examDate.getFullYear() && 
         now.getMonth() === examDate.getMonth() && 
         now.getDate() === examDate.getDate();
-  
+
       if (!isSameDate) {
         console.log("Exam date doesn't match current date", {
           examDate: exam.dueDate,
@@ -63,17 +64,17 @@ function ExamDetailsPage() {
         setIsAvailable(false);
         return;
       }
-  
+
       // If dates match, check if current time is within exam time window
       const [startHour, startMinute] = exam.startTime.split(':').map(Number);
       const [endHour, endMinute] = exam.endTime.split(':').map(Number);
-  
+
       const startTimeMinutes = startHour * 60 + startMinute;
       const endTimeMinutes = endHour * 60 + endMinute;
       const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
-  
+
       setIsAvailable(currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes);
-  
+
       console.log("Time availability check:", {
         currentTime: `${now.getHours()}:${now.getMinutes()}`,
         startTime: exam.startTime,
@@ -81,11 +82,20 @@ function ExamDetailsPage() {
         isAvailable: currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes
       });
     }
-  
+
     setLoading(false);
   }, [id]);
 
-  const handleStartExam = () => {
+  // Helper function to check if two dates are the same day
+  const isSameDate = (date1: Date, date2: Date) => {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  };
+
+  const handleTakeExam = () => {
     navigate(`/user/s/exams/take/${id}`);
   };
 
@@ -138,21 +148,47 @@ function ExamDetailsPage() {
             <p className="text-slate-600">{examDetails.className}</p>
           </div>
           <div className="mt-4 md:mt-0">
-            {isAvailable ? (
-              <button
-                onClick={handleStartExam}
-                className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded"
-              >
-                Start Exam
-              </button>
-            ) : (
-              <button
-                disabled
-                className="bg-slate-300 text-slate-500 font-medium py-2 px-4 rounded cursor-not-allowed"
-              >
-                Not Available Now
-              </button>
-            )}
+            {(() => {
+            const now = new Date();
+            const examDate = new Date(examDetails.dueDate);
+            const isPastExam = examDate < now && !isSameDate(examDate, now);
+            const isFutureExam = examDate > now && !isSameDate(examDate, now);
+
+            if (isPastExam) {
+              return (
+                <button
+                  onClick={() => navigate(`/user/s/exams/results/${id}`)}
+                  className="px-5 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  View Results
+                </button>
+              );
+            } else if (isFutureExam) {
+              return (
+                <button
+                  disabled
+                  className="px-5 py-2 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+                >
+                  Exam Not Yet Available
+                </button>
+              );
+            } else if (isAvailable) {
+              return (
+                <button
+                  onClick={handleTakeExam}
+                  className="px-5 py-2 bg-primary text-white rounded-md hover:bg-green-700 transition-colors"
+                >
+                  Take Exam
+                </button>
+              );
+            } else {
+              return (
+                <div className="text-red-500 font-medium">
+                  This exam is not currently available.
+                </div>
+              );
+            }
+          })()}
           </div>
         </div>
 

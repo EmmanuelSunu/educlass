@@ -55,52 +55,67 @@ function ExamResultsPage() {
   const navigate = useNavigate();
   const [results, setResults] = useState<ExamResult | null>(null);
   const [examDetails, setExamDetails] = useState<Exam | null>(null);
+  const [participated, setParticipated] = useState<boolean | null>(null); // Added participated state
 
   useEffect(() => {
     // Type assertion for exams data
     const typedExamsData = examsData as Exam[];
-    
+
     // Find the exam details from the JSON data
     const exam = typedExamsData.find(e => e.id === Number(examId));
-    
+
     if (exam) {
       setExamDetails(exam);
-      
-      // Create mock results based on the actual exam questions
-      const mockQuestions = exam.questions.map((q) => {
-        // Simulate a mix of correct and incorrect answers
-        const isCorrect = Math.random() > 0.3; // 70% chance of correct answer
-        const yourAnswer = isCorrect 
-          ? q.options?.[0] ?? "No answer" // Assume first option is correct if options exist
-          : q.options?.[Math.floor(Math.random() * (q.options.length - 1)) + 1] ?? "No answer"; // Random wrong answer if options exist
-        
-        return {
-          question: q.questionText, // Use `questionText` instead of `text`
-          yourAnswer,
-          isCorrect
+
+      // Check if this is a past exam
+      const now = new Date();
+      const examDate = new Date(exam.dueDate);
+      const isPastExam = examDate < now;
+
+      // For demonstration purposes: randomly determine if the student participated
+      // In a real app, this would be determined by checking if the student submitted the exam
+      const mockParticipated = isPastExam && (Math.random() > 0.3); 
+      setParticipated(mockParticipated);
+
+      if (mockParticipated) {
+        // Create mock results based on the actual exam questions
+        const mockQuestions = exam.questions.map((q) => {
+          // Simulate a mix of correct and incorrect answers
+          const isCorrect = Math.random() > 0.3; // 70% chance of correct answer
+          const yourAnswer = isCorrect
+            ? q.options?.[0] ?? "No answer" // Assume first option is correct if options exist
+            : q.options?.[Math.floor(Math.random() * (q.options.length - 1)) + 1] ?? "No answer"; // Random wrong answer if options exist
+
+          return {
+            question: q.questionText, // Use `questionText` instead of `text`
+            yourAnswer,
+            isCorrect
+          };
+        });
+
+        const correctCount = mockQuestions.filter(q => q.isCorrect).length;
+        const totalQuestions = mockQuestions.length;
+        const scorePercentage = Math.round((correctCount / totalQuestions) * 100);
+
+        // Create mock results
+        const mockResults: ExamResult = {
+          score: scorePercentage,
+          maxScore: 100,
+          passingScore: 70,
+          correctAnswers: correctCount,
+          totalQuestions,
+          timeSpent: `${Math.floor(Math.random() * exam.durationMinutes)} minutes`,
+          submittedAt: new Date().toISOString(),
+          feedback: "Good work overall. You demonstrated a strong understanding of the core concepts.",
+          questions: mockQuestions,
+          examTitle: exam.title,
+          examClass: exam.className
         };
-      });
-      
-      const correctCount = mockQuestions.filter(q => q.isCorrect).length;
-      const totalQuestions = mockQuestions.length;
-      const scorePercentage = Math.round((correctCount / totalQuestions) * 100);
-      
-      // Create mock results
-      const mockResults: ExamResult = {
-        score: scorePercentage,
-        maxScore: 100,
-        passingScore: 70,
-        correctAnswers: correctCount,
-        totalQuestions,
-        timeSpent: `${Math.floor(Math.random() * exam.durationMinutes)} minutes`,
-        submittedAt: new Date().toISOString(),
-        feedback: "Good work overall. You demonstrated a strong understanding of the core concepts.",
-        questions: mockQuestions,
-        examTitle: exam.title,
-        examClass: exam.className
-      };
-      
-      setResults(mockResults);
+
+        setResults(mockResults);
+      } else {
+        setResults(null);
+      }
     }
   }, [examId]);
 
@@ -117,27 +132,63 @@ function ExamResultsPage() {
     return date.toLocaleDateString();
   };
 
+  // Show loading state while fetching exam details
+  if (!examDetails) {
+    return (
+      <DashboardLayout
+        title="Exam Results"
+        showAddHeadbarButton={false}
+      >
+        <div className="flex justify-center items-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Show "Did not participate" message if the student didn't take the exam
+  if (participated === false) {
+    return (
+      <DashboardLayout
+        title="Exam Results"
+        showAddHeadbarButton={false}
+      >
+        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 my-6">
+          <h2 className="text-h3 font-bold text-gray-800">{examDetails.title}</h2>
+          <p className="text-p text-gray-600 mt-1">{examDetails.className}</p>
+
+          <div className="mt-6 p-6 bg-red-50 rounded-lg border border-red-200">
+            <div className="flex items-center">
+              <FiXCircle className="text-red-500 w-8 h-8 mr-3" />
+              <div>
+                <h3 className="text-xl font-semibold text-red-700">Did Not Participate</h3>
+                <p className="text-red-600 mt-1">You did not submit this exam before the deadline.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <button
+              onClick={() => navigate('/user/s/exams')}
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-green-700 transition-colors"
+            >
+              Return to Exams
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Show results if the student participated and results are available
   if (!results) {
     return (
       <DashboardLayout
-        title="Results Not Found"
+        title="Exam Results"
         showAddHeadbarButton={false}
-        buttonTitle=""
       >
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-          <div className="flex flex-col items-center justify-center h-64">
-            <FiXCircle className="text-5xl text-red-500 mb-4" />
-            <div className="text-xl font-bold text-slate-800 mb-2">Results Not Found</div>
-            <div className="text-slate-600 text-center max-w-md">
-              We couldn't find the results for this exam. If you've just completed the exam, please wait a few moments and try refreshing the page.
-            </div>
-            <button
-              onClick={() => navigate('/user/s/exams')}
-              className="mt-6 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
-            >
-              Back to Exams
-            </button>
-          </div>
+        <div className="flex justify-center items-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </DashboardLayout>
     );
