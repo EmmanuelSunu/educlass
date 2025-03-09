@@ -44,7 +44,7 @@ function TakeExamPage() {
     // Find the exam in the JSON data
     const typedExamsData = examsData as Exam[];
     const foundExam = typedExamsData.find(exam => exam.id === Number(id));
-    
+
     if (foundExam) {
       // Process the found exam
       const processedExam = {
@@ -55,13 +55,13 @@ function TakeExamPage() {
           points: 5 // Default points value
         }))
       };
-      
+
       setExam(processedExam);
-      
+
       // Calculate total duration in minutes
       const totalMinutes = (processedExam.durationHours * 60) + processedExam.durationMinutes;
       setTimeLeft(totalMinutes * 60); // Convert to seconds
-      
+
       setLoading(false);
     } else {
       // Handle case when exam is not found
@@ -173,6 +173,58 @@ function TakeExamPage() {
     );
   }
 
+  // Render the question display based on the question type
+  const renderQuestionDisplay = (question: Question) => {
+    switch (question.type) {
+      case 'multi-choice':
+        return (
+          <div className="space-y-2">
+            {question.options?.map((option, index) => (
+              <div key={index} className="flex items-center">
+                <input
+                  type="radio"
+                  id={`${question.id}-option-${index}`}
+                  name={question.id}
+                  value={option}
+                  checked={answers[question.id] === option}
+                  onChange={() => handleAnswerChange(question.id, option)}
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor={`${question.id}-option-${index}`} className="ml-2 text-sm text-gray-700">
+                  {option}
+                </label>
+              </div>
+            ))}
+          </div>
+        );
+      case 'essay':
+        return (
+          <div>
+            <textarea
+              value={answers[question.id] || ''}
+              onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 min-h-[150px] tablet-as-mobile"
+              placeholder="Type your answer here..."
+            />
+          </div>
+        );
+      case 'fill-ins':
+        return (
+          <div>
+            <input
+              type="text"
+              value={answers[question.id] || ''}
+              onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Your answer..."
+            />
+          </div>
+        );
+      default:
+        return <p className="text-red-500">Unsupported question type</p>;
+    }
+  };
+
   return (
     <DashboardLayout
       title={`Taking Exam: ${exam.title}`}
@@ -187,7 +239,7 @@ function TakeExamPage() {
             <span className="font-mono text-lg">{timeLeft !== null ? formatTime(timeLeft) : "00:00:00"}</span>
           </div>
         </div>
-  
+
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">Exam Instructions</h2>
           <ul className="list-disc pl-5 space-y-2 text-gray-600">
@@ -198,7 +250,7 @@ function TakeExamPage() {
             {exam.description && <li>{exam.description}</li>}
           </ul>
         </div>
-  
+
         <div className="space-y-8">
           {exam.questions.map((question, index) => (
             <div key={question.id ?? index} className="bg-white rounded-lg shadow-md p-6">
@@ -207,27 +259,11 @@ function TakeExamPage() {
                 <span className="text-sm text-gray-500">{question.points ?? 5} points</span>
               </div>
               <p className="text-gray-700 mb-4">{question.questionText}</p> {/* Use `questionText` instead of `text` */}
-              {question.options && ( // Check if `options` exists
-                <div className="space-y-3">
-                  {question.options.map((option, optIndex) => (
-                    <label key={optIndex} className="flex items-start space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
-                      <input
-                        type="radio"
-                        name={`question-${question.id ?? index}`}
-                        value={option}
-                        checked={answers[question.id ?? index] === option}
-                        onChange={() => handleAnswerChange(question.id ?? index, option)}
-                        className="mt-0.5"
-                      />
-                      <span className="text-gray-700">{option}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
+              {renderQuestionDisplay(question)}
             </div>
           ))}
         </div>
-  
+
         <div className="mt-8 flex justify-between items-center">
           <div className="text-sm text-gray-500">
             <span className="font-medium">{Object.keys(answers).length}</span> of {exam.questions.length} questions answered
@@ -249,7 +285,7 @@ function TakeExamPage() {
             )}
           </button>
         </div>
-  
+
         {Object.keys(answers).length < exam.questions.length && (
           <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-center space-x-3 text-amber-700">
             <FiAlertTriangle className="flex-shrink-0" />

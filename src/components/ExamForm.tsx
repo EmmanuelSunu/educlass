@@ -14,10 +14,10 @@ interface ExamDetails {
   dueDate: string;
   description: string;
   questions: Array<{
-    id: string; // Updated from number to string to match `index.tsx`
-    type: "multi-choice" | "essay" | "fill-ins"; // Added type field
+    id: string; 
+    type: "multi-choice" | "essay" | "fill-ins"; 
     questionText: string;
-    options?: string[]; // Added options for multi-choice
+    options?: string[]; 
     questionAnswer: string;
   }>;
   classId?: number;
@@ -37,7 +37,6 @@ interface ExamFormProps {
   onCancel: () => void;
 }
 
-// This would normally come from an API or data store
 const mockClasses: Class[] = [
   { id: 1, name: 'Mathematics 101' },
   { id: 2, name: 'Physics 201' },
@@ -89,20 +88,20 @@ const ExamForm: React.FC<ExamFormProps> = ({
     const newQuestion = {
       id: String(examDetails.questions.length > 0 
         ? Math.max(...examDetails.questions.map(q => Number(q.id))) + 1 
-        : 1), // Ensure `id` is a string
-      type: "essay" as "multi-choice" | "essay" | "fill-ins", // Explicitly define type
+        : 1), 
+      type: "essay", 
       questionText: '',
       questionAnswer: '',
-      options: [], // Default empty options for multi-choice
+      options: [], 
     };
-  
+
     onExamChange({
       ...examDetails,
       questions: [...examDetails.questions, newQuestion]
     });
   };
-  
-  
+
+
 
   const handleQuestionChange = (index: number, field: 'questionText' | 'questionAnswer', value: string) => {
     const updatedQuestions = [...examDetails.questions];
@@ -123,7 +122,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
       questions: examDetails.questions.filter(q => q.id !== id)
     });
   };
-  
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="mb-6 border-b">
@@ -295,6 +294,21 @@ const ExamForm: React.FC<ExamFormProps> = ({
                         className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                         placeholder="Enter your question"
                       />
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="text-span text-dark font-medium block pb-2">Question Type</label>
+                      <select
+                        value={question.type}
+                        onChange={(e) => {
+                          handleQuestionChange(index, 'type', e.target.value as 'multi-choice' | 'fill-ins' | 'essay');
+                        }}
+                        className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
+                      >
+                        <option value="multi-choice">Multiple Choice</option>
+                        <option value="fill-ins">Fill in the blank</option>
+                        <option value="essay">Essay</option>
+                      </select>
                     </div>
 
                     <div className="mb-4">

@@ -60,65 +60,28 @@ function ExamDetailsPage() {
 
   // Helper function to render question based on type
   const renderQuestionContent = (question: Question) => {
-    switch (question.type) {
-      case "multi-choice":
-        return (
-          <>
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-slate-500">Question</p>
-              <p className="font-normal text-gray-700">{question.questionText}</p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-slate-500">Options</p>
-              <ul className="list-disc pl-5">
-                {question.options?.map((option, optIndex) => (
-                  <li key={optIndex} className="font-normal text-gray-600">
-                    {option}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-slate-500">Correct Answer</p>
-              <p className="font-normal text-green-600">{question.questionAnswer}</p>
-            </div>
-          </>
-        );
-      case "essay":
-        return (
-          <>
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-slate-500">Essay Question</p>
-              <p className="font-normal text-gray-700">{question.questionText}</p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-slate-500">Expected Answer</p>
-              <div className="p-3 bg-gray-50 rounded border border-gray-200">
-                <p className="font-normal text-gray-600">{question.questionAnswer}</p>
+    return (
+      <>
+        <p className="text-p text-slate-900">{question.questionText}</p>
+
+        {question.type === "multi-choice" && question.options && (
+          <div className="space-y-2 ml-4">
+            {question.options.map((option, index) => (
+              <div key={index} className="flex items-center">
+                <span className="inline-block w-5 h-5 border border-gray-300 rounded-full mr-2"></span>
+                <span>{option}</span>
               </div>
-            </div>
-          </>
-        );
-      case "fill-ins":
-        return (
-          <>
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-slate-500">Fill in the Blank</p>
-              <p className="font-normal text-gray-700">{question.questionText}</p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold text-slate-500">Correct Answer</p>
-              <p className="font-medium text-green-600">{question.questionAnswer}</p>
-            </div>
-          </>
-        );
-      default:
-        return (
-          <div className="flex flex-col gap-2">
-            <p className="font-normal text-gray-600">{question.questionText}</p>
+            ))}
           </div>
-        );
-    }
+        )}
+
+        {question.type === "essay" && (
+          <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+            <p className="text-sm text-gray-500 italic">Students will provide a written response in a text area.</p>
+          </div>
+        )}
+      </>
+    );
   };
 
   return (
