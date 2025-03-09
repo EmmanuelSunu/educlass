@@ -1,3 +1,4 @@
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -5,6 +6,16 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    screens: {
+      // Redefine screen breakpoints to make tablets use mobile layout
+      // Only larger screens (laptop and desktop) will use desktop layout
+      sm: '640px',
+      md: '768px',
+      // Increase the lg breakpoint to 1024px (standard tablet landscape width)
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       backgroundImage : {
         'login': "url(/src/assets/images/login.jpeg)",

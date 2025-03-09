@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utility classes for responsive behavior */
+@layer utilities {
+  .tablet-as-mobile {
+    @apply lg:flex md:block sm:block block; /* Mobile layout up to lg breakpoint */
+  }
+  
+  .hide-on-mobile-and-tablet {
+    @apply lg:block md:hidden sm:hidden hidden;
+  }
+  
+  .show-on-mobile-and-tablet {
+    @apply lg:hidden md:block sm:block block;
+  }
+}
+
+
 @layer base {
   :root {
     --color-primary: 42 159 6; /* #2A9F06 */
