@@ -1,8 +1,9 @@
+import React from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Outlet as RouterOutlet,
+  Outlet,
   Navigate,
 } from "react-router-dom";
 import Login from "./login";
@@ -46,7 +47,7 @@ function App() {
         <Route path="/user/l/class" element={<LecturerClass />} />
 
         {/* Student Routes */}
-        <Route path="/user/s" element={<RouterOutlet />}>
+        <Route path="/user/s" element={<Outlet />}>
           <Route index element={<Navigate to="/user/s/dashboard" replace />} />
           <Route path="dashboard" element={<StudentDashboard />} />
           <Route path="calendar" element={<StudentCalender />} />
