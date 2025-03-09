@@ -97,19 +97,19 @@ const Sidebar: React.FC<SidebarProps> = ({ className = "" }) => {
           {sidebarLinks.map((link) => {
             const isActive = location.pathname === link.url || location.pathname.startsWith(link.url + "/");
             return (
-              <li key={link.url}>
+              <li key={link.url} className="group">
                 <Link
                   to={link.url}
                   className={`flex items-center py-3 px-3 rounded-md transition-colors ${
                     isActive
                       ? "bg-primary text-white"
-                      : "text-slate-600 hover:bg-slate-100"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-primary"
                   }`}
                 >
-                  <span className="text-lg">{link.icon}</span>
+                  <span className={`text-lg ${!isActive && "group-hover:text-primary"}`}>{link.icon}</span>
                   {isExpanded && (
                     <>
-                      <span className="ml-3">{link.title}</span>
+                      <span className={`ml-3 ${!isActive && "group-hover:text-primary"}`}>{link.title}</span>
                       {isActive && (
                         <IoChevronForwardOutline className="ml-auto text-sm" />
                       )}
