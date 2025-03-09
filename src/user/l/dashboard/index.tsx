@@ -38,14 +38,14 @@ function Dashboard() {
     totalStudents: 0,
     completedExams: 0
   });
-  
+
   useEffect(() => {
     // Process exams data from the imported JSON
     const today = new Date();
-    
+
     // Type assertion to avoid TypeScript errors
     const typedExamsData = examsData as Exam[];
-    
+
     // Process upcoming exams: those with due dates in the future and status "scheduled"
     const upcoming = typedExamsData
       .filter(exam => {
@@ -53,7 +53,7 @@ function Dashboard() {
         return examDate > today && exam.status === "scheduled";
       })
       .slice(0, 3);
-    
+
     // Process ongoing exams: those with status "in-progress" or due today
     const ongoing = typedExamsData
       .filter(exam => {
@@ -64,14 +64,14 @@ function Dashboard() {
         );
       })
       .slice(0, 2);
-    
+
     setUpcomingExams(upcoming);
     setOngoingExams(ongoing);
-    
+
     // Calculate statistics
     const uniqueClasses = [...new Set(typedExamsData.map(exam => exam.classId))];
     const completedExams = typedExamsData.filter(exam => exam.status === "completed").length;
-    
+
     setStats({
       totalExams: typedExamsData.length,
       totalClasses: uniqueClasses.length,
@@ -118,7 +118,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -130,7 +130,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -142,7 +142,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -155,7 +155,7 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      
+
       {/* Main Dashboard Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Upcoming Exams */}
@@ -163,7 +163,7 @@ function Dashboard() {
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Upcoming Exams</h2>
           <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
             {upcomingExams.length > 0 ? (
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {upcomingExams.map((exam) => (
                   <div key={exam.id} className="flex justify-between items-center border-b border-slate-100 pb-4 last:border-0 last:pb-0">
                     <div>
@@ -185,7 +185,7 @@ function Dashboard() {
               <p className="text-slate-500">No upcoming exams.</p>
             )}
           </div>
-          
+
           {/* Recent Activity Section */}
           <h2 className="text-lg font-semibold text-slate-800 mb-4 mt-6">Recent Activities</h2>
           <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
@@ -199,7 +199,7 @@ function Dashboard() {
                   <p className="text-xs text-slate-500">Today, 10:30 AM</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <div className="bg-emerald-100 p-2 rounded-full mr-3">
                   <BsPeople className="text-emerald-600" />
@@ -209,7 +209,7 @@ function Dashboard() {
                   <p className="text-xs text-slate-500">Yesterday, 2:15 PM</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <div className="bg-amber-100 p-2 rounded-full mr-3">
                   <BsGraphUp className="text-amber-600" />
@@ -222,7 +222,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         {/* Right Column - Ongoing Exams & Quick Stats */}
         <div>
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Ongoing Exams</h2>
@@ -250,7 +250,7 @@ function Dashboard() {
               <p className="text-slate-500">No ongoing exams.</p>
             )}
           </div>
-          
+
           {/* Upcoming Schedule */}
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Today's Schedule</h2>
           <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
@@ -260,20 +260,20 @@ function Dashboard() {
                 <span className="text-xs font-medium text-slate-500 mr-2">10:00 AM</span>
                 <span className="text-sm text-slate-700">Operating Systems Class</span>
               </div>
-              
+
               <div className="flex items-center">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 mr-2"></div>
                 <span className="text-xs font-medium text-slate-500 mr-2">01:00 PM</span>
                 <span className="text-sm text-slate-700">Faculty Meeting</span>
               </div>
-              
+
               <div className="flex items-center">
                 <div className="w-2 h-2 rounded-full bg-amber-500 mr-2"></div>
                 <span className="text-xs font-medium text-slate-500 mr-2">03:30 PM</span>
                 <span className="text-sm text-slate-700">Database Lab Session</span>
               </div>
             </div>
-            
+
             <button 
               onClick={() => navigate('/user/l/schedules')}
               className="w-full mt-4 text-center text-primary text-sm font-medium hover:underline"

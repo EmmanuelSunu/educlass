@@ -35,7 +35,10 @@ const ExamCard: React.FC<ExamCardProps> = ({
 
 
   const handleCardClick = () => {
-    navigate(`/user/l/exams/details/${id}`);
+    // Determine the correct path based on which module we're in (lecturer or student)
+    const isLecturerPath = window.location.pathname.includes('/user/l/');
+    const basePath = isLecturerPath ? '/user/l/exams/details/' : '/user/s/exams/details/';
+    navigate(`${basePath}${id}`);
   };
 
   return (

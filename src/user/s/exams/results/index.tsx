@@ -3,9 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layout";
 import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 import examsData from "../../../l/exams/data/exams.json";
-import { FaClipboardList } from "react-icons/fa"; // Added import for FaClipboardList
+import { FaClipboardList } from "react-icons/fa";
 
-// Define interfaces for the data structures
 interface Exam {
   id: number;
   title: string;
@@ -20,14 +19,14 @@ interface Exam {
   description: string;
   classId: number;
   className: string;
-  questions: Question[]; // Uses the updated `Question` interface
+  questions: Question[];
 }
 
 interface Question {
   id: string;
   type: string;
-  questionText: string; // Use `questionText` instead of `text`
-  options?: string[]; // `options` is optional
+  questionText: string;
+  options?: string[];
   questionAnswer: string;
 }
 
@@ -56,41 +55,31 @@ function ExamResultsPage() {
   const navigate = useNavigate();
   const [results, setResults] = useState<ExamResult | null>(null);
   const [examDetails, setExamDetails] = useState<Exam | null>(null);
-  const [participated, setParticipated] = useState<boolean | null>(null); // Added participated state
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [participated, setParticipated] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true); // Set loading to true at the start
-    // Type assertion for exams data
+    setLoading(true);
     const typedExamsData = examsData as Exam[];
-
-    // Find the exam details from the JSON data
     const exam = typedExamsData.find(e => e.id === Number(examId));
 
     if (exam) {
       setExamDetails(exam);
-
-      // Check if this is a past exam
       const now = new Date();
       const examDate = new Date(exam.dueDate);
       const isPastExam = examDate < now;
-
-      // For demonstration purposes: randomly determine if the student participated
-      // In a real app, this would be determined by checking if the student submitted the exam
       const mockParticipated = isPastExam && (Math.random() > 0.3);
       setParticipated(mockParticipated);
 
       if (mockParticipated) {
-        // Create mock results based on the actual exam questions
         const mockQuestions = exam.questions.map((q) => {
-          // Simulate a mix of correct and incorrect answers
-          const isCorrect = Math.random() > 0.3; // 70% chance of correct answer
+          const isCorrect = Math.random() > 0.3;
           const yourAnswer = isCorrect
-            ? q.options?.[0] ?? "No answer" // Assume first option is correct if options exist
-            : q.options?.[Math.floor(Math.random() * (q.options.length - 1)) + 1] ?? "No answer"; // Random wrong answer if options exist
+            ? q.options?.[0] ?? "No answer"
+            : q.options?.[Math.floor(Math.random() * (q.options.length - 1)) + 1] ?? "No answer";
 
           return {
-            question: q.questionText, // Use `questionText` instead of `text`
+            question: q.questionText,
             yourAnswer,
             isCorrect
           };
@@ -100,7 +89,6 @@ function ExamResultsPage() {
         const totalQuestions = mockQuestions.length;
         const scorePercentage = Math.round((correctCount / totalQuestions) * 100);
 
-        // Create mock results
         const mockResults: ExamResult = {
           score: scorePercentage,
           maxScore: 100,
@@ -120,7 +108,7 @@ function ExamResultsPage() {
         setResults(null);
       }
     }
-    setLoading(false); // Set loading to false after data is processed
+    setLoading(false);
   }, [examId]);
 
   const getScoreColor = (score: number, maxScore: number): string => {
@@ -136,7 +124,6 @@ function ExamResultsPage() {
     return date.toLocaleDateString();
   };
 
-  // Show loading state while fetching exam details
   if (loading) {
     return (
       <DashboardLayout
@@ -151,7 +138,6 @@ function ExamResultsPage() {
     );
   }
 
-  // Show "Did not participate" message if the student didn't take the exam
   if (participated === false) {
     return (
       <DashboardLayout
@@ -160,12 +146,12 @@ function ExamResultsPage() {
         buttonTitle=""
       >
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 my-6">
-          <h2 className="text-h3 font-bold text-gray-800">{examDetails.title}</h2>
-          <p className="text-p text-gray-600 mt-1">{examDetails.className}</p>
+          <h2 className="text-h3 font-bold text-gray-800">{examDetails?.title}</h2>
+          <p className="text-p text-gray-600 mt-1">{examDetails?.className}</p>
 
           <div className="mt-6 p-6 bg-red-50 rounded-lg border border-red-200">
             <div className="flex items-center">
-              <FaClipboardList className="text-amber-500 w-8 h-8 mr-3" /> {/* Replaced FiXCircle with FaClipboardList */}
+              <FaClipboardList className="text-amber-500 w-8 h-8 mr-3" />
               <div>
                 <h3 className="text-xl font-semibold text-red-700">Did Not Participate</h3>
                 <p className="text-red-600 mt-1">You did not submit this exam before the deadline.</p>
@@ -186,7 +172,6 @@ function ExamResultsPage() {
     );
   }
 
-  // Show results if the student participated and results are available
   if (!results) {
     return (
       <DashboardLayout
@@ -237,7 +222,7 @@ function ExamResultsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6"> {/* Added lg:grid-cols-3 */}
           <div className="bg-gray-50 p-4 rounded-md text-center">
             <div className="text-sm font-medium text-gray-500 mb-1">Score</div>
             <div className={`text-2xl font-bold ${getScoreColor(results.score, results.maxScore)}`}>

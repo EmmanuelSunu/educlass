@@ -70,6 +70,7 @@ function ExamDetailsPage() {
         
         setIsAvailable(isTimeAvailable);
       }
+      setLoading(false);
     } else {
       setLoading(false);
     }
