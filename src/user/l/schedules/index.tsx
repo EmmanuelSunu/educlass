@@ -6,7 +6,7 @@ import ButtonProps from "../../../components/ButtonProps";
 import { RiCalendarLine, RiListCheck2, RiUploadCloud2Line } from "react-icons/ri";
 import { Schedule } from "./types";
 import ScheduleFileUpload from "./ScheduleFileUpload";
-import Modal from '../../../components/Modal'; // Assuming a Modal component exists
+import Modal from '../../../components/Modal';
 
 
 // Mock data for demonstration
