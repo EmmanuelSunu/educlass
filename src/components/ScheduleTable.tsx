@@ -5,7 +5,7 @@ interface ScheduleTableProps {
   schedules: Schedule[];
   onEdit: (schedule: Schedule) => void;
   onDelete: (scheduleId: string) => void;
-  readOnly?: boolean;
+  viewOnly?: boolean;
 }
 
 
@@ -14,7 +14,7 @@ const ScheduleTable: React.FC<ScheduleTableProps> = ({
   schedules,
   onEdit,
   onDelete,
-  readOnly = false,
+  viewOnly = false,
 }) => {
   return (
     <div className="bg-white rounded-lg shadow p-4 overflow-x-auto">
@@ -27,7 +27,7 @@ const ScheduleTable: React.FC<ScheduleTableProps> = ({
             <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Start Time</th>
             <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">End Time</th>
             <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Location</th>
-            <th className="px-4 py-2 text-center text-sm font-medium text-gray-600">Actions</th>
+            {!viewOnly && <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -39,8 +39,8 @@ const ScheduleTable: React.FC<ScheduleTableProps> = ({
               <td className="px-4 py-2 text-sm text-gray-800">{schedule.startTime}</td>
               <td className="px-4 py-2 text-sm text-gray-800">{schedule.endTime}</td>
               <td className="px-6 py-4 text-sm text-slate-700">{schedule.location || '-'}</td>
-              <td className="px-6 py-4 flex justify-center space-x-3">
-                {!readOnly && (
+              {!viewOnly && (
+                <td className="px-6 py-4 flex justify-center space-x-3">
                   <>
                     <button
                       onClick={() => onEdit(schedule)}
@@ -61,16 +61,16 @@ const ScheduleTable: React.FC<ScheduleTableProps> = ({
                       </svg>
                     </button>
                   </>
-                )}
-                {readOnly && (
-                  <span className="text-sm text-slate-500">-</span>
-                )}
-              </td>
+                </td>
+              )}
+              {viewOnly && (
+                <td className="px-6 py-4"></td>
+              )}
             </tr>
           ))}
           {schedules.length === 0 && (
             <tr>
-              <td colSpan={7} className="px-6 py-8 text-center text-sm text-slate-500">
+              <td colSpan={viewOnly ? 6 : 7} className="px-6 py-8 text-center text-sm text-slate-500">
                 No schedules found. 
               </td>
             </tr>
