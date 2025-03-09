@@ -138,19 +138,8 @@ function ExamDetailsPage() {
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold text-slate-800">{examDetails.title}</h2>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-slate-600">{examDetails.className}</p>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                isPastExam ? "bg-gray-100 text-gray-800" :
-                isFutureExam ? "bg-purple-100 text-purple-800" :
-                isAvailable ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"
-              }`}>
-                {isPastExam ? "Past" :
-                 isFutureExam ? "Upcoming" :
-                 isAvailable ? "Available Now" : "Not Available Yet"}
-              </span>
-            </div>
+            <h2 className="text-2xl font-bold text-slate-800">{examDetails.title}</h2>
+            <p className="text-slate-600">{examDetails.className}</p>
           </div>
           <div className="mt-4 md:mt-0">
             {isPastExam ? (
@@ -215,7 +204,34 @@ function ExamDetailsPage() {
               </li>
             </ul>
           </div>
-          {/* Status box removed */}
+          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <h3 className="font-semibold text-slate-800 mb-2">Status</h3>
+            <ul className="space-y-2">
+              <li className="flex justify-between">
+                <span className="text-slate-600">Status:</span>
+                <span className={`font-medium capitalize ${
+                  isPastExam ? "text-gray-800" :
+                  isFutureExam ? "text-blue-600" :
+                  isAvailable ? "text-green-600" : "text-amber-600"
+                }`}>
+                  {isPastExam ? "Past" :
+                   isFutureExam ? "Upcoming" :
+                   isAvailable ? "Available Now" : "Not Available Yet"}
+                </span>
+              </li>
+              {isPastExam && (
+                <li className="flex justify-between">
+                  <span className="text-slate-600">Participation:</span>
+                  <span className={`font-medium ${hasTakenExam ? "text-green-600" : "text-red-600"}`}>
+                    {hasTakenExam ? "Completed" : "Did Not Participate"}
+                  </span>
+                </li>
+              )}
+              {isFutureExam && (
+                <li className="flex justify-between">
+                  <span className="text-slate-600">Days until exam:</span>
+                  <span className="font-medium text-slate-800">
+                    {Math.ceil((new Date(examDetails.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
                   </span>
                 </li>
               )}
@@ -227,21 +243,6 @@ function ExamDetailsPage() {
           <h3 className="font-semibold text-slate-800 mb-3">Description</h3>
           <div className="text-slate-700 whitespace-pre-wrap">
             {examDetails.description || "No description provided."}
-          </div>
-        </div>
-
-        <div className="border-t border-slate-200 pt-4 mt-6">
-          <h3 className="font-semibold text-slate-800 mb-3">Exam Instructions</h3>
-          <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md text-slate-700">
-            <ul className="list-disc pl-5 space-y-2">
-              <li>Read all questions carefully before answering.</li>
-              <li>Time management is crucial - allocate time based on question difficulty.</li>
-              <li>For multiple-choice questions, select the most appropriate answer.</li>
-              <li>For essay questions, provide comprehensive and well-structured responses.</li>
-              <li>Once submitted, you cannot return to change your answers.</li>
-              <li>The exam will auto-submit when the time expires.</li>
-              <li>Duration: {examDetails.duration}</li>
-            </ul>
           </div>
         </div>
       </div>
