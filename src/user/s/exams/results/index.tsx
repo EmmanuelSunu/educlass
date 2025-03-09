@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layout";
 import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 import examsData from "../../../l/exams/data/exams.json";
+import { FaClipboardList } from "react-icons/fa"; // Added import for FaClipboardList
 
 // Define interfaces for the data structures
 interface Exam {
@@ -56,8 +57,10 @@ function ExamResultsPage() {
   const [results, setResults] = useState<ExamResult | null>(null);
   const [examDetails, setExamDetails] = useState<Exam | null>(null);
   const [participated, setParticipated] = useState<boolean | null>(null); // Added participated state
+  const [loading, setLoading] = useState(true); // Added loading state
 
   useEffect(() => {
+    setLoading(true); // Set loading to true at the start
     // Type assertion for exams data
     const typedExamsData = examsData as Exam[];
 
@@ -74,7 +77,7 @@ function ExamResultsPage() {
 
       // For demonstration purposes: randomly determine if the student participated
       // In a real app, this would be determined by checking if the student submitted the exam
-      const mockParticipated = isPastExam && (Math.random() > 0.3); 
+      const mockParticipated = isPastExam && (Math.random() > 0.3);
       setParticipated(mockParticipated);
 
       if (mockParticipated) {
@@ -117,6 +120,7 @@ function ExamResultsPage() {
         setResults(null);
       }
     }
+    setLoading(false); // Set loading to false after data is processed
   }, [examId]);
 
   const getScoreColor = (score: number, maxScore: number): string => {
@@ -133,11 +137,12 @@ function ExamResultsPage() {
   };
 
   // Show loading state while fetching exam details
-  if (!examDetails) {
+  if (loading) {
     return (
       <DashboardLayout
-        title="Exam Results"
+        title="Loading Results..."
         showAddHeadbarButton={false}
+        buttonTitle=""
       >
         <div className="flex justify-center items-center h-96">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -152,6 +157,7 @@ function ExamResultsPage() {
       <DashboardLayout
         title="Exam Results"
         showAddHeadbarButton={false}
+        buttonTitle=""
       >
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 my-6">
           <h2 className="text-h3 font-bold text-gray-800">{examDetails.title}</h2>
@@ -159,7 +165,7 @@ function ExamResultsPage() {
 
           <div className="mt-6 p-6 bg-red-50 rounded-lg border border-red-200">
             <div className="flex items-center">
-              <FiXCircle className="text-red-500 w-8 h-8 mr-3" />
+              <FaClipboardList className="text-amber-500 w-8 h-8 mr-3" /> {/* Replaced FiXCircle with FaClipboardList */}
               <div>
                 <h3 className="text-xl font-semibold text-red-700">Did Not Participate</h3>
                 <p className="text-red-600 mt-1">You did not submit this exam before the deadline.</p>
@@ -186,6 +192,7 @@ function ExamResultsPage() {
       <DashboardLayout
         title="Exam Results"
         showAddHeadbarButton={false}
+        buttonTitle=""
       >
         <div className="flex justify-center items-center h-96">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>

@@ -1,30 +1,17 @@
-import { useEffect, useState } from "react";
-import DashboardLayout from "../../layout";
-import { useNavigate, useParams } from "react-router-dom";
-import examsData from "../../../l/exams/data/exams.json";
 
-// Define the Exam interface to match the JSON structure
-interface Exam {
-  id: number;
-  title: string;
-  type: string;
-  duration: string;
-  durationHours: number;
-  durationMinutes: number;
-  startTime: string;
-  endTime: string;
-  status: string;
-  dueDate: string;
-  description: string;
-  classId: number;
-  className: string;
-  questions: Array<{
-    id: string;
-    type: string;
-    questionText: string; // Use `questionText` instead of `text`
-    options?: string[]; // `options` is optional
-    questionAnswer: string;
-  }>;
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import DashboardLayout from "../../layout";
+import examsData from "../../../l/exams/data/exams.json";
+import { Exam } from "../../../l/exams/types";
+
+// Helper function to check if two dates are the same day
+function isSameDate(date1: Date, date2: Date): boolean {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
 }
 
 function ExamDetailsPage() {
@@ -33,7 +20,9 @@ function ExamDetailsPage() {
   const [examDetails, setExamDetails] = useState<Exam | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAvailable, setIsAvailable] = useState(false);
-  const [hasTakenExam, setHasTakenExam] = useState(false); // Added state to track exam participation
+  const [hasTakenExam, setHasTakenExam] = useState(false);
+  const [isPastExam, setIsPastExam] = useState(false);
+  const [isFutureExam, setIsFutureExam] = useState(false);
 
   useEffect(() => {
     // Type assertion for the imported JSON data
@@ -45,69 +34,56 @@ function ExamDetailsPage() {
 
     if (exam) {
       setExamDetails(exam);
+      setLoading(false);
 
-      // Check if exam is available based on date and time
+      // Check exam date against current date
       const now = new Date();
       const examDate = new Date(exam.dueDate);
 
-      // Check if current date matches exam date
-      const isSameDate = 
-        now.getFullYear() === examDate.getFullYear() && 
-        now.getMonth() === examDate.getMonth() && 
-        now.getDate() === examDate.getDate();
-
-      if (!isSameDate) {
-        console.log("Exam date doesn't match current date", {
-          examDate: exam.dueDate,
-          currentDate: now.toISOString().split('T')[0]
+      // Check if exam is in the past, present, or future
+      if (examDate < now && !isSameDate(examDate, now)) {
+        setIsPastExam(true);
+        // For demo purposes, randomly decide if student participated
+        setHasTakenExam(Math.random() > 0.5);
+      } else if (examDate > now && !isSameDate(examDate, now)) {
+        setIsFutureExam(true);
+      } else {
+        // If dates match, check if current time is within exam time window
+        const [startHour, startMinute] = exam.startTime.split(':').map(Number);
+        const [endHour, endMinute] = exam.endTime.split(':').map(Number);
+        
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        
+        const currentTimeValue = currentHour * 60 + currentMinute;
+        const startTimeValue = startHour * 60 + startMinute;
+        const endTimeValue = endHour * 60 + endMinute;
+        
+        const isTimeAvailable = currentTimeValue >= startTimeValue && currentTimeValue <= endTimeValue;
+        
+        console.log("Time availability check:", {
+          currentTime: `${currentHour}:${currentMinute}`,
+          startTime: exam.startTime,
+          endTime: exam.endTime,
+          isAvailable: isTimeAvailable
         });
-        setIsAvailable(false);
-        return;
+        
+        setIsAvailable(isTimeAvailable);
       }
-
-      // If dates match, check if current time is within exam time window
-      const [startHour, startMinute] = exam.startTime.split(':').map(Number);
-      const [endHour, endMinute] = exam.endTime.split(':').map(Number);
-
-      const startTimeMinutes = startHour * 60 + startMinute;
-      const endTimeMinutes = endHour * 60 + endMinute;
-      const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
-
-      setIsAvailable(currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes);
-
-      console.log("Time availability check:", {
-        currentTime: `${now.getHours()}:${now.getMinutes()}`,
-        startTime: exam.startTime,
-        endTime: exam.endTime,
-        isAvailable: currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes
-      });
+    } else {
+      setLoading(false);
     }
-
-    setLoading(false);
   }, [id]);
-
-  // Helper function to check if two dates are the same day
-  const isSameDate = (date1: Date, date2: Date) => {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
-  };
-
-  const handleTakeExam = () => {
-    navigate(`/user/s/exams/take/${id}`);
-  };
 
   if (loading) {
     return (
       <DashboardLayout
-        title="Loading..."
+        title="Loading Exam Details..."
         showAddHeadbarButton={false}
         buttonTitle=""
       >
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </DashboardLayout>
     );
@@ -135,6 +111,14 @@ function ExamDetailsPage() {
     );
   }
 
+  const handleTakeExam = () => {
+    navigate(`/user/s/exams/take/${examDetails.id}`);
+  };
+
+  const handleViewResults = () => {
+    navigate(`/user/s/exams/results/${examDetails.id}`);
+  };
+
   return (
     <DashboardLayout 
       title={`Exam: ${examDetails.title}`}
@@ -148,47 +132,39 @@ function ExamDetailsPage() {
             <p className="text-slate-600">{examDetails.className}</p>
           </div>
           <div className="mt-4 md:mt-0">
-            {(() => {
-            const now = new Date();
-            const examDate = new Date(examDetails.dueDate);
-            const isPastExam = examDate < now && !isSameDate(examDate, now);
-            const isFutureExam = examDate > now && !isSameDate(examDate, now);
-
-            if (isPastExam) {
-              return (
+            {isPastExam ? (
+              // Past exam - show results or "did not participate" message
+              hasTakenExam ? (
                 <button
-                  onClick={() => navigate(`/user/s/exams/results/${id}`)}
-                  className="px-5 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  onClick={handleViewResults}
+                  className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded"
                 >
                   View Results
                 </button>
-              );
-            } else if (isFutureExam) {
-              return (
-                <button
-                  disabled
-                  className="px-5 py-2 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
-                >
-                  Exam Not Yet Available
-                </button>
-              );
-            } else if (isAvailable) {
-              return (
-                <button
-                  onClick={handleTakeExam}
-                  className="px-5 py-2 bg-primary text-white rounded-md hover:bg-green-700 transition-colors"
-                >
-                  Take Exam
-                </button>
-              );
-            } else {
-              return (
-                <div className="text-red-500 font-medium">
-                  This exam is not currently available.
+              ) : (
+                <div className="bg-amber-100 text-amber-800 px-4 py-2 rounded font-medium">
+                  Did not participate
                 </div>
-              );
-            }
-          })()}
+              )
+            ) : isFutureExam ? (
+              // Future exam - show when it will be available
+              <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded font-medium">
+                Available on {new Date(examDetails.dueDate).toLocaleDateString()}
+              </div>
+            ) : (
+              // Current day exam - enable or disable based on time window
+              <button
+                onClick={handleTakeExam}
+                disabled={!isAvailable}
+                className={`${
+                  isAvailable
+                    ? "bg-primary hover:bg-primary-dark text-white"
+                    : "bg-gray-300 cursor-not-allowed text-gray-600"
+                } font-medium py-2 px-4 rounded`}
+              >
+                {isAvailable ? "Take Exam" : "Not Available Yet"}
+              </button>
+            )}
           </div>
         </div>
 
@@ -218,26 +194,47 @@ function ExamDetailsPage() {
               </li>
             </ul>
           </div>
-
           <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-            <h3 className="font-semibold text-slate-800 mb-2">Instructions</h3>
-            <ul className="list-disc pl-5 space-y-1 text-slate-700">
-              <li>Ensure you have a stable internet connection before starting.</li>
-              <li>Once started, the exam timer cannot be paused.</li>
-              <li>You can navigate between questions during the exam.</li>
-              <li>Your answers are automatically saved as you proceed.</li>
-              <li>Submit your exam before the time expires.</li>
+            <h3 className="font-semibold text-slate-800 mb-2">Status</h3>
+            <ul className="space-y-2">
+              <li className="flex justify-between">
+                <span className="text-slate-600">Status:</span>
+                <span className={`font-medium capitalize ${
+                  isPastExam ? "text-gray-800" :
+                  isFutureExam ? "text-blue-600" :
+                  isAvailable ? "text-green-600" : "text-amber-600"
+                }`}>
+                  {isPastExam ? "Past" :
+                   isFutureExam ? "Upcoming" :
+                   isAvailable ? "Available Now" : "Not Available Yet"}
+                </span>
+              </li>
+              {isPastExam && (
+                <li className="flex justify-between">
+                  <span className="text-slate-600">Participation:</span>
+                  <span className={`font-medium ${hasTakenExam ? "text-green-600" : "text-red-600"}`}>
+                    {hasTakenExam ? "Completed" : "Did Not Participate"}
+                  </span>
+                </li>
+              )}
+              {isFutureExam && (
+                <li className="flex justify-between">
+                  <span className="text-slate-600">Days until exam:</span>
+                  <span className="font-medium text-slate-800">
+                    {Math.ceil((new Date(examDetails.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
+                  </span>
+                </li>
+              )}
             </ul>
           </div>
         </div>
-
-        {/* Exam Description Section */}
-        {examDetails.description && (
-          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-6">
-            <h3 className="font-semibold text-slate-800 mb-2">Description</h3>
-            <p className="text-slate-700">{examDetails.description}</p>
+        
+        <div className="border-t border-slate-200 pt-4 mt-6">
+          <h3 className="font-semibold text-slate-800 mb-3">Description</h3>
+          <div className="text-slate-700 whitespace-pre-wrap">
+            {examDetails.description || "No description provided."}
           </div>
-        )}
+        </div>
       </div>
     </DashboardLayout>
   );
