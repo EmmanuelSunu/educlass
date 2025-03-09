@@ -39,3 +39,46 @@ function DashboardLayout({
 }
 
 export default DashboardLayout;
+import React from "react";
+import Sidebar from "./Sidebar";
+import { Outlet } from "react-router-dom";
+
+interface DashboardLayoutProps {
+  children?: React.ReactNode;
+  title?: string;
+  showAddHeadbarButton?: boolean;
+  buttonTitle?: string;
+  onAddButtonClick?: () => void;
+}
+
+function DashboardLayout({
+  children,
+  title = "Dashboard",
+  showAddHeadbarButton = false,
+  buttonTitle = "Add",
+  onAddButtonClick,
+}: DashboardLayoutProps) {
+  return (
+    <div className="flex min-h-screen bg-gray-100">
+      <Sidebar />
+      <div className="flex-1 ml-0 md:ml-72">
+        <header className="bg-white py-4 px-6 shadow-sm flex justify-between items-center">
+          <h1 className="text-h4 font-bold text-gray-800">{title}</h1>
+          {showAddHeadbarButton && (
+            <button
+              onClick={onAddButtonClick}
+              className="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors"
+            >
+              {buttonTitle}
+            </button>
+          )}
+        </header>
+        <main className="px-4 md:px-6 py-6">
+          {children || <Outlet />}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+export default DashboardLayout;
