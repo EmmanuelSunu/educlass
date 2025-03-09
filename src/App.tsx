@@ -19,6 +19,11 @@ import StudentSettings from "./user/s/settings";
 import StudentExamDetails from "./user/s/exams/details";
 import StudentExamTake from "./user/s/exams/take";
 import StudentExamResults from "./user/s/exams/results";
+import StudentResults from "./user/s/results";
+import StudentResultDetails from "./user/s/results/details";
+import StudentCalender from "./user/s/calendar";
+import StudentClasses from "./user/s/classes";
+
 
 function App() {
   return (
@@ -39,25 +44,17 @@ function App() {
           <Route path="/exams/details/:id" element={<ExamDetailsPage />} />
 
           {/* Student Routes */}
-          <Route path="/user/s/dashboard" element={<StudentDashboard />} />
-          <Route path="/user/s/schedules" element={<StudentSchedule />} />
-          <Route path="/user/s/exams" element={<StudentExams />} />
-          <Route
-            path="/user/s/exams/details/:id"
-            element={
-              <Suspense fallback={<div>Loading...</div>}>
-                <StudentExamDetails />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/user/s/exams/take/:id"
-            element={
-              <Suspense fallback={<div>Loading...</div>}>
-                <StudentExamTake />
-              </Suspense>
-            }
-          />
+          <Route path="/user/s" element={<Outlet />}>
+            <Route index element={<Navigate to="/user/s/dashboard" replace />} />
+            <Route path="dashboard" element={<StudentDashboard />} />
+            <Route path="calendar" element={<StudentCalender />} />
+            <Route path="exams" element={<StudentExams />} />
+            <Route path="exams/take/:id" element={<StudentExamTake />} />
+            <Route path="exams/details/:id" element={<StudentExamDetails />} />
+            <Route path="results" element={<StudentResults />} />
+            <Route path="results/details/:examId" element={<StudentResultDetails />} />
+            <Route path="classes" element={<StudentClasses />} />
+          </Route>
           <Route
             path="/user/s/exams/results/:id"
             element={
