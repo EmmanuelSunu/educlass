@@ -1,4 +1,3 @@
-
 import React from "react";
 import HeaderBar from "./headerbar";
 import Sidebar from "./Sidebar";
@@ -38,7 +37,6 @@ function DashboardLayout({
   );
 }
 
-export default DashboardLayout;
 import React from "react";
 import SideBar from "./Sidebar";
 import Breadcrumb from "../../components/Breadcrumb";
