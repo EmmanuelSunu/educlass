@@ -40,6 +40,15 @@ function formatDate(dateString: string): string {
   });
 }
 
+// Helper function to check if two dates are on the same day
+function isSameDate(date1: Date, date2: Date): boolean {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
 function StudentExams() {
   const navigate = useNavigate();
   const [availableExams, setAvailableExams] = useState<Exam[]>([]);
@@ -54,14 +63,7 @@ function StudentExams() {
       studentClassIds.includes(exam.classId)
     );
 
-    // Update today's date for all exams to ensure availability
-    const today = new Date();
-    const updatedExams = studentExams.map(exam => ({
-      ...exam,
-      dueDate: today.toISOString().split('T')[0] // Set due date to today for demo purposes
-    }));
-
-    setAvailableExams(updatedExams);
+    setAvailableExams(studentExams);
     setLoading(false);
   }, []);
 
@@ -73,11 +75,23 @@ function StudentExams() {
   const getExamStatusLabel = (exam: Exam): { label: string; color: string } => {
     const now = new Date();
     const dueDate = new Date(`${exam.dueDate} ${exam.endTime}`);
-
+    const examStartDate = new Date(`${exam.dueDate} ${exam.startTime}`);
+    
+    // Check if exam is in the past
     if (now > dueDate) {
       return { label: "Completed", color: "bg-green-100 text-green-800" };
-    } else {
+    } 
+    // Check if exam is today and within time window
+    else if (isSameDate(now, dueDate) && now >= examStartDate && now <= dueDate) {
       return { label: "Available", color: "bg-blue-100 text-blue-800" };
+    } 
+    // Check if exam is today but not yet started
+    else if (isSameDate(now, dueDate) && now < examStartDate) {
+      return { label: "Today", color: "bg-amber-100 text-amber-800" };
+    }
+    // Otherwise, it's a future exam
+    else {
+      return { label: "Scheduled", color: "bg-purple-100 text-purple-800" };
     }
   };
 

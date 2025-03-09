@@ -39,15 +39,24 @@ function ExamDetailsPage() {
       // Check exam date against current date
       const now = new Date();
       const examDate = new Date(exam.dueDate);
+      
+      console.log("Exam date check:", {
+        examDate: exam.dueDate,
+        currentDate: now.toISOString().split('T')[0]
+      });
 
       // Check if exam is in the past, present, or future
       if (examDate < now && !isSameDate(examDate, now)) {
+        console.log("Exam is in the past");
         setIsPastExam(true);
         // For demo purposes, randomly decide if student participated
-        setHasTakenExam(Math.random() > 0.5);
+        // Use a stable way to determine participation based on exam ID to avoid confusion
+        setHasTakenExam(exam.id % 2 === 0); // Even IDs have taken the exam
       } else if (examDate > now && !isSameDate(examDate, now)) {
+        console.log("Exam is in the future");
         setIsFutureExam(true);
       } else {
+        console.log("Exam is today");
         // If dates match, check if current time is within exam time window
         const [startHour, startMinute] = exam.startTime.split(':').map(Number);
         const [endHour, endMinute] = exam.endTime.split(':').map(Number);

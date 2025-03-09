@@ -28,10 +28,51 @@ const ExamCard: React.FC<ExamCardProps> = ({
   const navigate = useNavigate();
 
   const statusColors = {
-    scheduled: "bg-blue-100 text-blue-600 border-blue-200",
+    scheduled: "bg-purple-100 text-purple-600 border-purple-200",
     "in-progress": "bg-amber-100 text-amber-600 border-amber-200",
     completed: "bg-emerald-100 text-emerald-600 border-emerald-200",
+    available: "bg-blue-100 text-blue-600 border-blue-200"
   };
+  
+  // Determine actual status based on date
+  const determineStatus = () => {
+    const now = new Date();
+    const examDate = new Date(dueDate);
+    
+    // Check if dates are same (only comparing year, month, day)
+    const isSameDay = (d1: Date, d2: Date) => 
+      d1.getFullYear() === d2.getFullYear() && 
+      d1.getMonth() === d2.getMonth() && 
+      d1.getDate() === d2.getDate();
+    
+    if (examDate < now && !isSameDay(examDate, now)) {
+      return "completed";
+    } else if (isSameDay(examDate, now)) {
+      // Check if current time is within exam hours
+      const [startHour, startMinute] = startTime.split(':').map(Number);
+      const [endHour, endMinute] = endTime.split(':').map(Number);
+      
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+      
+      const currentTimeValue = currentHour * 60 + currentMinute;
+      const startTimeValue = startHour * 60 + startMinute;
+      const endTimeValue = endHour * 60 + endMinute;
+      
+      if (currentTimeValue >= startTimeValue && currentTimeValue <= endTimeValue) {
+        return "available";
+      } else if (currentTimeValue < startTimeValue) {
+        return "scheduled"; // Same day but not started yet
+      } else {
+        return "completed"; // Same day but already ended
+      }
+    } else {
+      return "scheduled"; // Future date
+    }
+  };
+  
+  const currentStatus = determineStatus();
+  const statusDisplay = currentStatus === "available" ? "Available" : status;
 
 
   const handleCardClick = () => {
@@ -51,9 +92,9 @@ const ExamCard: React.FC<ExamCardProps> = ({
           <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
         </div>
         <span
-          className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[status]}`}
+          className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[currentStatus]}`}
         >
-          {status}
+          {statusDisplay}
         </span>
       </div>
 
