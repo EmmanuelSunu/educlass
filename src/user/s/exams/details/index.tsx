@@ -142,13 +142,13 @@ function ExamDetailsPage() {
             <div className="flex items-center gap-2 mt-1">
               <p className="text-slate-600">{examDetails.className}</p>
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                isPastExam ? "bg-gray-100 text-gray-800" :
-                isFutureExam ? "bg-purple-100 text-purple-800" :
-                isAvailable ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"
+                isPastExam ? "bg-emerald-100 text-emerald-600" : 
+                isFutureExam ? "bg-purple-100 text-purple-600" :
+                isAvailable ? "bg-blue-100 text-blue-600" : "bg-amber-100 text-amber-600"
               }`}>
-                {isPastExam ? "Past" :
-                 isFutureExam ? "Upcoming" :
-                 isAvailable ? "Available Now" : "Not Available Yet"}
+                {isPastExam ? "Completed" :
+                 isFutureExam ? "Scheduled" :
+                 isAvailable ? "Available" : "Not Available Yet"}
               </span>
             </div>
           </div>
@@ -169,7 +169,7 @@ function ExamDetailsPage() {
               )
             ) : isFutureExam ? (
               // Future exam - show when it will be available
-              <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded font-medium">
+              <div className="bg-purple-100 text-purple-600 px-4 py-2 rounded font-medium">
                 Available on {new Date(examDetails.dueDate).toLocaleDateString()}
               </div>
             ) : (
