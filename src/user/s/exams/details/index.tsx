@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layout";
@@ -29,7 +28,7 @@ function ExamDetailsPage() {
     const typedExamsData = examsData as Exam[];
 
     console.log("Looking for exam with ID:", id);
-    const exam = typedExamsData.find(exam => exam.id === Number(id));
+    const exam = typedExamsData.find((exam) => exam.id === Number(id));
     console.log("Found exam:", exam);
 
     if (exam) {
@@ -39,10 +38,10 @@ function ExamDetailsPage() {
       // Check exam date against current date
       const now = new Date();
       const examDate = new Date(exam.dueDate);
-      
+
       console.log("Exam date check:", {
         examDate: exam.dueDate,
-        currentDate: now.toISOString().split('T')[0]
+        currentDate: now.toISOString().split("T")[0],
       });
 
       // Check if exam is in the past, present, or future
@@ -58,25 +57,27 @@ function ExamDetailsPage() {
       } else {
         console.log("Exam is today");
         // If dates match, check if current time is within exam time window
-        const [startHour, startMinute] = exam.startTime.split(':').map(Number);
-        const [endHour, endMinute] = exam.endTime.split(':').map(Number);
-        
+        const [startHour, startMinute] = exam.startTime.split(":").map(Number);
+        const [endHour, endMinute] = exam.endTime.split(":").map(Number);
+
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
-        
+
         const currentTimeValue = currentHour * 60 + currentMinute;
         const startTimeValue = startHour * 60 + startMinute;
         const endTimeValue = endHour * 60 + endMinute;
-        
-        const isTimeAvailable = currentTimeValue >= startTimeValue && currentTimeValue <= endTimeValue;
-        
+
+        const isTimeAvailable =
+          currentTimeValue >= startTimeValue &&
+          currentTimeValue <= endTimeValue;
+
         console.log("Time availability check:", {
           currentTime: `${currentHour}:${currentMinute}`,
           startTime: exam.startTime,
           endTime: exam.endTime,
-          isAvailable: isTimeAvailable
+          isAvailable: isTimeAvailable,
         });
-        
+
         setIsAvailable(isTimeAvailable);
       }
       setLoading(false);
@@ -107,10 +108,12 @@ function ExamDetailsPage() {
         buttonTitle=""
       >
         <div className="bg-white rounded-lg shadow p-6">
-          <p className="text-center text-slate-700">The exam you're looking for could not be found.</p>
+          <p className="text-center text-slate-700">
+            The exam you're looking for could not be found.
+          </p>
           <div className="flex justify-center mt-4">
             <button
-              onClick={() => navigate('/user/s/exams')}
+              onClick={() => navigate("/user/s/exams")}
               className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded"
             >
               Back to Exams
@@ -130,7 +133,7 @@ function ExamDetailsPage() {
   };
 
   return (
-    <DashboardLayout 
+    <DashboardLayout
       title={`Exam: ${examDetails.title}`}
       showAddHeadbarButton={false}
       buttonTitle=""
@@ -138,7 +141,9 @@ function ExamDetailsPage() {
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">{examDetails.title}</h2>
+            <h2 className="text-2xl font-bold text-slate-800">
+              {examDetails.title}
+            </h2>
             <p className="text-slate-600">{examDetails.className}</p>
           </div>
           <div className="mt-4 md:mt-0">
@@ -159,7 +164,8 @@ function ExamDetailsPage() {
             ) : isFutureExam ? (
               // Future exam - show when it will be available
               <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded font-medium">
-                Available on {new Date(examDetails.dueDate).toLocaleDateString()}
+                Available on{" "}
+                {new Date(examDetails.dueDate).toLocaleDateString()}
               </div>
             ) : (
               // Current day exam - enable or disable based on time window
@@ -184,23 +190,33 @@ function ExamDetailsPage() {
             <ul className="space-y-2">
               <li className="flex justify-between">
                 <span className="text-slate-600">Type:</span>
-                <span className="font-medium text-slate-800 capitalize">{examDetails.type}</span>
+                <span className="font-medium text-slate-800 capitalize">
+                  {examDetails.type}
+                </span>
               </li>
               <li className="flex justify-between">
                 <span className="text-slate-600">Duration:</span>
-                <span className="font-medium text-slate-800">{examDetails.duration}</span>
+                <span className="font-medium text-slate-800">
+                  {examDetails.duration}
+                </span>
               </li>
               <li className="flex justify-between">
                 <span className="text-slate-600">Date:</span>
-                <span className="font-medium text-slate-800">{new Date(examDetails.dueDate).toLocaleDateString()}</span>
+                <span className="font-medium text-slate-800">
+                  {new Date(examDetails.dueDate).toLocaleDateString()}
+                </span>
               </li>
               <li className="flex justify-between">
                 <span className="text-slate-600">Time Window:</span>
-                <span className="font-medium text-slate-800">{examDetails.startTime} - {examDetails.endTime}</span>
+                <span className="font-medium text-slate-800">
+                  {examDetails.startTime} - {examDetails.endTime}
+                </span>
               </li>
               <li className="flex justify-between">
                 <span className="text-slate-600">Questions:</span>
-                <span className="font-medium text-slate-800">{examDetails.questions ? examDetails.questions.length : 0}</span>
+                <span className="font-medium text-slate-800">
+                  {examDetails.questions ? examDetails.questions.length : 0}
+                </span>
               </li>
             </ul>
           </div>
@@ -209,20 +225,32 @@ function ExamDetailsPage() {
             <ul className="space-y-2">
               <li className="flex justify-between">
                 <span className="text-slate-600">Status:</span>
-                <span className={`font-medium capitalize ${
-                  isPastExam ? "text-gray-800" :
-                  isFutureExam ? "text-blue-600" :
-                  isAvailable ? "text-green-600" : "text-amber-600"
-                }`}>
-                  {isPastExam ? "Past" :
-                   isFutureExam ? "Upcoming" :
-                   isAvailable ? "Available Now" : "Not Available Yet"}
+                <span
+                  className={`font-medium capitalize ${
+                    isPastExam
+                      ? "text-gray-800"
+                      : isFutureExam
+                        ? "text-purple-800"
+                        : isAvailable
+                          ? "text-green-600"
+                          : "text-amber-600"
+                  }`}
+                >
+                  {isPastExam
+                    ? "Past"
+                    : isFutureExam
+                      ? "Scheduled"
+                      : isAvailable
+                        ? "Available Now"
+                        : "Not Available Yet"}
                 </span>
               </li>
               {isPastExam && (
                 <li className="flex justify-between">
                   <span className="text-slate-600">Participation:</span>
-                  <span className={`font-medium ${hasTakenExam ? "text-green-600" : "text-red-600"}`}>
+                  <span
+                    className={`font-medium ${hasTakenExam ? "text-green-600" : "text-red-600"}`}
+                  >
                     {hasTakenExam ? "Completed" : "Did Not Participate"}
                   </span>
                 </li>
@@ -231,14 +259,18 @@ function ExamDetailsPage() {
                 <li className="flex justify-between">
                   <span className="text-slate-600">Days until exam:</span>
                   <span className="font-medium text-slate-800">
-                    {Math.ceil((new Date(examDetails.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
+                    {Math.ceil(
+                      (new Date(examDetails.dueDate).getTime() -
+                        new Date().getTime()) /
+                        (1000 * 60 * 60 * 24),
+                    )}
                   </span>
                 </li>
               )}
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-slate-200 pt-4 mt-6">
           <h3 className="font-semibold text-slate-800 mb-3">Description</h3>
           <div className="text-slate-700 whitespace-pre-wrap">

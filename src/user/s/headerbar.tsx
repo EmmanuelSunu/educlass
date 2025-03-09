@@ -1,4 +1,3 @@
-
 import React from "react";
 import ButtonProps from "../../components/ButtonProps";
 import { RiAddLine } from "react-icons/ri";
@@ -19,7 +18,9 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   return (
     <header className="bg-white w-full px-6 py-4 border-b border-slate-200">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-800">{title}</h1>
+        <h1 className="text-xl lg:text-2xl font-semibold text-slate-800">
+          {title}
+        </h1>
 
         <div className="flex items-center gap-4">
           {showAddHeadbarButton && (
