@@ -1,102 +1,86 @@
-import { useState } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import {
-  FiHome,
-  FiCalendar,
-  FiBookOpen,
-  FiSettings,
-  FiMenu,
-  FiX,
-  FiLogOut,
-} from "react-icons/fi";
 import Logo from "../../assets/images/logo.svg";
+import { 
+  RiDashboardLine, 
+  RiBookOpenLine, 
+  RiFileList3Line, 
+  RiCalendarLine,
+  RiMedalLine,
+  RiSettings4Line,
+  RiLogoutCircleLine
+} from "react-icons/ri";
 
-export function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+function Sidebar() {
   const location = useLocation();
+  const currentPath = location.pathname;
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleOverlayClick = () => {
-    setIsOpen(false);
-  };
-
-  const navigation = [
-    { name: "Dashboard", href: "/user/s/dashboard", icon: FiHome },
-    { name: "Schedule", href: "/user/s/schedules", icon: FiCalendar },
-    { name: "Exams", href: "/user/s/exams", icon: FiBookOpen },
-    { name: "Settings", href: "/user/s/settings", icon: FiSettings },
+  const sidebarLinks = [
+    {
+      title: "Dashboard",
+      icon: <RiDashboardLine className="text-xl" />,
+      url: "/user/s/dashboard",
+    },
+    {
+      title: "Courses",
+      icon: <RiBookOpenLine className="text-xl" />,
+      url: "/user/s/courses",
+    },
+    {
+      title: "Exams",
+      icon: <RiFileList3Line className="text-xl" />,
+      url: "/user/s/exams",
+    },
+    {
+      title: "Schedule",
+      icon: <RiCalendarLine className="text-xl" />,
+      url: "/user/s/schedules",
+    },
+    {
+      title: "Results",
+      icon: <RiMedalLine className="text-xl" />,
+      url: "/user/s/results",
+    },
+    {
+      title: "Settings",
+      icon: <RiSettings4Line className="text-xl" />,
+      url: "/user/s/settings",
+    },
+    {
+      title: "Logout",
+      icon: <RiLogoutCircleLine className="text-xl" />,
+      url: "/",
+    },
   ];
 
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
-
   return (
-    <>
-      <button
-        onClick={toggleSidebar}
-        className="fixed top-4 right-4 z-50 p-2 rounded-lg bg-white md:hidden hover:bg-slate-100"
-        aria-label={isOpen ? "Close menu" : "Open menu"}
-      >
-        {isOpen ? (
-          <FiX className="w-6 h-6 text-slate-600" />
-        ) : (
-          <FiMenu className="w-6 h-6 text-slate-600" />
-        )}
-      </button>
+    <div className="h-screen sticky top-0 w-64 bg-white shadow-sm p-5 flex flex-col">
+      <div className="mb-10">
+        <Link to="/user/s/dashboard">
+          <img src={Logo} alt="Logo" className="h-8" />
+        </Link>
+      </div>
 
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-slate-900/50 z-30 md:hidden transition-opacity duration-300"
-          onClick={handleOverlayClick}
-          aria-hidden="true"
-        />
-      )}
-
-      <aside
-        className={`
-          fixed md:static w-72 bg-white border-r border-slate-200 h-screen 
-          z-40 transition-transform duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-        `}
-      >
-        <div className="p-6 flex flex-col h-screen overflow-y-auto">
-          <div className="pb-6 w-full">
-            <img src={Logo} alt="Logo" className="w-28" />
-          </div>
-          <div className="flex flex-col h-screen justify-between">
-            <nav className="flex flex-col mt-4 space-y-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-md ${
-                    isActive(item.href)
-                      ? "bg-slate-100 text-h6 !text-primary fill-primary !font-semibold transition duration-150 ease-out"
-                      : "hover:bg-slate-100 hover:text-primary hover:font-semibold hover:fill-primary hover:ease-in"
-                  }`}
-                >
-                  <item.icon className="mr-3 h-5 w-5" />
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
-            <div className="pt-0 border-slate-200 border-t-2">
-              <Link
-                to="/"
-                className="flex items-center px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-md"
-              >
-                <FiLogOut className="mr-3 h-5 w-5" />
-                Logout
-              </Link>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </>
+      <div className="space-y-3">
+        {sidebarLinks.map((link, index) => (
+          <Link
+            key={index}
+            to={link.url}
+            className={`flex items-center justify-start gap-3 w-full p-2 py-3 pl-4
+                rounded-md fill-slate-400 text-slate-400 font-medium 
+                hover:bg-slate-100 hover:text-primary hover:font-semibold hover:fill-primary hover:ease-in
+                ${
+                  currentPath === link.url
+                    ? "bg-slate-100 text-h6 !text-primary fill-primary !font-semibold transition duration-150 ease-out"
+                    : ""
+                }`}
+          >
+            <div className="text-2xl fill-current">{link.icon}</div>
+            <h6>{link.title}</h6>
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }
 
