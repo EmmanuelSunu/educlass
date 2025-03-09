@@ -4,7 +4,7 @@ import { RiAddLine, RiDeleteBinLine } from 'react-icons/ri';
 interface ExamDetails {
   id: number;
   title: string;
-  type: "exam" | "test" | "assignment";
+  type: "exam" | "test" | "assignment"; 
   duration: string;
   durationHours: number;
   durationMinutes: number;
@@ -14,10 +14,10 @@ interface ExamDetails {
   dueDate: string;
   description: string;
   questions: Array<{
-    id: string;
-    type: "multi-choice" | "essay" | "fill-ins";
+    id: string; 
+    type: "multi-choice" | "essay" | "fill-ins"; 
     questionText: string;
-    options?: string[];
+    options?: string[]; 
     questionAnswer: string;
   }>;
   classId?: number;
@@ -45,11 +45,11 @@ const mockClasses: Class[] = [
   { id: 5, name: 'Chemistry 201' }
 ];
 
-const ExamForm: React.FC<ExamFormProps> = ({
-  examDetails,
-  onExamChange,
-  onSave,
-  onCancel
+const ExamForm: React.FC<ExamFormProps> = ({ 
+  examDetails, 
+  onExamChange, 
+  onSave, 
+  onCancel 
 }) => {
   const [activeTab, setActiveTab] = useState('details');
 
@@ -86,13 +86,13 @@ const ExamForm: React.FC<ExamFormProps> = ({
 
   const handleAddQuestion = () => {
     const newQuestion = {
-      id: String(examDetails.questions.length > 0
-        ? Math.max(...examDetails.questions.map(q => Number(q.id))) + 1
-        : 1),
-      type: "essay",
+      id: String(examDetails.questions.length > 0 
+        ? Math.max(...examDetails.questions.map(q => Number(q.id))) + 1 
+        : 1), 
+      type: "essay", 
       questionText: '',
       questionAnswer: '',
-      options: [],
+      options: [], 
     };
 
     onExamChange({
@@ -118,7 +118,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
 
   const handleOptionChange = (questionIndex: number, optionIndex: number, value: string) => {
     const updatedQuestions = [...examDetails.questions];
-    if (updatedQuestions[questionIndex].options) {
+    if(updatedQuestions[questionIndex].options){
       updatedQuestions[questionIndex].options[optionIndex] = value;
     }
     onExamChange({ ...examDetails, questions: updatedQuestions });
@@ -314,7 +314,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                         onChange={(e) => {
                           handleQuestionChange(index, 'type', e.target.value as 'multi-choice' | 'fill-ins' | 'essay');
                         }}
-                        className="modern-input h-10"
+                        className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                       >
                         <option value="multi-choice">Multiple Choice</option>
                         <option value="fill-ins">Fill in the Blank</option>
@@ -328,48 +328,55 @@ const ExamForm: React.FC<ExamFormProps> = ({
                         value={question.questionText}
                         onChange={(e) => handleQuestionChange(index, 'questionText', e.target.value)}
                         rows={3}
-                        className="modern-textarea h-40"
+                        className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                         placeholder="Enter your question here"
                       />
                     </div>
 
                     {question.type === 'multi-choice' && (
                       <div className="mb-4">
-                        <label className="text-span text-dark font-medium block pb-2">Options</label>
-                        {question.options?.map((option, optIndex) => (
+                        <div className="flex justify-between items-center mb-2">
+                          <label className="text-span text-dark font-medium">Answer Options</label>
+                          <button
+                            type="button"
+                            onClick={() => handleAddOption(index)}
+                            className="text-primary hover:text-primary-dark text-sm font-medium flex items-center"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                            </svg>
+                            Add Option
+                          </button>
+                        </div>
+
+                        {question.options && question.options.map((option, optIndex) => (
                           <div key={optIndex} className="flex items-center mb-2">
+                            <input
+                              type="radio"
+                              name={`question-${question.id}-answer`}
+                              checked={question.questionAnswer === option}
+                              onChange={() => handleQuestionChange(index, 'questionAnswer', option)}
+                              className="mr-2"
+                            />
                             <input
                               type="text"
                               value={option}
-                              onChange={(e) => {
-                                const newOptions = [...(question.options || [])];
-                                newOptions[optIndex] = e.target.value;
-                                handleQuestionChange(index, 'options', newOptions);
-                              }}
-                              className="modern-input mr-2"
-                              placeholder={`Option ${optIndex + 1}`}
+                              onChange={(e) => handleOptionChange(index, optIndex, e.target.value)}
+                              className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md flex-1 leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                             />
-                            <button
-                              onClick={() => {
-                                const newOptions = [...(question.options || [])];
-                                newOptions.splice(optIndex, 1);
-                                handleQuestionChange(index, 'options', newOptions);
-                              }}
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              <RiDeleteBinLine className="h-5 w-5" />
-                            </button>
+                            {question.options && question.options.length > 2 && (
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveOption(index, optIndex)}
+                                className="ml-2 text-red-500 hover:text-red-700"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                </svg>
+                              </button>
+                            )}
                           </div>
                         ))}
-                        <button
-                          onClick={() => {
-                            const newOptions = [...(question.options || []), ''];
-                            handleQuestionChange(index, 'options', newOptions);
-                          }}
-                          className="text-primary hover:text-primary-dark font-medium py-1 px-3 rounded border border-primary hover:bg-primary/5 mt-2"
-                        >
-                          Add Option
-                        </button>
                       </div>
                     )}
 
@@ -380,7 +387,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                           type="text"
                           value={question.questionAnswer}
                           onChange={(e) => handleQuestionChange(index, 'questionAnswer', e.target.value)}
-                          className="modern-input"
+                          className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                           placeholder="Enter the correct answer"
                         />
                       </div>
@@ -392,7 +399,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                         <textarea
                           value={question.questionAnswer}
                           onChange={(e) => handleQuestionChange(index, 'questionAnswer', e.target.value)}
-                          className="modern-textarea"
+                          className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                           placeholder="Enter a model answer for grading reference"
                           rows={4}
                         />

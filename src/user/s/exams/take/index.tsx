@@ -165,64 +165,49 @@ function TakeExamPage() {
     switch (question.type) {
       case 'multi-choice':
         return (
-          <div className="space-y-2 mt-4">
-            {question.options && question.options.map((option, optIndex) => {
-              const inputId = `question-${question.id}-option-${optIndex}`;
-              const isSelected = answers[question.id] === option;
-
-              return (
-                <label 
-                  key={optIndex} 
-                  htmlFor={inputId}
-                  className={`modern-option-label ${isSelected ? 'selected' : ''}`}
-                >
-                  <input
-                    type="radio"
-                    id={inputId}
-                    name={`question-${question.id}`}
-                    value={option}
-                    checked={isSelected}
-                    onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                    className="modern-radio"
-                  />
-                  <span className="text-gray-700">{option}</span>
-                </label>
-              );
-            })}
+          <div className="space-y-3">
+            {question.options?.map((option, index) => (
+              <label key={index} className="flex items-start cursor-pointer">
+                <input
+                  type="radio"
+                  name={`question-${question.id}`}
+                  className="mt-0.5 mr-3"
+                  checked={answers[question.id] === option}
+                  onChange={() => handleAnswerChange(question.id, option)}
+                />
+                <span className="text-base text-slate-800">{option}</span>
+              </label>
+            ))}
           </div>
         );
       case 'fill-ins':
         return (
-          <div className="mt-4">
+          <div>
             <input
               type="text"
+              className="w-full p-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="Enter your answer"
               value={answers[question.id] || ''}
               onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-              className="modern-input"
-              placeholder="Type your answer here"
               onPaste={(e) => e.preventDefault()}
             />
           </div>
         );
       case 'essay':
         return (
-          <div className="mt-4">
+          <div>
             <textarea
+              className="w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[150px]"
+              placeholder="Write your essay answer here..."
               value={answers[question.id] || ''}
               onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-              className="modern-textarea"
-              rows={4}
-              placeholder="Type your answer here"
               onPaste={(e) => e.preventDefault()}
-            ></textarea>
+              rows={6}
+            />
           </div>
         );
       default:
-        return (
-          <div className="text-gray-500 italic mt-4">
-            Unknown question type
-          </div>
-        );
+        return <p className="text-red-500">Unsupported question type</p>;
     }
   };
 

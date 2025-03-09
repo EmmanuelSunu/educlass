@@ -358,39 +358,25 @@ function ExamResultsPage() {
 
         <h2 className="text-xl font-semibold text-slate-800 mb-4">Question Breakdown</h2>
 
-        {results && (
-          <div className="space-y-6">
-            {results.questions.map((item, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6">
-                <div className="flex justify-between mb-4">
-                  <h3 className="text-lg font-medium text-gray-800">Question {index + 1}</h3>
-                  <span 
-                    className={`px-4 py-1 rounded-full text-xs font-semibold ${
-                      item.isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {item.isCorrect ? 'Correct' : 'Incorrect'}
-                  </span>
+        <div className="space-y-6">
+          {results.questions.map((q, index) => (
+            <div key={index} className={`p-4 rounded-lg border ${q.isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+              <div className="flex items-start">
+                <div className={`mr-3 mt-1 ${q.isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+                  {q.isCorrect ? <FiCheckCircle size={20} /> : <FiXCircle size={20} />}
                 </div>
-                <p className="text-gray-700 mb-4">{item.question}</p>
-                <div className="border-2 border-gray-100 p-4 rounded-lg mb-4 hover:border-gray-200 transition-colors">
-                  <p className="text-sm font-medium text-gray-600 mb-2">Your Answer:</p>
-                  <div className={`pl-3 border-l-4 ${item.isCorrect ? 'border-green-400' : 'border-red-400'}`}>
-                    <p className="text-gray-700">{item.yourAnswer}</p>
+                <div className="flex-1">
+                  <div className="font-medium text-slate-800">Question {index + 1}</div>
+                  <div className="text-slate-700 mt-1">{q.question}</div>
+
+                  <div className="mt-3">
+                    {renderStudentAnswer(results.questions[index], q.yourAnswer)}
                   </div>
                 </div>
-                {!item.isCorrect && examDetails?.questions[index]?.questionAnswer && (
-                  <div className="border-2 border-green-100 p-4 rounded-lg bg-green-50/30">
-                    <p className="text-sm font-medium text-gray-600 mb-2">Correct Answer:</p>
-                    <div className="pl-3 border-l-4 border-green-400">
-                      <p className="text-gray-700">{examDetails.questions[index].questionAnswer}</p>
-                    </div>
-                  </div>
-                )}
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
 
         <div className="flex justify-center mt-6">
           <button
