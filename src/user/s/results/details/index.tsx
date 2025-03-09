@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import DashboardLayout from "../../layout";
+import DashboardLayout from "../../layout/index";
 import examsData from "../../../l/exams/data/exams.json";
 import { FiCheckCircle, FiXCircle, FiArrowLeft } from "react-icons/fi";
 
