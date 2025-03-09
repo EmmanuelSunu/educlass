@@ -5,7 +5,7 @@ import ScheduleCalendar from "../../../components/ScheduleCalendar";
 import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";
 import { Schedule } from "./types";
-import { RiAddLine, RiCalendarLine, RiListCheck2 } from "react-icons/ri";
+import { RiCalendarLine, RiListCheck2 } from "react-icons/ri";
 
 // Mock data for demonstration
 const mockSchedules: Schedule[] = [
@@ -42,9 +42,7 @@ const mockSchedules: Schedule[] = [
 const SchedulesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
-  const [selectedSchedule, setSelectedSchedule] = useState<
-    Schedule | undefined
-  >();
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | undefined>(undefined);
   const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
 
   const handleAddSchedule = (scheduleData: Partial<Schedule>) => {
@@ -63,7 +61,7 @@ const SchedulesPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleDateSelect = (start: Date, end: Date) => {
+  const handleDateSelect = () => {
     setSelectedSchedule(undefined);
     setIsModalOpen(true);
   };

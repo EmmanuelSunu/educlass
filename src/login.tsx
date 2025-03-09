@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Logo from "./assets/images/logo.svg";
 import InputField from "./components/InputField";
 import ButtonProps from "./components/ButtonProps";

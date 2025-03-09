@@ -1,5 +1,3 @@
-import React from "react";
-
 const InputField = ({
   type = "text", // Default to text input
   id = "",

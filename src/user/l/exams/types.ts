@@ -31,4 +31,5 @@ export interface Question {
   type: 'essay' | 'multi-choice' | 'fill-ins';
   questionText: string;
   questionAnswer: string;
+  options?: string[]; // Make this optional to accommodate different question types
 }

@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import examsData from "../data/exams.json";
 import { RiQuestionFill } from "react-icons/ri";
 import DashboardLayout from "../../layout";
 
+// Updated Question interface to match the new structure
 interface Question {
   id: string;
   type: "essay" | "multi-choice" | "fill-ins";
   questionText: string;
+  options?: string[];
   questionAnswer: string;
 }
 
@@ -18,11 +18,15 @@ interface ExamDetails {
   title: string;
   type: string;
   duration: string;
+  durationHours?: number;
+  durationMinutes?: number;
   startTime: string;
   endTime: string;
   status: "scheduled" | "in-progress" | "completed";
   dueDate: string;
   description: string;
+  classId?: number;
+  className?: string;
   questions: Question[];
 }
 
@@ -33,23 +37,16 @@ function ExamDetailsPage() {
 
   useEffect(() => {
     if (id) {
-      const exam = examsData.find(
-        (exam) => exam.id === Number(id)
-      ) as ExamDetails;
-      setExamDetails(exam);
+      const exam = examsData.find(exam => exam.id === Number(id));
+      if (exam) {
+        setExamDetails(exam as ExamDetails);
+      }
     }
   }, [id]);
 
   if (!examDetails) {
     return <div>Loading...</div>;
   }
-
-  const handleQuestionChange = (index: number, value: string) => {
-    if (!examDetails) return;
-    const updatedQuestions = [...examDetails.questions];
-    updatedQuestions[index].questionText = value;
-    setExamDetails({ ...examDetails, questions: updatedQuestions });
-  };
 
   const statusColors = {
     scheduled: "bg-blue-100 text-blue-600",
@@ -59,6 +56,69 @@ function ExamDetailsPage() {
 
   const handleEditClick = () => {
     navigate(`/user/l/exams/create/${examDetails.id}`);
+  };
+
+  // Helper function to render question based on type
+  const renderQuestionContent = (question: Question) => {
+    switch (question.type) {
+      case "multi-choice":
+        return (
+          <>
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold text-slate-500">Question</p>
+              <p className="font-normal text-gray-700">{question.questionText}</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold text-slate-500">Options</p>
+              <ul className="list-disc pl-5">
+                {question.options?.map((option, optIndex) => (
+                  <li key={optIndex} className="font-normal text-gray-600">
+                    {option}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold text-slate-500">Correct Answer</p>
+              <p className="font-normal text-green-600">{question.questionAnswer}</p>
+            </div>
+          </>
+        );
+      case "essay":
+        return (
+          <>
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold text-slate-500">Essay Question</p>
+              <p className="font-normal text-gray-700">{question.questionText}</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold text-slate-500">Expected Answer</p>
+              <div className="p-3 bg-gray-50 rounded border border-gray-200">
+                <p className="font-normal text-gray-600">{question.questionAnswer}</p>
+              </div>
+            </div>
+          </>
+        );
+      case "fill-ins":
+        return (
+          <>
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold text-slate-500">Fill in the Blank</p>
+              <p className="font-normal text-gray-700">{question.questionText}</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold text-slate-500">Correct Answer</p>
+              <p className="font-medium text-green-600">{question.questionAnswer}</p>
+            </div>
+          </>
+        );
+      default:
+        return (
+          <div className="flex flex-col gap-2">
+            <p className="font-normal text-gray-600">{question.questionText}</p>
+          </div>
+        );
+    }
   };
 
   return (
@@ -94,7 +154,7 @@ function ExamDetailsPage() {
                 </button>
               </div>
             </div>
-            <div className="flex justify-between">
+            <div className="flex flex-wrap gap-4 md:gap-8">
               <div className="flex flex-col gap-1">
                 <span className="text-p text-gray-400 font-normal">Date</span>
                 <h6 className="text-p text-slate-900">{examDetails.dueDate}</h6>
@@ -112,43 +172,40 @@ function ExamDetailsPage() {
                   Start Time
                 </span>
                 <h6 className="text-p text-slate-900">
-                  {examDetails.startTime}
+                  {examDetails.startTime === "00:00" ? "Any time" : examDetails.startTime}
                 </h6>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-p text-gray-400 font-normal">
                   End Time
                 </span>
-                <h6 className="text-p text-slate-900">{examDetails.endTime}</h6>
+                <h6 className="text-p text-slate-900">
+                  {examDetails.endTime === "23:59" ? "Any time" : examDetails.endTime}
+                </h6>
               </div>
             </div>
+
+            {examDetails.description && (
+              <div className="mt-4">
+                <span className="text-p text-gray-400 font-normal">Description</span>
+                <p className="text-p text-slate-900">{examDetails.description}</p>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="space-y-4">
           {examDetails.questions.map((question) => (
             <div key={question.id}>
-              <div className="flex rounded-lg rounded-b-none flex-row items-center justify-start bg-lightGray p-5 gap-2">
+              <div className="flex rounded-lg rounded-b-none flex-row items-center justify-start bg-gray-100 p-4 gap-2">
                 <RiQuestionFill className="text-2xl text-blue-500" />
-                <h5 className="text-h5 font-semibold">
-                  Question {question.id}
-                </h5>
+                <h5 className="text-h5 font-semibold">Question {question.id}</h5>
+                <span className="ml-auto px-2 py-1 text-xs font-medium uppercase bg-blue-100 text-blue-700 rounded">
+                  {question.type}
+                </span>
               </div>
-              <div className="mb-2 border flex flex-col gap-3 border-gray-200 rounded-lg rounded-t-none p-5">
-                <div className="flex flex-col gap">
-                  <p className="font-semibold text-slate-500">Question</p>
-                  <p className="font-normal text-gray-400">
-                    {question.questionText}
-                  </p>
-                </div>
-                <div className="flex flex-col gap">
-                  <p className="font-semibold text-slate-500">
-                    Expected Answer
-                  </p>
-                  <p className="font-normal text-gray-400">
-                    {question.questionAnswer}
-                  </p>
-                </div>
+              <div className="mb-2 border flex flex-col gap-4 border-gray-200 rounded-lg rounded-t-none p-5">
+                {renderQuestionContent(question)}
               </div>
             </div>
           ))}

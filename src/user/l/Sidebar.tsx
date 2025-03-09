@@ -13,17 +13,13 @@ import {
   RiLogoutCircleRLine,
   RiSettings3Line,
 } from "react-icons/ri";
-import { MdOutlineGrading } from "react-icons/md"; // Added import
-import { Link, useLocation } from 'react-router-dom';
-
 interface SidebarProps {
   className?: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
-
+  
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };

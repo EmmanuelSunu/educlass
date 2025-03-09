@@ -1,46 +1,110 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layout";
-import { FiCheckCircle, FiXCircle, FiFileText, FiCalendar, FiClock } from "react-icons/fi";
+import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 import examsData from "../../../l/exams/data/exams.json";
+
+// Define interfaces for the data structures
+interface Exam {
+  id: number;
+  title: string;
+  type: string;
+  duration: string;
+  durationHours: number;
+  durationMinutes: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+  dueDate: string;
+  description: string;
+  classId: number;
+  className: string;
+  questions: Question[]; // Uses the updated `Question` interface
+}
+
+interface Question {
+  id: string;
+  type: string;
+  questionText: string; // Use `questionText` instead of `text`
+  options?: string[]; // `options` is optional
+  questionAnswer: string;
+}
+
+interface ResultQuestion {
+  question: string;
+  yourAnswer: string;
+  isCorrect: boolean;
+}
+
+interface ExamResult {
+  score: number;
+  maxScore: number;
+  passingScore: number;
+  correctAnswers: number;
+  totalQuestions: number;
+  timeSpent: string;
+  submittedAt: string;
+  feedback: string;
+  questions: ResultQuestion[];
+  examTitle?: string;
+  examClass?: string;
+}
 
 function ExamResultsPage() {
   const { examId } = useParams();
   const navigate = useNavigate();
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState<ExamResult | null>(null);
+  const [examDetails, setExamDetails] = useState<Exam | null>(null);
 
   useEffect(() => {
-    // Fetch results logic would go here
-    // This is a placeholder that simulates loading results
-
-    // Mock data
-    const mockResults = {
-      score: 85,
-      maxScore: 100,
-      passingScore: 70,
-      correctAnswers: 17,
-      totalQuestions: 20,
-      timeSpent: "45 minutes",
-      submittedAt: new Date().toISOString(),
-      feedback: "Good work overall. You demonstrated a strong understanding of the core concepts.",
-      questions: [
-        {
-          question: "What is the capital of France?",
-          yourAnswer: "Paris",
-          isCorrect: true
-        },
-        {
-          question: "Who wrote Romeo and Juliet?",
-          yourAnswer: "Charles Dickens",
-          isCorrect: false
-        }
-      ]
-    };
-
-    setResults(mockResults);
+    // Type assertion for exams data
+    const typedExamsData = examsData as Exam[];
+    
+    // Find the exam details from the JSON data
+    const exam = typedExamsData.find(e => e.id === Number(examId));
+    
+    if (exam) {
+      setExamDetails(exam);
+      
+      // Create mock results based on the actual exam questions
+      const mockQuestions = exam.questions.map((q) => {
+        // Simulate a mix of correct and incorrect answers
+        const isCorrect = Math.random() > 0.3; // 70% chance of correct answer
+        const yourAnswer = isCorrect 
+          ? q.options?.[0] ?? "No answer" // Assume first option is correct if options exist
+          : q.options?.[Math.floor(Math.random() * (q.options.length - 1)) + 1] ?? "No answer"; // Random wrong answer if options exist
+        
+        return {
+          question: q.questionText, // Use `questionText` instead of `text`
+          yourAnswer,
+          isCorrect
+        };
+      });
+      
+      const correctCount = mockQuestions.filter(q => q.isCorrect).length;
+      const totalQuestions = mockQuestions.length;
+      const scorePercentage = Math.round((correctCount / totalQuestions) * 100);
+      
+      // Create mock results
+      const mockResults: ExamResult = {
+        score: scorePercentage,
+        maxScore: 100,
+        passingScore: 70,
+        correctAnswers: correctCount,
+        totalQuestions,
+        timeSpent: `${Math.floor(Math.random() * exam.durationMinutes)} minutes`,
+        submittedAt: new Date().toISOString(),
+        feedback: "Good work overall. You demonstrated a strong understanding of the core concepts.",
+        questions: mockQuestions,
+        examTitle: exam.title,
+        examClass: exam.className
+      };
+      
+      setResults(mockResults);
+    }
   }, [examId]);
 
-  const getScoreColor = (score, maxScore) => {
+  const getScoreColor = (score: number, maxScore: number): string => {
     const percentage = (score / maxScore) * 100;
     if (percentage >= 80) return "text-green-600";
     if (percentage >= 70) return "text-blue-600";
@@ -48,7 +112,7 @@ function ExamResultsPage() {
     return "text-red-600";
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString();
   };
@@ -83,7 +147,7 @@ function ExamResultsPage() {
 
   return (
     <DashboardLayout
-      title="Exam Results"
+      title={`${examDetails?.title || 'Exam'} Results`}
       showAddHeadbarButton={false}
       buttonTitle=""
     >
@@ -131,12 +195,28 @@ function ExamResultsPage() {
           </div>
 
           <div className="bg-gray-50 p-4 rounded-md text-center">
-            <div className="text-sm font-medium text-gray-500 mb-1">Submitted At</div>
+            <div className="text-sm font-medium text-gray-500 mb-1">Time Spent</div>
             <div className="text-lg font-medium text-gray-700">
-              {new Date(results.submittedAt).toLocaleTimeString()}
+              {results.timeSpent}
             </div>
           </div>
         </div>
+
+        {examDetails && (
+          <div className="mb-6 bg-gray-50 p-4 rounded-lg">
+            <h2 className="text-lg font-medium text-gray-800 mb-2">Exam Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Title</p>
+                <p className="font-medium text-gray-700">{examDetails.title}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Class</p>
+                <p className="font-medium text-gray-700">{examDetails.className}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="mb-6">
           <h2 className="text-lg font-medium text-gray-800 mb-3">Instructor Feedback</h2>

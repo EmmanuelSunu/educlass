@@ -1,5 +1,3 @@
-
-import React from "react";
 import DashboardLayout from "../layout";
 
 function StudentSchedule() {

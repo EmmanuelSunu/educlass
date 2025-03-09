@@ -1,15 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
 import examsData from "../../l/exams/data/exams.json";
-import { MdOutlineAccessTime } from "react-icons/md";
-import { BsBook } from "react-icons/bs";
 import { FiCalendar, FiClock } from "react-icons/fi";
 
-// Import mock data for student classes
-import { studentClassIds } from './mock-data';
+// Define interfaces for TypeScript
+interface Exam {
+  id: number;
+  title: string;
+  type: string;
+  duration: string;
+  durationHours: number;
+  durationMinutes: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+  dueDate: string;
+  description: string;
+  classId: number;
+  className: string;
+  questions: Array<{
+    id: string;
+    type: string;
+    questionText: string;
+    options?: string[];
+    questionAnswer: string;
+  }>;
+}
 
-function formatDate(dateString) {
+// Mock data for student classes
+const studentClassIds = [1, 2, 3, 5]; // Classes the student is enrolled in
+
+function formatDate(dateString: string): string {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', { 
     month: 'short', 
@@ -20,85 +42,37 @@ function formatDate(dateString) {
 
 function StudentExams() {
   const navigate = useNavigate();
-  const [availableExams, setAvailableExams] = useState([]);
+  const [availableExams, setAvailableExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Type assertion for exams data
+    const typedExamsData = examsData as Exam[];
+    
     // Filter exams to only show those from classes the student is enrolled in
-    const studentExams = examsData.filter(exam => 
+    const studentExams = typedExamsData.filter(exam => 
       studentClassIds.includes(exam.classId)
     );
 
-    // Add more test exams for the student
-    const additionalExams = [
-      {
-        id: 201,
-        title: "Midterm Programming Exam",
-        type: "exam",
-        duration: "2 hours",
-        durationHours: 2,
-        durationMinutes: 0,
-        startTime: "09:00",
-        endTime: "12:00",
-        status: "scheduled",
-        dueDate: "2023-11-15",
-        description: "Midterm programming concepts exam covering arrays, loops, and functions",
-        classId: 1,
-        className: "Introduction to Programming",
-        questions: [
-          { text: "Question 1?", options: ["A", "B", "C", "D"] },
-          { text: "Question 2?", options: ["A", "B", "C", "D"] },
-          { text: "Question 3?", options: ["A", "B", "C", "D"] }
-        ]
-      },
-      {
-        id: 202,
-        title: "Database Design Quiz",
-        type: "test",
-        duration: "30 minutes",
-        durationHours: 0,
-        durationMinutes: 30,
-        startTime: "14:00",
-        endTime: "16:00",
-        status: "scheduled",
-        dueDate: "2023-11-20",
-        description: "Quick quiz on database normalization and SQL queries",
-        classId: 3,
-        className: "Database Systems",
-        questions: [
-          { text: "Question 4?", options: ["A", "B", "C", "D"] },
-          { text: "Question 5?", options: ["A", "B", "C", "D"] }
-        ]
-      },
-      {
-        id: 203,
-        title: "Web Development Final Project",
-        type: "assignment",
-        duration: "48 hours",
-        durationHours: 48,
-        durationMinutes: 0,
-        startTime: "00:00",
-        endTime: "23:59",
-        status: "scheduled",
-        dueDate: "2023-12-05",
-        description: "Final project submission for the Web Development course",
-        classId: 5,
-        className: "Web Development"
-      }
-    ];
+    // Update today's date for all exams to ensure availability
+    const today = new Date();
+    const updatedExams = studentExams.map(exam => ({
+      ...exam,
+      dueDate: today.toISOString().split('T')[0] // Set due date to today for demo purposes
+    }));
 
-    setAvailableExams([...studentExams, ...additionalExams]);
+    setAvailableExams(updatedExams);
     setLoading(false);
   }, []);
 
-  const handleExamClick = (exam) => {
-    console.log("Navigating to exam details:", exam.id); // Added console log for debugging
-    navigate(`/user/s/exams/details/${exam.id}`, { state: { exam } });
+  const handleExamClick = (exam: Exam) => {
+    console.log("Navigating to exam details:", exam.id);
+    navigate(`/user/s/exams/details/${exam.id}`);
   };
 
-  const getExamStatusLabel = (exam) => {
+  const getExamStatusLabel = (exam: Exam): { label: string; color: string } => {
     const now = new Date();
-    const dueDate = new Date(exam.dueDate + " " + exam.endTime);
+    const dueDate = new Date(`${exam.dueDate} ${exam.endTime}`);
 
     if (now > dueDate) {
       return { label: "Completed", color: "bg-green-100 text-green-800" };
@@ -108,7 +82,11 @@ function StudentExams() {
   };
 
   return (
-    <DashboardLayout title="My Exams">
+    <DashboardLayout
+      title="My Exams"
+      showAddHeadbarButton={false}
+      buttonTitle=""
+    >
       <div className="mb-6">
         <h2 className="text-lg font-medium text-gray-800 mb-2">Available Exams</h2>
         <p className="text-sm text-gray-600">

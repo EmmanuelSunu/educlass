@@ -1,11 +1,10 @@
 
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import DashboardLayout from "../layout";
 import { FiClock, FiCalendar, FiBook, FiCheckCircle } from "react-icons/fi";
 
 function Dashboard() {
-  const navigate = useNavigate();
+  
   const [stats, setStats] = useState({
     upcomingExams: 0,
     completedAssignments: 0,

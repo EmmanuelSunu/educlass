@@ -1,15 +1,37 @@
-
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
-import ExamCard from "../../../components/examCard";
-import examsData from "../exams/data/exams.json";
 import { BsCalendarEvent, BsClockHistory, BsGraphUp, BsPeople } from "react-icons/bs";
+import examsData from "../exams/data/exams.json";
+
+// Define the type for the exam object to avoid TypeScript errors
+interface Exam {
+  id: number;
+  title: string;
+  type: string;
+  duration: string;
+  durationHours: number;
+  durationMinutes: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+  dueDate: string;
+  description: string;
+  classId: number;
+  className: string;
+  questions: Array<{
+    id: string;
+    type: string;
+    questionText: string; // Use `questionText` instead of `text`
+    options?: string[]; // `options` is optional
+    questionAnswer: string;
+  }>;
+}
 
 function Dashboard() {
   const navigate = useNavigate();
-  const [upcomingExams, setUpcomingExams] = useState([]);
-  const [ongoingExams, setOngoingExams] = useState([]);
+  const [upcomingExams, setUpcomingExams] = useState<Exam[]>([]);
+  const [ongoingExams, setOngoingExams] = useState<Exam[]>([]);
   const [stats, setStats] = useState({
     totalExams: 0,
     totalClasses: 0,
@@ -18,27 +40,43 @@ function Dashboard() {
   });
   
   useEffect(() => {
-    // Simulate getting data from API
+    // Process exams data from the imported JSON
     const today = new Date();
     
-    // Process exams data
-    const upcoming = examsData.filter(exam => 
-      new Date(exam.dueDate) > today && exam.status === "scheduled"
-    ).slice(0, 3);
+    // Type assertion to avoid TypeScript errors
+    const typedExamsData = examsData as Exam[];
     
-    const ongoing = examsData.filter(exam => 
-      exam.status === "in-progress" || 
-      (new Date(exam.dueDate).toDateString() === today.toDateString())
-    ).slice(0, 2);
+    // Process upcoming exams: those with due dates in the future and status "scheduled"
+    const upcoming = typedExamsData
+      .filter(exam => {
+        const examDate = new Date(exam.dueDate);
+        return examDate > today && exam.status === "scheduled";
+      })
+      .slice(0, 3);
+    
+    // Process ongoing exams: those with status "in-progress" or due today
+    const ongoing = typedExamsData
+      .filter(exam => {
+        const examDate = new Date(exam.dueDate);
+        return (
+          exam.status === "in-progress" || 
+          (examDate.toDateString() === today.toDateString())
+        );
+      })
+      .slice(0, 2);
     
     setUpcomingExams(upcoming);
     setOngoingExams(ongoing);
     
+    // Calculate statistics
+    const uniqueClasses = [...new Set(typedExamsData.map(exam => exam.classId))];
+    const completedExams = typedExamsData.filter(exam => exam.status === "completed").length;
+    
     setStats({
-      totalExams: examsData.length,
-      totalClasses: 5,
-      totalStudents: 150,
-      completedExams: examsData.filter(exam => exam.status === "completed").length
+      totalExams: typedExamsData.length,
+      totalClasses: uniqueClasses.length,
+      totalStudents: 150, // This would ideally come from an API
+      completedExams: completedExams
     });
   }, []);
 
@@ -46,13 +84,17 @@ function Dashboard() {
     navigate('/user/l/exams/create');
   };
 
-  const handleViewExam = (examId) => {
+  const handleViewExam = (examId: number) => {
     navigate(`/user/l/exams/details/${examId}`);
   };
 
   // Format date for display
-  const formatDate = (dateString) => {
-    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = { 
+      weekday: 'short', 
+      month: 'short', 
+      day: 'numeric' 
+    };
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
 
@@ -126,7 +168,9 @@ function Dashboard() {
                   <div key={exam.id} className="flex justify-between items-center border-b border-slate-100 pb-4 last:border-0 last:pb-0">
                     <div>
                       <h3 className="font-medium text-slate-800">{exam.title}</h3>
-                      <p className="text-sm text-slate-500 mt-1">Due: {formatDate(exam.dueDate)}</p>
+                      <p className="text-sm text-slate-500 mt-1">
+                        Due: {formatDate(exam.dueDate)} • {exam.className}
+                      </p>
                     </div>
                     <button
                       onClick={() => handleViewExam(exam.id)}
@@ -189,7 +233,9 @@ function Dashboard() {
                   <div key={exam.id} className="border-l-4 border-amber-500 pl-3 py-2">
                     <h3 className="font-medium text-slate-800">{exam.title}</h3>
                     <div className="flex justify-between items-center mt-1">
-                      <p className="text-xs text-slate-500">Time: {exam.startTime} - {exam.endTime}</p>
+                      <p className="text-xs text-slate-500">
+                        {exam.type} • {exam.duration}
+                      </p>
                       <button
                         onClick={() => handleViewExam(exam.id)}
                         className="px-2 py-1 bg-amber-100 text-amber-600 rounded text-xs font-medium hover:bg-amber-200"

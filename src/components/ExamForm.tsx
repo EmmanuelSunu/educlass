@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { RiAddLine, RiDeleteBinLine } from 'react-icons/ri';
 
-export interface ExamDetails {
+interface ExamDetails {
   id: number;
   title: string;
-  type: 'exam' | 'test' | 'assignment';
+  type: "exam" | "test" | "assignment"; 
   duration: string;
-  durationHours?: number;
-  durationMinutes?: number;
+  durationHours: number;
+  durationMinutes: number;
   startTime: string;
   endTime: string;
-  status: 'scheduled' | 'in-progress' | 'completed';
+  status: "scheduled" | "in-progress" | "completed";
   dueDate: string;
   description: string;
-  questions: {
-    id: number;
+  questions: Array<{
+    id: string; // Updated from number to string to match `index.tsx`
+    type: "multi-choice" | "essay" | "fill-ins"; // Added type field
     questionText: string;
+    options?: string[]; // Added options for multi-choice
     questionAnswer: string;
-  }[];
+  }>;
   classId?: number;
   className?: string;
 }
+
 
 interface Class {
   id: number;
@@ -75,7 +78,6 @@ const ExamForm: React.FC<ExamFormProps> = ({
     }
   }, []);
 
-
   const handleInputChange = (name: string, value: string | number) => {
     onExamChange({
       ...examDetails,
@@ -83,47 +85,24 @@ const ExamForm: React.FC<ExamFormProps> = ({
     });
   };
 
-  const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const numValue = parseInt(value) || 0;
-
-    const updatedExam = {
-      ...examDetails,
-      [name]: numValue
-    };
-
-    const hours = name === 'durationHours' ? numValue : (examDetails.durationHours || 0);
-    const minutes = name === 'durationMinutes' ? numValue : (examDetails.durationMinutes || 0);
-
-    let durationStr = '';
-    if (hours > 0) {
-      durationStr += `${hours} hour${hours !== 1 ? 's' : ''}`;
-    }
-    if (minutes > 0) {
-      durationStr += hours > 0 ? ` and ${minutes} minute${minutes !== 1 ? 's' : ''}` : `${minutes} minute${minutes !== 1 ? 's' : ''}`;
-    }
-    if (durationStr === '') {
-      durationStr = '0 minutes';
-    }
-
-    updatedExam.duration = durationStr;
-    onExamChange(updatedExam);
-  };
-
   const handleAddQuestion = () => {
     const newQuestion = {
-      id: examDetails.questions.length > 0 
-        ? Math.max(...examDetails.questions.map(q => q.id)) + 1 
-        : 1,
+      id: String(examDetails.questions.length > 0 
+        ? Math.max(...examDetails.questions.map(q => Number(q.id))) + 1 
+        : 1), // Ensure `id` is a string
+      type: "essay" as "multi-choice" | "essay" | "fill-ins", // Explicitly define type
       questionText: '',
-      questionAnswer: ''
+      questionAnswer: '',
+      options: [], // Default empty options for multi-choice
     };
-
+  
     onExamChange({
       ...examDetails,
       questions: [...examDetails.questions, newQuestion]
     });
   };
+  
+  
 
   const handleQuestionChange = (index: number, field: 'questionText' | 'questionAnswer', value: string) => {
     const updatedQuestions = [...examDetails.questions];
@@ -138,13 +117,13 @@ const ExamForm: React.FC<ExamFormProps> = ({
     });
   };
 
-  const handleRemoveQuestion = (id: number) => {
+  const handleRemoveQuestion = (id: string) => {
     onExamChange({
       ...examDetails,
       questions: examDetails.questions.filter(q => q.id !== id)
     });
   };
-
+  
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="mb-6 border-b">

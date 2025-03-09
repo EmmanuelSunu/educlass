@@ -1,7 +1,6 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { BsBook } from "react-icons/bs";
 import { MdOutlineAccessTime } from "react-icons/md";
 
 interface ExamCardProps {
@@ -19,7 +18,6 @@ interface ExamCardProps {
 const ExamCard: React.FC<ExamCardProps> = ({
   id,
   title,
-  type,
   duration,
   startTime,
   endTime,
@@ -35,11 +33,6 @@ const ExamCard: React.FC<ExamCardProps> = ({
     completed: "bg-emerald-100 text-emerald-600 border-emerald-200",
   };
 
-  const typeIcons = {
-    exam: <BsBook className="text-primary" />,
-    test: <BsBook className="text-yellow-500" />,
-    assignment: <BsBook className="text-green-500" />,
-  };
 
   const handleCardClick = () => {
     navigate(`/user/l/exams/details/${id}`);

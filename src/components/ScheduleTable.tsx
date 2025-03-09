@@ -1,7 +1,5 @@
 import React from 'react';
 import { Schedule } from '../user/l/schedules/types';
-import ButtonProps from './ButtonProps';
-import { RiEdit2Line, RiDeleteBinLine } from 'react-icons/ri';
 
 interface ScheduleTableProps {
   schedules: Schedule[];

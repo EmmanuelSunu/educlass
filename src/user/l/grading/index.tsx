@@ -1,6 +1,5 @@
 
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import DashboardLayout from "../layout";
 import { FiEdit, FiCheck, FiClock, FiFileText, FiStar } from "react-icons/fi";
 import { MdOutlineGrading, MdOutlineAutoGraph } from "react-icons/md";
@@ -36,7 +35,6 @@ interface FeedbackTemplate {
 }
 
 const Grading = () => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"pending" | "history" | "statistics" | "templates">("pending");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [selectedSubmissions, setSelectedSubmissions] = useState<number[]>([]);

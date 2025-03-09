@@ -1,5 +1,5 @@
 // pages/class/index.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardLayout from "../layout";
 import ClassCard from "../../../components/classCard";
 import classData from "./data/class.json";
@@ -23,10 +23,7 @@ function ClassIndex() {
     fetchClasses();
   }, []);
 
-  const handleAddClass = () => {
-    console.log("Add class clicked");
-    // Add logic to add a new class
-  };
+
 
   return (
     <DashboardLayout

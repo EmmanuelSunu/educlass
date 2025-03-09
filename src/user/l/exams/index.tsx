@@ -1,5 +1,5 @@
 // pages/Exams.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
 import ExamCard from "../../../components/examCard";
@@ -14,6 +14,7 @@ interface Exam {
   endTime: string;
   status: 'scheduled' | 'in-progress' | 'completed';
   dueDate: string;
+  className?: string; 
 }
 
 function Exams() {

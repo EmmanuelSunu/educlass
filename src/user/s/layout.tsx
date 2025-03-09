@@ -21,7 +21,7 @@ function DashboardLayout({
   return (
     <div className="flex h-screen bg-slate-50">
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden ml-0 md:ml-72">
+      <div className="flex-1 flex flex-col overflow-hidden ml-0 ">
         <HeaderBar
           title={title}
           showAddHeadbarButton={showAddHeadbarButton}

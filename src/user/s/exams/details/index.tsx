@@ -1,33 +1,60 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardLayout from "../../layout";
 import { useNavigate, useParams } from "react-router-dom";
-// Using the local mock data instead of importing
+import examsData from "../../../l/exams/data/exams.json";
+
+// Define the Exam interface to match the JSON structure
+interface Exam {
+  id: number;
+  title: string;
+  type: string;
+  duration: string;
+  durationHours: number;
+  durationMinutes: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+  dueDate: string;
+  description: string;
+  classId: number;
+  className: string;
+  questions: Array<{
+    id: string;
+    type: string;
+    questionText: string; // Use `questionText` instead of `text`
+    options?: string[]; // `options` is optional
+    questionAnswer: string;
+  }>;
+}
 
 function ExamDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [examDetails, setExamDetails] = useState(null);
+  const [examDetails, setExamDetails] = useState<Exam | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAvailable, setIsAvailable] = useState(false);
 
   useEffect(() => {
+    // Type assertion for the imported JSON data
+    const typedExamsData = examsData as Exam[];
+    
     console.log("Looking for exam with ID:", id);
-    const exam = examsData.find(exam => exam.id === Number(id));
+    const exam = typedExamsData.find(exam => exam.id === Number(id));
     console.log("Found exam:", exam);
-
+  
     if (exam) {
       setExamDetails(exam);
-
+  
       // Check if exam is available based on date and time
       const now = new Date();
       const examDate = new Date(exam.dueDate);
-
+  
       // Check if current date matches exam date
       const isSameDate = 
         now.getFullYear() === examDate.getFullYear() && 
         now.getMonth() === examDate.getMonth() && 
         now.getDate() === examDate.getDate();
-
+  
       if (!isSameDate) {
         console.log("Exam date doesn't match current date", {
           examDate: exam.dueDate,
@@ -36,17 +63,17 @@ function ExamDetailsPage() {
         setIsAvailable(false);
         return;
       }
-
+  
       // If dates match, check if current time is within exam time window
       const [startHour, startMinute] = exam.startTime.split(':').map(Number);
       const [endHour, endMinute] = exam.endTime.split(':').map(Number);
-
+  
       const startTimeMinutes = startHour * 60 + startMinute;
       const endTimeMinutes = endHour * 60 + endMinute;
       const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
-
+  
       setIsAvailable(currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes);
-
+  
       console.log("Time availability check:", {
         currentTime: `${now.getHours()}:${now.getMinutes()}`,
         startTime: exam.startTime,
@@ -54,7 +81,7 @@ function ExamDetailsPage() {
         isAvailable: currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes
       });
     }
-
+  
     setLoading(false);
   }, [id]);
 
@@ -168,31 +195,16 @@ function ExamDetailsPage() {
           </div>
         </div>
 
-        {/* Exam preview section has been removed */}
+        {/* Exam Description Section */}
+        {examDetails.description && (
+          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-6">
+            <h3 className="font-semibold text-slate-800 mb-2">Description</h3>
+            <p className="text-slate-700">{examDetails.description}</p>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
 }
 
 export default ExamDetailsPage;
-
-// Mock data for development
-const examsData = [
-  {
-    id: 101,
-    title: "Midterm Exam: Introduction to Computer Science",
-    className: "CS101",
-    type: "exam",
-    duration: "90 minutes",
-    dueDate: new Date().toISOString().split('T')[0], // Today's date for demo
-    startTime: "09:00",
-    endTime: "23:59",
-    status: "scheduled",
-    questions: [
-      { text: "What is the difference between a compiler and an interpreter?", questionType: "essay", options: ["Option 1", "Option 2", "Option 3", "Option 4"] },
-      { text: "Explain the concept of object-oriented programming.", questionType: "essay", options: [] },
-      { text: "What are the advantages of using version control systems?", questionType: "objective", options: ["Option 1", "Option 2", "Option 3", "Option 4"] }
-    ]
-  },
-  // Add more mock exams as needed
-];
