@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import DashboardLayout from "../layout";
-import ScheduleModal from "../../../components/ScheduleModal";
 import ScheduleCalendar from "../../../components/ScheduleCalendar";
 import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";
-import { Schedule } from "./types";
 import { RiCalendarLine, RiListCheck2 } from "react-icons/ri";
+import { Schedule } from "./types";
+import ScheduleFileUpload from "./ScheduleFileUpload";
 
 // Mock data for demonstration
 const mockSchedules: Schedule[] = [
@@ -39,44 +39,26 @@ const mockSchedules: Schedule[] = [
   },
 ];
 
-const SchedulesPage: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const LecturerSchedulePage: React.FC = () => {
   const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | undefined>(undefined);
-  const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
+  const [allSchedules, setAllSchedules] = useState<Schedule[]>(mockSchedules);
 
-  const handleAddSchedule = (scheduleData: Partial<Schedule>) => {
-    const newSchedule: Schedule = {
-      ...scheduleData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    } as Schedule;
+  const handleSchedulesImported = (importedSchedules: Schedule[]) => {
+    // Merge imported schedules with existing ones
+    setAllSchedules(prevSchedules => {
+      // Create a new array with both sets of schedules
+      const combined = [...prevSchedules, ...importedSchedules];
 
-    setSchedules([...schedules, newSchedule]);
-  };
+      // Alert the user about the import
+      window.alert(`Successfully imported ${importedSchedules.length} schedule items.`);
 
-  const handleEditSchedule = (schedule: Schedule) => {
-    setSelectedSchedule(schedule);
-    setIsModalOpen(true);
-  };
-
-  const handleDateSelect = () => {
-    setSelectedSchedule(undefined);
-    setIsModalOpen(true);
+      return combined;
+    });
   };
 
   return (
-    <DashboardLayout
-      title="Schedules"
-      showAddHeadbarButton={true}
-      onAddHeadbarButton={() => {
-        setSelectedSchedule(undefined);
-        setIsModalOpen(true);
-      }}
-      buttonTitle="Add Schedule"
-    >
-      <div className="mb-6 flex items-center">
+    <DashboardLayout>
+      <div className="mb-4 md:mb-6 flex items-center justify-between">
         <div className="flex space-x-2">
           <ButtonProps
             variant={viewMode === "calendar" ? "primary" : "secondary"}
@@ -97,33 +79,23 @@ const SchedulesPage: React.FC = () => {
         </div>
       </div>
 
+      <ScheduleFileUpload onSchedulesImported={handleSchedulesImported} />
+
       {viewMode === "calendar" ? (
         <ScheduleCalendar
-          schedules={schedules}
-          onEventClick={handleEditSchedule}
-          onDateSelect={handleDateSelect}
+          schedules={allSchedules}
+          onEventClick={() => {}}
+          onDateSelect={() => {}}
         />
       ) : (
         <ScheduleTable
-          schedules={schedules}
-          onEdit={handleEditSchedule}
-          onDelete={(scheduleId) =>
-            setSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
-          }
+          schedules={allSchedules}
+          onEdit={() => {}}
+          onDelete={() => {}}
         />
       )}
-
-      <ScheduleModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedSchedule(undefined);
-        }}
-        onSave={handleAddSchedule}
-        schedule={selectedSchedule}
-      />
     </DashboardLayout>
   );
 };
 
-export default SchedulesPage;
+export default LecturerSchedulePage;
