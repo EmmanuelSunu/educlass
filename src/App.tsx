@@ -21,7 +21,7 @@ import StudentExamTake from "./user/s/exams/take";
 import StudentExamResults from "./user/s/exams/results";
 import StudentResults from "./user/s/results";
 import StudentResultDetails from "./user/s/results/details";
-import StudentCalender from "./user/s/calendar";
+import StudentCalender from "./user/s/schedules";
 import StudentClasses from "./user/s/classes";
 
 
