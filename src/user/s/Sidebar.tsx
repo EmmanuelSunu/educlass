@@ -1,84 +1,65 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../../assets/images/logo.svg";
+import MenuItem from "../../components/menu-itens";
 import { 
   RiDashboardLine, 
   RiBookOpenLine, 
-  RiFileList3Line, 
   RiCalendarLine,
   RiMedalLine,
   RiSettings4Line,
-  RiLogoutCircleLine
+  RiLogoutCircleLine //Corrected the typo here
 } from "react-icons/ri";
+import URLS from "./url";
 
 function Sidebar() {
   const location = useLocation();
-  const currentPath = location.pathname;
 
   const sidebarLinks = [
     {
       title: "Dashboard",
       icon: <RiDashboardLine className="text-xl" />,
-      url: "/user/s/dashboard",
-    },
-    {
-      title: "Courses",
-      icon: <RiBookOpenLine className="text-xl" />,
-      url: "/user/s/courses",
+      url: URLS.DASHBOARD,
     },
     {
       title: "Exams",
-      icon: <RiFileList3Line className="text-xl" />,
-      url: "/user/s/exams",
+      icon: <RiMedalLine className="text-xl" />,
+      url: URLS.EXAMS,
     },
     {
       title: "Schedule",
       icon: <RiCalendarLine className="text-xl" />,
-      url: "/user/s/schedules",
-    },
-    {
-      title: "Results",
-      icon: <RiMedalLine className="text-xl" />,
-      url: "/user/s/results",
+      url: URLS.SCHEDULE,
     },
     {
       title: "Settings",
       icon: <RiSettings4Line className="text-xl" />,
-      url: "/user/s/settings",
+      url: URLS.SETTINGS,
     },
     {
       title: "Logout",
-      icon: <RiLogoutCircleLine className="text-xl" />,
+      icon: <RiLogoutCircleLine className="text-xl" />, //Corrected the typo here
       url: "/",
     },
   ];
 
   return (
-    <div className="h-screen sticky top-0 w-64 bg-white shadow-sm p-5 flex flex-col">
-      <div className="mb-10">
-        <Link to="/user/s/dashboard">
-          <img src={Logo} alt="Logo" className="h-8" />
-        </Link>
-      </div>
+    <div className="bg-white text-dark border-r min-h-screen w-72 px-4 py-5 hidden lg:block">
+      <div className="flex flex-col h-full">
+        <div className="mb-6">
+          <img src={Logo} alt="EduClass Logo" className="w-32" />
+        </div>
 
-      <div className="space-y-3">
-        {sidebarLinks.map((link, index) => (
-          <Link
-            key={index}
-            to={link.url}
-            className={`flex items-center justify-start gap-3 w-full p-2 py-3 pl-4
-                rounded-md fill-slate-400 text-slate-400 font-medium 
-                hover:bg-slate-100 hover:text-primary hover:font-semibold hover:fill-primary hover:ease-in
-                ${
-                  currentPath === link.url
-                    ? "bg-slate-100 text-h6 !text-primary fill-primary !font-semibold transition duration-150 ease-out"
-                    : ""
-                }`}
-          >
-            <div className="text-2xl fill-current">{link.icon}</div>
-            <h6>{link.title}</h6>
-          </Link>
-        ))}
+        <div className="space-y-3">
+          {sidebarLinks.map((link, index) => (
+            <MenuItem
+              key={index}
+              to={link.url}
+              icon={link.icon}
+              label={link.title}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

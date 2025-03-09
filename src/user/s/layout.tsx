@@ -1,7 +1,7 @@
 
 import React from "react";
 import HeaderBar from "./headerbar";
-import { Sidebar } from "./Sidebar";
+import Sidebar from "./Sidebar";
 import Breadcrumb from "../../components/Breadcrumb";
 
 interface DashboardLayoutProps {
