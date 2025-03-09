@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DashboardLayout from "../layout/index"; // Updated import path to use layout/index.tsx
+import DashboardLayout from "../layout"; // Updated import path
 import examsData from "../../l/exams/data/exams.json";
 import { FiCalendar } from "react-icons/fi";
 
