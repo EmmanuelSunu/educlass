@@ -79,19 +79,19 @@ function StudentExams() {
     
     // Check if exam is in the past
     if (now > dueDate) {
-      return { label: "Completed", color: "bg-emerald-100 text-emerald-600" };
+      return { label: "Completed", color: "bg-green-100 text-green-800" };
     } 
     // Check if exam is today and within time window
     else if (isSameDate(now, dueDate) && now >= examStartDate && now <= dueDate) {
-      return { label: "Available", color: "bg-blue-100 text-blue-600" };
+      return { label: "Available", color: "bg-blue-100 text-blue-800" };
     } 
     // Check if exam is today but not yet started
     else if (isSameDate(now, dueDate) && now < examStartDate) {
-      return { label: "Scheduled", color: "bg-purple-100 text-purple-600" };
+      return { label: "Today", color: "bg-amber-100 text-amber-800" };
     }
     // Otherwise, it's a future exam
     else {
-      return { label: "Scheduled", color: "bg-purple-100 text-purple-600" };
+      return { label: "Scheduled", color: "bg-purple-100 text-purple-800" };
     }
   };
 
