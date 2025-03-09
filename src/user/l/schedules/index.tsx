@@ -41,69 +41,77 @@ const mockSchedules: Schedule[] = [
   },
 ];
 
-const LecturerSchedulePage: React.FC = () => {
-  const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
-  const [allSchedules, setAllSchedules] = useState<Schedule[]>(mockSchedules);
-  const [showUploadModal, setShowUploadModal] = useState(false);
+const Schedules = () => {
+  const [view, setView] = useState<'calendar' | 'table'>('calendar');
+  const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
+  const handleAddSchedule = (schedule: Schedule) => {
+    setSchedules([...schedules, schedule]);
+  };
 
-  const handleSchedulesImported = (importedSchedules: Schedule[]) => {
-    // Merge imported schedules with existing ones
-    setAllSchedules(prevSchedules => {
-      // Create a new array with both sets of schedules
-      const combined = [...prevSchedules, ...importedSchedules];
-
-      // Alert the user about the import
-      window.alert(`Successfully imported ${importedSchedules.length} schedule items.`);
-
-      return combined;
-    });
-    setShowUploadModal(false); // Close modal after successful import
+  const handleImportSchedules = (newSchedules: Schedule[]) => {
+    setSchedules([...schedules, ...newSchedules]);
+    setIsUploadModalOpen(false);
   };
 
   return (
     <DashboardLayout>
-      <div className="mb-4 md:mb-6 flex items-center justify-between">
-        <div className="flex space-x-2">
-          <ButtonProps
-            variant={viewMode === "calendar" ? "primary" : "secondary"}
-            onClick={() => setViewMode("calendar")}
-            className="gap-2"
-          >
-            <RiCalendarLine />
-            Calendar
-          </ButtonProps>
-          <ButtonProps
-            variant={viewMode === "table" ? "primary" : "secondary"}
-            onClick={() => setViewMode("table")}
-            className="gap-2"
-          >
-            <RiListCheck2 />
-            Table
-          </ButtonProps>
-          <ButtonProps
-            variant="accent" // Added accent variant for upload button
-            onClick={() => setShowUploadModal(true)}
-            className="gap-2"
-          >
-            <RiUploadCloud2Line />
-            Upload
-          </ButtonProps>
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="flex flex-row justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold text-gray-800">Schedule Management</h1>
+
+          <div className="flex items-center space-x-2">
+            <div className="bg-slate-100 rounded-lg p-1 flex">
+              <button
+                className={`px-4 py-2 rounded-md flex items-center ${
+                  view === 'calendar' ? 'bg-white shadow-sm' : ''
+                }`}
+                onClick={() => setView('calendar')}
+              >
+                <RiCalendarLine className="mr-2" />
+                Calendar
+              </button>
+              <button
+                className={`px-4 py-2 rounded-md flex items-center ${
+                  view === 'table' ? 'bg-white shadow-sm' : ''
+                }`}
+                onClick={() => setView('table')}
+              >
+                <RiListCheck2 className="mr-2" />
+                Table
+              </button>
+            </div>
+
+            <button
+              className="p-2 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary-dark transition-colors"
+              onClick={() => setIsUploadModalOpen(true)}
+              title="Upload Schedule Data"
+            >
+              <RiUploadCloud2Line size={24} />
+            </button>
+          </div>
         </div>
+
+        {view === 'calendar' ? (
+          <ScheduleCalendar schedules={schedules} />
+        ) : (
+          <ScheduleTable schedules={schedules} />
+        )}
       </div>
 
-      {/* File Upload Modal */}
-      <Modal isOpen={showUploadModal} onClose={() => setShowUploadModal(false)}>
-        <ScheduleFileUpload onSchedulesImported={handleSchedulesImported} />
-      </Modal>
-
-      {viewMode === "calendar" ? (
-        <ScheduleCalendar schedules={allSchedules} />
-      ) : (
-        <ScheduleTable schedules={allSchedules} />
+      {/* Upload Schedule Modal */}
+      {isUploadModalOpen && (
+        <Modal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          title="Upload Schedule Data"
+        >
+          <ScheduleFileUpload onImport={handleImportSchedules} />
+        </Modal>
       )}
     </DashboardLayout>
   );
 };
 
-export default LecturerSchedulePage;
+export default Schedules;
