@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineAccessTime } from "react-icons/md";
@@ -33,32 +32,32 @@ const ExamCard: React.FC<ExamCardProps> = ({
     completed: "bg-emerald-100 text-emerald-600 border-emerald-200",
     available: "bg-blue-100 text-blue-600 border-blue-200"
   };
-  
+
   // Determine actual status based on date
   const determineStatus = () => {
     const now = new Date();
     const examDate = new Date(dueDate);
-    
+
     // Check if dates are same (only comparing year, month, day)
     const isSameDay = (d1: Date, d2: Date) => 
       d1.getFullYear() === d2.getFullYear() && 
       d1.getMonth() === d2.getMonth() && 
       d1.getDate() === d2.getDate();
-    
+
     if (examDate < now && !isSameDay(examDate, now)) {
       return "completed";
     } else if (isSameDay(examDate, now)) {
       // Check if current time is within exam hours
       const [startHour, startMinute] = startTime.split(':').map(Number);
       const [endHour, endMinute] = endTime.split(':').map(Number);
-      
+
       const currentHour = now.getHours();
       const currentMinute = now.getMinutes();
-      
+
       const currentTimeValue = currentHour * 60 + currentMinute;
       const startTimeValue = startHour * 60 + startMinute;
       const endTimeValue = endHour * 60 + endMinute;
-      
+
       if (currentTimeValue >= startTimeValue && currentTimeValue <= endTimeValue) {
         return "available";
       } else if (currentTimeValue < startTimeValue) {
@@ -70,7 +69,7 @@ const ExamCard: React.FC<ExamCardProps> = ({
       return "scheduled"; // Future date
     }
   };
-  
+
   const currentStatus = determineStatus();
   const statusDisplay = currentStatus === "available" ? "Available" : status;
 

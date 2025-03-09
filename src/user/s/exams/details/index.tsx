@@ -138,12 +138,12 @@ function ExamDetailsPage() {
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">{examDetails.title}</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-slate-800">{examDetails.title}</h2>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-slate-600">{examDetails.className}</p>
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                 isPastExam ? "bg-gray-100 text-gray-800" :
-                isFutureExam ? "bg-blue-100 text-blue-800" :
+                isFutureExam ? "bg-purple-100 text-purple-800" :
                 isAvailable ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"
               }`}>
                 {isPastExam ? "Past" :
@@ -215,34 +215,7 @@ function ExamDetailsPage() {
               </li>
             </ul>
           </div>
-          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-            <h3 className="font-semibold text-slate-800 mb-2">Status</h3>
-            <ul className="space-y-2">
-              <li className="flex justify-between">
-                <span className="text-slate-600">Status:</span>
-                <span className={`font-medium capitalize ${
-                  isPastExam ? "text-gray-800" :
-                  isFutureExam ? "text-blue-600" :
-                  isAvailable ? "text-green-600" : "text-amber-600"
-                }`}>
-                  {isPastExam ? "Past" :
-                   isFutureExam ? "Upcoming" :
-                   isAvailable ? "Available Now" : "Not Available Yet"}
-                </span>
-              </li>
-              {isPastExam && (
-                <li className="flex justify-between">
-                  <span className="text-slate-600">Participation:</span>
-                  <span className={`font-medium ${hasTakenExam ? "text-green-600" : "text-red-600"}`}>
-                    {hasTakenExam ? "Completed" : "Did Not Participate"}
-                  </span>
-                </li>
-              )}
-              {isFutureExam && (
-                <li className="flex justify-between">
-                  <span className="text-slate-600">Days until exam:</span>
-                  <span className="font-medium text-slate-800">
-                    {Math.ceil((new Date(examDetails.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
+          {/* Status box removed */}
                   </span>
                 </li>
               )}
