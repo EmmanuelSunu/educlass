@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Logo from "../../assets/images/logo.svg";
 import MenuItem from "../../components/menu-itens";
 import {
   RiDashboardLine,
-  RiBookOpenLine,
   RiCalendarLine,
   RiMedalLine,
   RiSettings4Line,
   RiLogoutCircleLine,
   RiMenuLine,
   RiCloseLine,
-  RiFileListLine
+  RiFileListLine,
 } from "react-icons/ri";
 import URLS from "./url";
 
@@ -104,7 +103,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                   label={link.title}
                 />
               ))}
-              <MenuItem to="/user/s/results" icon={<RiFileListLine className="text-xl"/>} label="Results" />
+              <MenuItem
+                to="/user/s/results" // Corrected route
+                icon={<RiFileListLine className="text-xl" />}
+                label="Results"
+              />
             </nav>
 
             {/* Logout Button */}
