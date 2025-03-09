@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiHome, FiCalendar, FiBookOpen, FiSettings, FiMenu, FiX, FiLogOut } from "react-icons/fi";
+import {
+  FiHome,
+  FiCalendar,
+  FiBookOpen,
+  FiSettings,
+  FiMenu,
+  FiX,
+  FiLogOut,
+} from "react-icons/fi";
 import Logo from "../../assets/images/logo.svg";
 
 export function Sidebar() {
@@ -67,8 +75,8 @@ export function Sidebar() {
                   to={item.href}
                   className={`flex items-center px-4 py-3 text-sm font-medium rounded-md ${
                     isActive(item.href)
-                      ? "bg-primary text-white"
-                      : "text-slate-600 hover:bg-slate-100"
+                      ? "bg-slate-100 text-h6 !text-primary fill-primary !font-semibold transition duration-150 ease-out"
+                      : "hover:bg-slate-100 hover:text-primary hover:font-semibold hover:fill-primary hover:ease-in"
                   }`}
                 >
                   <item.icon className="mr-3 h-5 w-5" />
@@ -77,8 +85,8 @@ export function Sidebar() {
               ))}
             </nav>
             <div className="pt-0 border-slate-200 border-t-2">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="flex items-center px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-md"
               >
                 <FiLogOut className="mr-3 h-5 w-5" />
