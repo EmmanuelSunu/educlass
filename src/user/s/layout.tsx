@@ -1,6 +1,7 @@
+
 import React from "react";
 import HeaderBar from "./headerbar";
-import Sidebar from "./Sidebar";
+import { Sidebar } from "./Sidebar";
 import Breadcrumb from "../../components/Breadcrumb";
 
 interface DashboardLayoutProps {
@@ -19,9 +20,9 @@ function DashboardLayout({
   buttonTitle,
 }: DashboardLayoutProps) {
   return (
-    <div className="lg:flex lg:flex-row">
+    <div className="flex h-screen bg-slate-50">
       <Sidebar />
-      <div className="flex-1 h-screen bg-slate-100 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden ml-0 ">
         <HeaderBar
           title={title}
           showAddHeadbarButton={showAddHeadbarButton}
@@ -29,9 +30,9 @@ function DashboardLayout({
           buttonTitle={buttonTitle}
         />
         <Breadcrumb />
-        <div className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );

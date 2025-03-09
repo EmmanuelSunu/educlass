@@ -1,8 +1,6 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../../assets/images/logo.svg";
-import MenuItem from "../../components/menu-itens";
 import { 
   RiDashboardLine, 
   RiBookOpenLine, 
@@ -10,12 +8,12 @@ import {
   RiCalendarLine,
   RiMedalLine,
   RiSettings4Line,
-  RiLogoutCircleRLine
+  RiLogoutCircleLine
 } from "react-icons/ri";
-import URLS from "./url";
 
 function Sidebar() {
   const location = useLocation();
+  const currentPath = location.pathname;
 
   const sidebarLinks = [
     {
@@ -50,7 +48,7 @@ function Sidebar() {
     },
     {
       title: "Logout",
-      icon: <RiLogoutCircleRLine className="text-xl" />,
+      icon: <RiLogoutCircleLine className="text-xl" />,
       url: "/",
     },
   ];
@@ -65,12 +63,21 @@ function Sidebar() {
 
       <div className="space-y-3">
         {sidebarLinks.map((link, index) => (
-          <MenuItem
+          <Link
             key={index}
             to={link.url}
-            icon={link.icon}
-            label={link.title}
-          />
+            className={`flex items-center justify-start gap-3 w-full p-2 py-3 pl-4
+                rounded-md fill-slate-400 text-slate-400 font-medium 
+                hover:bg-slate-100 hover:text-primary hover:font-semibold hover:fill-primary hover:ease-in
+                ${
+                  currentPath === link.url
+                    ? "bg-slate-100 text-h6 !text-primary fill-primary !font-semibold transition duration-150 ease-out"
+                    : ""
+                }`}
+          >
+            <div className="text-2xl fill-current">{link.icon}</div>
+            <h6>{link.title}</h6>
+          </Link>
         ))}
       </div>
     </div>
