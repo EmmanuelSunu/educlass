@@ -3,9 +3,11 @@ import DashboardLayout from "../layout";
 import ScheduleCalendar from "../../../components/ScheduleCalendar";
 import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";
-import { RiCalendarLine, RiListCheck2 } from "react-icons/ri";
+import { RiCalendarLine, RiListCheck2, RiUploadCloud2Line } from "react-icons/ri";
 import { Schedule } from "./types";
 import ScheduleFileUpload from "./ScheduleFileUpload";
+import Modal from '../../../components/Modal'; // Assuming a Modal component exists
+
 
 // Mock data for demonstration
 const mockSchedules: Schedule[] = [
@@ -42,6 +44,8 @@ const mockSchedules: Schedule[] = [
 const LecturerSchedulePage: React.FC = () => {
   const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
   const [allSchedules, setAllSchedules] = useState<Schedule[]>(mockSchedules);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+
 
   const handleSchedulesImported = (importedSchedules: Schedule[]) => {
     // Merge imported schedules with existing ones
@@ -54,6 +58,7 @@ const LecturerSchedulePage: React.FC = () => {
 
       return combined;
     });
+    setShowUploadModal(false); // Close modal after successful import
   };
 
   return (
@@ -76,23 +81,26 @@ const LecturerSchedulePage: React.FC = () => {
             <RiListCheck2 />
             Table
           </ButtonProps>
+          <ButtonProps
+            variant="accent" // Added accent variant for upload button
+            onClick={() => setShowUploadModal(true)}
+            className="gap-2"
+          >
+            <RiUploadCloud2Line />
+            Upload
+          </ButtonProps>
         </div>
       </div>
 
-      <ScheduleFileUpload onSchedulesImported={handleSchedulesImported} />
+      {/* File Upload Modal */}
+      <Modal isOpen={showUploadModal} onClose={() => setShowUploadModal(false)}>
+        <ScheduleFileUpload onSchedulesImported={handleSchedulesImported} />
+      </Modal>
 
       {viewMode === "calendar" ? (
-        <ScheduleCalendar
-          schedules={allSchedules}
-          onEventClick={() => {}}
-          onDateSelect={() => {}}
-        />
+        <ScheduleCalendar schedules={allSchedules} />
       ) : (
-        <ScheduleTable
-          schedules={allSchedules}
-          onEdit={() => {}}
-          onDelete={() => {}}
-        />
+        <ScheduleTable schedules={allSchedules} />
       )}
     </DashboardLayout>
   );
