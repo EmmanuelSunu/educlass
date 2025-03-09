@@ -61,26 +61,51 @@ function ExamDetailsPage() {
   // Helper function to render question based on type
   const renderQuestionContent = (question: Question) => {
     return (
-      <>
-        <p className="text-p text-slate-900">{question.questionText}</p>
-
-        {question.type === "multi-choice" && question.options && (
-          <div className="space-y-2 ml-4">
-            {question.options.map((option, index) => (
-              <div key={index} className="flex items-center">
-                <span className="inline-block w-5 h-5 border border-gray-300 rounded-full mr-2"></span>
-                <span>{option}</span>
+      <div className="flex flex-col">
+        <p className="text-p mb-3">{question.questionText}</p>
+        {question.type === 'multi-choice' && question.options && (
+          <div className="ml-6 mb-4">
+            {question.options.map((option, i) => (
+              <div
+                key={i}
+                className={`mb-2 p-2 border ${
+                  option === question.questionAnswer
+                    ? 'bg-green-50 border-green-300'
+                    : 'border-gray-200'
+                } rounded-md`}
+              >
+                <span
+                  className={`${
+                    option === question.questionAnswer
+                      ? 'text-green-700 font-medium'
+                      : 'text-gray-700'
+                  }`}
+                >
+                  {option}
+                  {option === question.questionAnswer && (
+                    <span className="ml-2 text-green-600">(Correct Answer)</span>
+                  )}
+                </span>
               </div>
             ))}
           </div>
         )}
-
-        {question.type === "essay" && (
-          <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-            <p className="text-sm text-gray-500 italic">Students will provide a written response in a text area.</p>
+        {question.type === 'fill-ins' && (
+          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <span className="text-p font-semibold text-blue-700">Correct Answer: </span>
+            <span className="text-p text-blue-900">{question.questionAnswer}</span>
           </div>
         )}
-      </>
+        {question.type === 'essay' && (
+          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <span className="text-p font-semibold text-blue-700">Model Answer: </span>
+            <span className="text-p text-blue-900">{question.questionAnswer}</span>
+            <p className="mt-2 text-xs text-blue-700">
+              Note: Essay answers require manual grading and assessment against this model answer.
+            </p>
+          </div>
+        )}
+      </div>
     );
   };
 

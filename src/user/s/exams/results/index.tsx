@@ -188,6 +188,94 @@ function ExamResultsPage() {
 
   const isPassed = results.score >= results.passingScore;
 
+  const renderStudentAnswer = (question: Question, studentAnswer: string) => {
+    if (question.type === 'multi-choice' && question.options) {
+      return (
+        <div className="space-y-2">
+          {question.options.map((option, i) => (
+            <div
+              key={i}
+              className={`p-2 border ${
+                option === studentAnswer
+                  ? option === question.questionAnswer
+                    ? 'bg-green-50 border-green-300'
+                    : 'bg-red-50 border-red-300'
+                  : option === question.questionAnswer
+                    ? 'bg-blue-50 border-blue-200'
+                    : 'border-gray-200'
+              } rounded-md`}
+            >
+              <span
+                className={`${
+                  option === studentAnswer
+                    ? option === question.questionAnswer
+                      ? 'text-green-700 font-medium'
+                      : 'text-red-700 font-medium'
+                    : option === question.questionAnswer
+                      ? 'text-blue-700 font-medium'
+                      : 'text-gray-700'
+                }`}
+              >
+                {option}
+                {option === question.questionAnswer && (
+                  <span className="ml-2 text-green-600">(Correct Answer)</span>
+                )}
+                {option === studentAnswer && option !== question.questionAnswer && (
+                  <span className="ml-2 text-red-600">(Your Answer)</span>
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    } else if (question.type === 'fill-ins') {
+      const isCorrect = studentAnswer.toLowerCase() === question.questionAnswer.toLowerCase();
+      return (
+        <div className="mt-3 space-y-3">
+          <div
+            className={`p-3 border ${
+              isCorrect
+                ? 'bg-green-50 border-green-300'
+                : 'bg-red-50 border-red-300'
+            } rounded-md`}
+          >
+            <p className="font-medium">Your Answer:</p>
+            <p
+              className={`${
+                isCorrect ? 'text-green-700' : 'text-red-700'
+              } font-medium`}
+            >
+              {studentAnswer || "(No answer provided)"}
+            </p>
+          </div>
+
+          {!isCorrect && (
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+              <p className="font-medium">Correct Answer:</p>
+              <p className="text-blue-700 font-medium">{question.questionAnswer}</p>
+            </div>
+          )}
+        </div>
+      );
+    } else if (question.type === 'essay') {
+      // Essay answers may not have a specific "correct" answer
+      return (
+        <div className="mt-3 space-y-3">
+          <div className="p-3 border border-gray-200 rounded-md">
+            <p className="font-medium">Your Answer:</p>
+            <p className="text-gray-700 whitespace-pre-wrap">{studentAnswer || "(No answer provided)"}</p>
+          </div>
+
+          <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <p className="font-medium">Model Answer (For Reference):</p>
+            <p className="text-blue-700 whitespace-pre-wrap">{question.questionAnswer}</p>
+            <p className="mt-2 text-xs text-blue-600">Note: Essay answers are graded manually by the instructor.</p>
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <DashboardLayout
       title={`${examDetails?.title || 'Exam'} Results`}
@@ -282,8 +370,7 @@ function ExamResultsPage() {
                   <div className="text-slate-700 mt-1">{q.question}</div>
 
                   <div className="mt-3">
-                    <div className="text-sm text-slate-500">Your answer:</div>
-                    <div className="text-slate-700 mt-1">{q.yourAnswer}</div>
+                    {renderStudentAnswer(results.questions[index], q.yourAnswer)}
                   </div>
                 </div>
               </div>

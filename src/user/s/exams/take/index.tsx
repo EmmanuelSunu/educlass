@@ -10,7 +10,7 @@ interface Question {
   questionText: string;
   options?: string[];
   questionAnswer: string;
-  points?: number; // Added to ensure compatibility with existing code
+  points?: number; 
 }
 
 interface Exam {
@@ -41,30 +41,24 @@ function TakeExamPage() {
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Find the exam in the JSON data
     const typedExamsData = examsData as Exam[];
     const foundExam = typedExamsData.find(exam => exam.id === Number(id));
 
     if (foundExam) {
-      // Process the found exam
       const processedExam = {
         ...foundExam,
         questions: foundExam.questions.map((question, index) => ({
           ...question,
-          id: question.id ?? `q${index + 1}`, // Use existing id or generate a new one
-          points: 5 // Default points value
+          id: question.id ?? `q${index + 1}`, 
+          points: 5 
         }))
       };
 
       setExam(processedExam);
-
-      // Calculate total duration in minutes
       const totalMinutes = (processedExam.durationHours * 60) + processedExam.durationMinutes;
-      setTimeLeft(totalMinutes * 60); // Convert to seconds
-
+      setTimeLeft(totalMinutes * 60); 
       setLoading(false);
     } else {
-      // Handle case when exam is not found
       console.error("Exam not found with ID:", id);
       setTimeout(() => {
         setLoading(false);
@@ -87,7 +81,6 @@ function TakeExamPage() {
             if (timerRef.current) {
               clearInterval(timerRef.current);
             }
-            // Auto-submit when time expires
             handleSubmit();
             return 0;
           }
@@ -111,7 +104,7 @@ function TakeExamPage() {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleAnswerChange = (questionId: number | string, answer: string) => {
+  const handleAnswerChange = (questionId: string, answer: string) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: answer
@@ -124,13 +117,8 @@ function TakeExamPage() {
     setIsSubmitting(true);
 
     try {
-      // Here you would send the answers to your backend
       console.log("Submitting answers:", answers);
-
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Redirect to results page
       navigate(`/user/s/exams/results/${id}`);
     } catch (error) {
       console.error("Error submitting exam:", error);
@@ -173,39 +161,23 @@ function TakeExamPage() {
     );
   }
 
-  // Render the question display based on the question type
   const renderQuestionDisplay = (question: Question) => {
     switch (question.type) {
       case 'multi-choice':
         return (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {question.options?.map((option, index) => (
-              <div key={index} className="flex items-center">
+              <label key={index} className="flex items-start cursor-pointer">
                 <input
                   type="radio"
-                  id={`${question.id}-option-${index}`}
-                  name={question.id}
-                  value={option}
+                  name={`question-${question.id}`}
+                  className="mt-0.5 mr-3"
                   checked={answers[question.id] === option}
                   onChange={() => handleAnswerChange(question.id, option)}
-                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                 />
-                <label htmlFor={`${question.id}-option-${index}`} className="ml-2 text-sm text-gray-700">
-                  {option}
-                </label>
-              </div>
+                <span className="text-base text-slate-800">{option}</span>
+              </label>
             ))}
-          </div>
-        );
-      case 'essay':
-        return (
-          <div>
-            <textarea
-              value={answers[question.id] || ''}
-              onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500 min-h-[150px] tablet-as-mobile"
-              placeholder="Type your answer here..."
-            />
           </div>
         );
       case 'fill-ins':
@@ -213,10 +185,24 @@ function TakeExamPage() {
           <div>
             <input
               type="text"
+              className="w-full p-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="Enter your answer"
               value={answers[question.id] || ''}
               onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Your answer..."
+              onPaste={(e) => e.preventDefault()}
+            />
+          </div>
+        );
+      case 'essay':
+        return (
+          <div>
+            <textarea
+              className="w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[150px]"
+              placeholder="Write your essay answer here..."
+              value={answers[question.id] || ''}
+              onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+              onPaste={(e) => e.preventDefault()}
+              rows={6}
             />
           </div>
         );
@@ -227,13 +213,13 @@ function TakeExamPage() {
 
   return (
     <DashboardLayout
-      title={`Taking Exam: ${exam.title}`}
+      title={`Taking Exam: ${exam?.title}`}
       showAddHeadbarButton={false}
       buttonTitle=""
     >
       <div className="max-w-4xl mx-auto py-8 px-4">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">{exam.title}</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{exam?.title}</h1>
           <div className="bg-orange-50 border border-orange-200 text-orange-700 px-4 py-2 rounded-md flex items-center space-x-2">
             <span className="font-medium">Time Left:</span> 
             <span className="font-mono text-lg">{timeLeft !== null ? formatTime(timeLeft) : "00:00:00"}</span>
@@ -247,18 +233,18 @@ function TakeExamPage() {
             <li>Your answers will be auto-saved as you progress.</li>
             <li>Once submitted, you cannot return to change your answers.</li>
             <li>The exam will auto-submit when the time expires.</li>
-            {exam.description && <li>{exam.description}</li>}
+            {exam?.description && <li>{exam.description}</li>}
           </ul>
         </div>
 
         <div className="space-y-8">
-          {exam.questions.map((question, index) => (
+          {exam?.questions.map((question, index) => (
             <div key={question.id ?? index} className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between mb-4">
                 <h3 className="text-lg font-medium text-gray-800">Question {index + 1}</h3>
                 <span className="text-sm text-gray-500">{question.points ?? 5} points</span>
               </div>
-              <p className="text-gray-700 mb-4">{question.questionText}</p> {/* Use `questionText` instead of `text` */}
+              <p className="text-gray-700 mb-4">{question.questionText}</p> 
               {renderQuestionDisplay(question)}
             </div>
           ))}
@@ -266,7 +252,7 @@ function TakeExamPage() {
 
         <div className="mt-8 flex justify-between items-center">
           <div className="text-sm text-gray-500">
-            <span className="font-medium">{Object.keys(answers).length}</span> of {exam.questions.length} questions answered
+            <span className="font-medium">{Object.keys(answers).length}</span> of {exam?.questions.length} questions answered
           </div>
           <button
             onClick={handleSubmit}
@@ -286,7 +272,7 @@ function TakeExamPage() {
           </button>
         </div>
 
-        {Object.keys(answers).length < exam.questions.length && (
+        {Object.keys(answers).length < exam?.questions.length && (
           <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-center space-x-3 text-amber-700">
             <FiAlertTriangle className="flex-shrink-0" />
             <p className="text-sm">You have unanswered questions. Please review before submitting.</p>
