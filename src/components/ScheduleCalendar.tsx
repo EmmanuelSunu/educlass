@@ -66,10 +66,29 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
         editable={true}
         selectable={true}
         selectMirror={true}
-        dayMaxEvents={true}
+        dayMaxEvents={3}
+        moreLinkClick="popover"
         weekends={true}
         expandRows={true}
         height="auto"
+        eventDisplay="block"
+        stickyHeaderDates={true}
+        // Mobile responsive settings
+        windowResize={(view) => {
+          if (window.innerWidth < 768) {
+            view.calendar.setOption('headerToolbar', {
+              left: 'prev,next',
+              center: 'title',
+              right: 'dayGridMonth,timeGridDay'
+            });
+          } else {
+            view.calendar.setOption('headerToolbar', {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            });
+          }
+        }}
         select={(selectInfo) => {
           onDateSelect(selectInfo.start, selectInfo.end);
         }}

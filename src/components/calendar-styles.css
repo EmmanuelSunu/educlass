@@ -62,3 +62,45 @@
 .fc-timegrid-axis {
   height: 44px !important;
 }
+/* Mobile-friendly calendar styles */
+@media (max-width: 768px) {
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .fc .fc-toolbar-title {
+    font-size: 1.2rem !important;
+  }
+  
+  .fc .fc-button {
+    padding: 0.3rem 0.5rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .fc .fc-daygrid-day-number {
+    font-size: 0.8rem;
+    padding: 2px 3px !important;
+  }
+  
+  .fc .fc-event-title {
+    font-size: 0.7rem !important;
+    white-space: normal !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .fc .fc-event {
+    padding: 1px 3px !important;
+  }
+  
+  .fc .fc-col-header-cell-cushion {
+    font-size: 0.8rem;
+  }
+}
+
+/* Better touch support */
+.fc-event {
+  touch-action: manipulation;
+  cursor: pointer !important; 
+}

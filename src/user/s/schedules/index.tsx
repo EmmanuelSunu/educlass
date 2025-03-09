@@ -80,7 +80,7 @@ const StudentSchedulePage: React.FC = () => {
       showAddHeadbarButton={false}
       buttonTitle=""
     >
-      <div className="mb-6 flex items-center">
+      <div className="mb-4 md:mb-6 flex items-center justify-between">
         <div className="flex space-x-2">
           <ButtonProps
             variant={viewMode === "calendar" ? "primary" : "secondary"}
