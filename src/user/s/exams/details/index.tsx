@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layout";
@@ -39,7 +38,7 @@ function ExamDetailsPage() {
       // Check exam date against current date
       const now = new Date();
       const examDate = new Date(exam.dueDate);
-      
+
       console.log("Exam date check:", {
         examDate: exam.dueDate,
         currentDate: now.toISOString().split('T')[0]
@@ -60,23 +59,23 @@ function ExamDetailsPage() {
         // If dates match, check if current time is within exam time window
         const [startHour, startMinute] = exam.startTime.split(':').map(Number);
         const [endHour, endMinute] = exam.endTime.split(':').map(Number);
-        
+
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
-        
+
         const currentTimeValue = currentHour * 60 + currentMinute;
         const startTimeValue = startHour * 60 + startMinute;
         const endTimeValue = endHour * 60 + endMinute;
-        
+
         const isTimeAvailable = currentTimeValue >= startTimeValue && currentTimeValue <= endTimeValue;
-        
+
         console.log("Time availability check:", {
           currentTime: `${currentHour}:${currentMinute}`,
           startTime: exam.startTime,
           endTime: exam.endTime,
           isAvailable: isTimeAvailable
         });
-        
+
         setIsAvailable(isTimeAvailable);
       }
       setLoading(false);
@@ -142,13 +141,13 @@ function ExamDetailsPage() {
             <div className="flex items-center gap-2 mt-1">
               <p className="text-slate-600">{examDetails.className}</p>
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                isPastExam ? "bg-gray-100 text-gray-800" :
-                isFutureExam ? "bg-purple-100 text-purple-800" :
-                isAvailable ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"
+                isPastExam ? "bg-emerald-100 text-emerald-600 border-emerald-200" :
+                isFutureExam ? "bg-purple-100 text-purple-600 border-purple-200" :
+                isAvailable ? "bg-blue-100 text-blue-600 border-blue-200" : "bg-amber-100 text-amber-600 border-amber-200"
               }`}>
-                {isPastExam ? "Past" :
-                 isFutureExam ? "Upcoming" :
-                 isAvailable ? "Available Now" : "Not Available Yet"}
+                {isPastExam ? "Completed" :
+                 isFutureExam ? "Scheduled" :
+                 isAvailable ? "Available" : "Not Available"}
               </span>
             </div>
           </div>
@@ -169,8 +168,8 @@ function ExamDetailsPage() {
               )
             ) : isFutureExam ? (
               // Future exam - show when it will be available
-              <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded font-medium">
-                Available on {new Date(examDetails.dueDate).toLocaleDateString()}
+              <div className="bg-purple-100 text-purple-600 px-4 py-2 rounded font-medium">
+                Scheduled for {new Date(examDetails.dueDate).toLocaleDateString()}
               </div>
             ) : (
               // Current day exam - enable or disable based on time window
@@ -222,7 +221,7 @@ function ExamDetailsPage() {
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-slate-200 pt-4 mt-6">
           <h3 className="font-semibold text-slate-800 mb-3">Description</h3>
           <div className="text-slate-700 whitespace-pre-wrap">
