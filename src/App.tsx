@@ -61,6 +61,7 @@ function App() {
             element={<StudentResultDetails />}
           />
           <Route path="classes" element={<StudentClasses />} />
+          <Route path="classes/:id" element={React.lazy(() => import("./user/s/classes/details"))} />
           <Route path="settings" element={<StudentSettings />} />
         </Route>
         

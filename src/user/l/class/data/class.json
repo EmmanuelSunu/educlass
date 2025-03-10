@@ -40,3 +40,41 @@
     ]
   }
 ]
+[
+  {
+    "id": 1,
+    "name": "Introduction to Programming",
+    "duration": "16 weeks",
+    "level": "200",
+    "semester": "First Semester",
+    "lecturer": "Dr. James Smith",
+    "description": "An introduction to programming concepts, algorithms, and problem-solving techniques."
+  },
+  {
+    "id": 2,
+    "name": "Web Development",
+    "duration": "14 weeks",
+    "level": "300",
+    "semester": "Second Semester",
+    "lecturer": "Prof. Sarah Johnson",
+    "description": "Advanced web development techniques using modern frameworks and tools."
+  },
+  {
+    "id": 3,
+    "name": "Database Systems",
+    "duration": "12 weeks",
+    "level": "400",
+    "semester": "First Semester",
+    "lecturer": "Dr. Michael Chen",
+    "description": "Comprehensive study of database design principles and implementation techniques."
+  },
+  {
+    "id": 5,
+    "name": "Machine Learning",
+    "duration": "16 weeks",
+    "level": "300",
+    "semester": "First Semester",
+    "lecturer": "Dr. Emily Wilson",
+    "description": "Introduction to machine learning algorithms and implementation techniques."
+  }
+]

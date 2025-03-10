@@ -12,6 +12,9 @@ const URLS = {
 
   // Exam specific routes
   EXAM_DETAILS: (id: string) => `/user/s/exams/details/${id}`,
+  
+  // Class specific routes
+  CLASS_DETAILS: (id: string) => `/user/s/classes/${id}`,
 
   // Profile routes
   PROFILE: "/user/s/profile",
