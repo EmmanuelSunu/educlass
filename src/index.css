@@ -110,13 +110,33 @@ textarea, input[type="text"], .secure-content {
 }
 
 /* Disable drag behavior specifically for exam textareas */
-.exam-area textarea {
+.exam-area textarea, .no-drag-drop {
   -webkit-touch-callout: default !important;
   -webkit-user-select: text !important;
   -khtml-user-select: text !important;
   -moz-user-select: text !important;
   -ms-user-select: text !important;
   user-select: text !important;
+  /* Add cursor styles to indicate text editing without drag capability */
+  cursor: text !important;
+}
+
+/* Use a stronger approach with pseudo-elements to capture drag events */
+.no-drag-drop::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* Allow typing */
+  z-index: 2;
+}
+
+/* Apply these styles to parent element as another layer of prevention */
+.exam-area {
+  position: relative;
+  isolation: isolate;
 }
 
   background-color: #f3e8ff;

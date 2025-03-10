@@ -24,33 +24,45 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   
-  // Add document-level event listeners to prevent drag and drop globally
+  // Add comprehensive event listeners to prevent drag and drop globally
   useEffect(() => {
-    const preventDragStart = (e: DragEvent) => {
+    // More aggressive approach to prevent drag events
+    const preventDragEvents = (e: Event) => {
       e.preventDefault();
+      e.stopPropagation();
       return false;
     };
     
-    const preventDragOver = (e: DragEvent) => {
-      e.preventDefault();
-      return false;
+    // Handle focus to disable clipboard operations
+    const handleFocus = () => {
+      if (textareaRef.current) {
+        // Force disable browser's native drag behavior
+        textareaRef.current.setAttribute('ondragstart', 'return false;');
+        textareaRef.current.setAttribute('ondrop', 'return false;');
+      }
     };
     
-    const preventDrop = (e: DragEvent) => {
-      e.preventDefault();
-      return false;
-    };
+    // Prevent browser default behavior for these events
+    window.addEventListener('dragstart', preventDragEvents, true);
+    window.addEventListener('dragenter', preventDragEvents, true);
+    window.addEventListener('dragover', preventDragEvents, true);
+    window.addEventListener('drop', preventDragEvents, true);
     
-    // Add listeners to document
-    document.addEventListener('dragstart', preventDragStart);
-    document.addEventListener('dragover', preventDragOver);
-    document.addEventListener('drop', preventDrop);
+    // For iOS Safari which handles events differently
+    if (textareaRef.current) {
+      textareaRef.current.addEventListener('focus', handleFocus);
+    }
     
     return () => {
       // Clean up
-      document.removeEventListener('dragstart', preventDragStart);
-      document.removeEventListener('dragover', preventDragOver);
-      document.removeEventListener('drop', preventDrop);
+      document.removeEventListener('dragstart', preventDragEvents, true);
+      document.removeEventListener('dragenter', preventDragEvents, true);
+      document.removeEventListener('dragover', preventDragEvents, true);
+      document.removeEventListener('drop', preventDragEvents, true);
+      
+      if (textareaRef.current) {
+        textareaRef.current.removeEventListener('focus', handleFocus);
+      }
     };
   }, []);
 
@@ -126,15 +138,17 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
       onPaste={handlePaste}
       onCut={handleCut}
       onKeyDown={handleKeyDown}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragStart={(e) => e.preventDefault()}
+      onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
+      onDrop={(e) => { e.preventDefault(); e.stopPropagation(); alert("Dragging content into this field is not allowed"); return false; }}
+      onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
+      onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
+      onDragStart={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
+      onDrag={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
       placeholder={placeholder}
-      className={className}
+      className={`no-drag-drop ${className}`}
       disabled={disabled}
       rows={rows}
+      draggable="false"
       style={{ 
         WebkitUserDrag: 'none',
         MozUserDrag: 'none',
