@@ -154,11 +154,7 @@ textarea, input[type="text"], .secure-content {
   isolation: isolate;
 }
 
-  background-color: #f3e8ff;
-  color: #7e22ce;
-}
-
-/* Modal styles */
+  /* Modal styles */
 .success-modal-overlay {
   position: fixed;
   top: 0;
