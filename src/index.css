@@ -22,6 +22,15 @@
   .full-width-on-mobile {
     @apply w-full lg:w-auto;
   }
+  
+  /* Mobile-specific styles */
+  .mobile-content {
+    @apply px-4 py-3 w-full;
+  }
+  
+  .mobile-card {
+    @apply bg-white rounded-lg shadow p-4 mb-4;
+  }
 }
 
 
@@ -100,6 +109,9 @@ textarea.secure-text-field {
 }
 
 .question-type-essay {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+}
 
 /* Prevent dragging on elements */
 textarea, input[type="text"], .secure-content {
