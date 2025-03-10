@@ -339,12 +339,12 @@ function TakeExamPage() {
 
         {/* Success Popup */}
         {showSuccessPopup && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"> {/* Added fixed class for full-screen */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-lg font-semibold mb-4">Exam Submitted Successfully!</h2>
+          <div className="success-modal-overlay"> 
+            <div className="success-modal animate-fadeIn">
+              <h2 className="text-xl font-semibold mb-4">Exam Submitted Successfully!</h2>
               <button
                 onClick={handleViewResults}
-                className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-md"
+                className="bg-primary hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md w-full transition-colors"
               >
                 View Results
               </button>
