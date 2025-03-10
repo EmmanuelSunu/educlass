@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DashboardLayout from "../layout";
 import ScheduleCalendar from "../../../components/ScheduleCalendar";
 import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";
-import { RiCalendarLine, RiListCheck2, RiUploadCloud2Line, RiAddLine } from "react-icons/ri";
+import {
+  RiCalendarLine,
+  RiListCheck2,
+  RiUploadCloud2Line,
+  RiAddLine,
+} from "react-icons/ri";
 import { Schedule } from "./types";
 import ScheduleFileUpload from "./ScheduleFileUpload";
-import Modal from '../../../components/Modal';
-import AddScheduleForm from './AddScheduleForm'; // Import the AddScheduleForm component
-
+import Modal from "../../../components/Modal";
+import AddScheduleForm from "./AddScheduleForm";
 
 // Mock data for demonstration
 const mockSchedules: Schedule[] = [
@@ -50,12 +54,13 @@ const Schedules = () => {
   const [importSuccess, setImportSuccess] = useState(false); // State for import success indicator
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
-  const handleEdit = (id: string) => {
-    console.log(`Edit schedule with ID: ${id}`);
+  // For ScheduleTable, onEdit expects a Schedule object.
+  const handleEditTable = (schedule: Schedule) => {
+    console.log(`Edit schedule with ID: ${schedule.id}`);
   };
 
   const handleDelete = (id: string) => {
-    setSchedules(schedules.filter(schedule => schedule.id !== id));
+    setSchedules(schedules.filter((schedule) => schedule.id !== id));
   };
 
   const handleAddSchedule = (newSchedule: Schedule) => {
@@ -64,7 +69,7 @@ const Schedules = () => {
       ...newSchedule,
       id: `schedule-${Date.now()}`,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     setSchedules([...schedules, newScheduleWithId]);
@@ -89,9 +94,15 @@ const Schedules = () => {
   };
 
   return (
-    <DashboardLayout title="Schedule" buttonTitle="" showAddHeadbarButton={false}>
+    <DashboardLayout
+      title="Schedule"
+      buttonTitle=""
+      showAddHeadbarButton={false}
+    >
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-4">Schedule Management</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+          Schedule Management
+        </h1>
 
         <div className="flex justify-between items-center">
           {/* Group 1 - View toggles (left side) */}
@@ -137,11 +148,15 @@ const Schedules = () => {
       </div>
 
       {viewMode === "calendar" ? (
-        <ScheduleCalendar schedules={schedules} onEdit={handleEdit} onDelete={handleDelete} />
+        // Removed unsupported onEdit prop for ScheduleCalendar
+        <ScheduleCalendar schedules={schedules} onDelete={handleDelete} />
       ) : (
-        <ScheduleTable schedules={schedules} onEdit={handleEdit} onDelete={handleDelete} />
+        <ScheduleTable
+          schedules={schedules}
+          onEdit={handleEditTable}
+          onDelete={handleDelete}
+        />
       )}
-
 
       {/* Upload Schedule Modal */}
       {showUploadModal && (
@@ -161,9 +176,13 @@ const Schedules = () => {
           onClose={() => setShowAddModal(false)}
           title="Add New Schedule"
         >
-          <AddScheduleForm onSubmit={handleAddSchedule} />
+          <AddScheduleForm
+            onSubmit={handleAddSchedule}
+            onCancel={() => setShowAddModal(false)}
+          />
         </Modal>
       )}
+
       {/* Success message after import */}
       {importSuccess && (
         <div className="bg-green-200 text-green-700 p-4 rounded mt-4">
@@ -176,12 +195,25 @@ const Schedules = () => {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
             <div className="bg-green-100 p-3 rounded-full mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 text-green-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
             <h2 className="text-lg font-semibold mb-2">Import Successful!</h2>
-            <p className="text-gray-600 text-center">Schedules have been imported successfully.</p>
+            <p className="text-gray-600 text-center">
+              Schedules have been imported successfully.
+            </p>
           </div>
         </div>
       )}

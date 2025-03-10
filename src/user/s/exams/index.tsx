@@ -75,7 +75,6 @@ function StudentExams() {
   const getExamStatusLabel = (exam: Exam): { label: string; color: string } => {
     const now = new Date();
     const dueDate = new Date(`${exam.dueDate} ${exam.endTime}`);
-    const examStartDate = new Date(`${exam.dueDate} ${exam.startTime}`);
 
     // Check if exam is in the past
     if (now > dueDate) {
