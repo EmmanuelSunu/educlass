@@ -1,14 +1,14 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
-import { examsData } from "../../data/exams";
-import { studentClassIds } from "../../data/student";
+import examsData from "../../l/exams/data/exams.json";
+import { studentClassIds } from "../exams/mock-data";
 
 interface ExamResult {
   examId: number;
   score: number;
-  status: string;
+  status: "passed" | "failed";
   submittedAt: string;
   examTitle: string;
   examClass: string;
@@ -66,87 +66,76 @@ function StudentResults() {
     setLoading(false);
   }, []);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  const getStatusColor = (status: string) => {
-    return status === "passed" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800";
+  const handleViewResults = (examId: number) => {
+    navigate(`/user/s/results/${examId}`);
   };
 
   return (
-    <DashboardLayout title="Exam Results" buttonTitle="View All">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Exam Results</h1>
+    <DashboardLayout title="Exam Results">
+      <div className="container mx-auto px-4 py-6">
+        <h1 className="text-2xl font-bold mb-6">Exam Results</h1>
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
-        ) : completedExams.length > 0 ? (
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Exam
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Score
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {completedExams.map((exam) => (
-                  <tr key={exam.examId} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex flex-col">
-                        <div className="text-sm font-medium text-gray-900">{exam.examTitle}</div>
-                        <div className="text-sm text-gray-500">{exam.examClass}</div>
-                        <div className="text-xs text-gray-400">{exam.examType}</div>
+        ) : completedExams.length === 0 ? (
+          <div className="bg-white rounded-lg shadow p-6 text-center">
+            <p className="text-gray-500">No exam results available.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            {completedExams.map((result) => (
+              <div
+                key={result.examId}
+                className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+              >
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                  <div className="mb-4 md:mb-0">
+                    <h3 className="text-lg font-semibold">{result.examTitle}</h3>
+                    <p className="text-sm text-gray-500 mb-2">
+                      {result.examClass} • {result.examType}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Submitted:{" "}
+                      {new Date(result.submittedAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="flex items-center">
+                      <div className="w-16 h-16 rounded-full flex items-center justify-center border-4 border-primary bg-primary/10 text-primary">
+                        <span className="text-xl font-bold">{result.score}%</span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{exam.score}%</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(exam.status)}`}>
-                        {exam.status.charAt(0).toUpperCase() + exam.status.slice(1)}
+                    </div>
+
+                    <div className="flex flex-col items-start">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium mb-2 ${
+                          result.status === "passed"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {result.status === "passed" ? "Passed" : "Failed"}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(exam.submittedAt)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
-                        onClick={() => navigate(`/user/s/results/details/${exam.examId}`)}
-                        className="text-primary hover:text-primary-dark"
+                        onClick={() => handleViewResults(result.examId)}
+                        className="text-primary hover:underline text-sm"
                       >
                         View Details
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="bg-white p-6 rounded-lg shadow text-center">
-            <p className="text-gray-500">No exam results yet.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
