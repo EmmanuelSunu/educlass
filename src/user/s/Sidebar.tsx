@@ -86,7 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed md:static w-72 bg-white border-r-2 border-gray-200 h-screen 
+          fixed w-72 bg-white border-r-2 border-gray-200 h-screen overflow-hidden
           z-40 transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           ${className || ""}
