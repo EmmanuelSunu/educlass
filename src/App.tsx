@@ -14,6 +14,7 @@ import LecturerSettings from "./user/l/settings";
 import LecturerClass from "./user/l/class";
 import ExamDetailsPage from "./user/l/exams/details";
 import CreateExam from "./user/l/exams/create";
+import NotFound from "./components/NotFound";
 
 // Student imports
 import StudentDashboard from "./user/s/dashboard";
@@ -63,6 +64,9 @@ function App() {
           <Route path="classes" element={<StudentClasses />} />
           <Route path="settings" element={<StudentSettings />} />
         </Route>
+        
+        {/* 404 Not Found - catch all unmatched routes */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
