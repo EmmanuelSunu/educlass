@@ -104,6 +104,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                   label={link.title}
                 />
               ))}
+              <MenuItem to="/user/s/results" icon={<RiFileListLine className="text-xl"/>} label="Results" />
             </nav>
 
             {/* Logout Button */}
