@@ -184,7 +184,7 @@ function StudentResultDetails() {
             {results.examClass} • {results.examType}
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-slate-50 p-4 rounded-lg">
               <h3 className="text-sm text-slate-500 mb-1">Score</h3>
               <p

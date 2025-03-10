@@ -12,9 +12,6 @@ const URLS = {
 
   // Exam specific routes
   EXAM_DETAILS: (id: string) => `/user/s/exams/details/${id}`,
-  
-  // Results routes
-  RESULT_DETAILS: (id: string) => `/user/s/results/details/${id}`,
 
   // Profile routes
   PROFILE: "/user/s/profile",
