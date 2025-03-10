@@ -18,6 +18,10 @@
   .show-on-mobile-and-tablet {
     @apply lg:hidden md:block sm:block block;
   }
+  
+  .full-width-on-mobile {
+    @apply w-full lg:w-auto;
+  }
 }
 
 
