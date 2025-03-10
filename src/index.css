@@ -100,10 +100,23 @@ textarea.secure-text-field {
 
 /* Prevent dragging on elements */
 textarea, input[type="text"], .secure-content {
-  -webkit-user-drag: none;
-  user-drag: none;
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+  user-drag: none !important;
   -webkit-user-select: text; /* Allow text selection */
   user-select: text;
+}
+
+/* Disable drag behavior specifically for exam textareas */
+.exam-area textarea {
+  -webkit-touch-callout: default !important;
+  -webkit-user-select: text !important;
+  -khtml-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
 }
 
   background-color: #f3e8ff;

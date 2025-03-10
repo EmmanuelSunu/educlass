@@ -1,5 +1,5 @@
 
-import React, { useRef, ClipboardEvent, KeyboardEvent } from "react";
+import React, { useRef, useEffect, ClipboardEvent, KeyboardEvent } from "react";
 
 interface SecureTextFieldProps {
   value: string;
@@ -23,6 +23,36 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
   name,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Add document-level event listeners to prevent drag and drop globally
+  useEffect(() => {
+    const preventDragStart = (e: DragEvent) => {
+      e.preventDefault();
+      return false;
+    };
+    
+    const preventDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      return false;
+    };
+    
+    const preventDrop = (e: DragEvent) => {
+      e.preventDefault();
+      return false;
+    };
+    
+    // Add listeners to document
+    document.addEventListener('dragstart', preventDragStart);
+    document.addEventListener('dragover', preventDragOver);
+    document.addEventListener('drop', preventDrop);
+    
+    return () => {
+      // Clean up
+      document.removeEventListener('dragstart', preventDragStart);
+      document.removeEventListener('dragover', preventDragOver);
+      document.removeEventListener('drop', preventDrop);
+    };
+  }, []);
 
   // Prevent paste
   const handlePaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
@@ -100,11 +130,19 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
       onDrop={handleDrop}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
+      onDragStart={(e) => e.preventDefault()}
       placeholder={placeholder}
       className={className}
       disabled={disabled}
       rows={rows}
-      style={{ WebkitUserDrag: 'none' }}
+      style={{ 
+        WebkitUserDrag: 'none',
+        MozUserDrag: 'none',
+        msUserDrag: 'none',
+        userDrag: 'none',
+        WebkitUserSelect: 'text',
+        userSelect: 'text'
+      }}
     />
   );
 };
