@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import DashboardLayout from "../layout/index";
+import DashboardLayout from "../layout";
 import ScheduleCalendar from "../../../components/ScheduleCalendar";
 import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";

@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import DashboardLayout from "../layout/index";
+import DashboardLayout from "../layout";
 import { FiClock, FiCalendar, FiBook, FiCheckCircle } from "react-icons/fi";
 
 function Dashboard() {
