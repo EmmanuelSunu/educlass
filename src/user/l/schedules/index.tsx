@@ -7,6 +7,7 @@ import { RiCalendarLine, RiListCheck2, RiUploadCloud2Line, RiAddLine } from "rea
 import { Schedule } from "./types";
 import ScheduleFileUpload from "./ScheduleFileUpload";
 import Modal from '../../../components/Modal';
+import AddScheduleForm from './AddScheduleForm'; // Import the AddScheduleForm component
 
 
 // Mock data for demonstration
@@ -45,6 +46,7 @@ const Schedules = () => {
   const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
+  const [showAddModal, setShowAddModal] = useState(false); // State for Add Schedule Modal
 
   const handleEdit = (id: string) => {
     console.log(`Edit schedule with ID: ${id}`);
@@ -52,6 +54,11 @@ const Schedules = () => {
 
   const handleDelete = (id: string) => {
     setSchedules(schedules.filter(schedule => schedule.id !== id));
+  };
+
+  const handleAddSchedule = (newSchedule: Schedule) => {
+    setSchedules([...schedules, newSchedule]);
+    setShowAddModal(false);
   };
 
   return (
@@ -92,7 +99,7 @@ const Schedules = () => {
             </ButtonProps>
             <ButtonProps
               variant="primary"
-              onClick={() => console.log("Add schedule clicked")}
+              onClick={() => setShowAddModal(true)} // Open Add Schedule Modal
               className="flex gap-2 items-center"
             >
               <RiAddLine />
@@ -116,7 +123,24 @@ const Schedules = () => {
           onClose={() => setShowUploadModal(false)}
           title="Upload Schedule Data"
         >
-          <ScheduleFileUpload onImport={() => {}} /> {/* Placeholder for import functionality */}
+          <ScheduleFileUpload onImport={(newSchedules) => {
+            setSchedules([...schedules, ...newSchedules]);
+            setShowUploadModal(false);
+          }} />
+        </Modal>
+      )}
+
+      {/* Add Schedule Modal */}
+      {showAddModal && (
+        <Modal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          title="Add New Schedule"
+        >
+          <AddScheduleForm 
+            onSubmit={handleAddSchedule}
+            onCancel={() => setShowAddModal(false)}
+          />
         </Modal>
       )}
     </DashboardLayout>
