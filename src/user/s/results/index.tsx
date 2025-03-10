@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiCalendar, FiClock, FiFileText, FiBook } from 'react-icons/fi';
-import DashboardLayout from '../DashboardLayout';
-import { examsData } from '../../../data/exams';
+import DashboardLayout from '../layout/index';
+import examsData from '../../l/exams/data/exams.json';
 import { studentClassIds } from '../../../data/studentData';
 
 interface ExamResult {

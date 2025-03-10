@@ -1,9 +1,14 @@
-
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { FiCheckCircle, FiXCircle, FiCalendar, FiClock, FiArrowLeft } from 'react-icons/fi';
-import DashboardLayout from '../../DashboardLayout';
-import { examsData } from '../../../../data/exams';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  FiCheckCircle,
+  FiXCircle,
+  FiCalendar,
+  FiClock,
+  FiArrowLeft,
+} from "react-icons/fi";
+import DashboardLayout from "../../layout/index";
+import examsData from "../../../l/exams/data/exams.json";
 
 interface Question {
   question: string;
@@ -49,8 +54,10 @@ function StudentResultDetails() {
       const mockQuestions = exam.questions.map((q: any) => {
         const isCorrect = Math.random() > 0.3;
         const maxScore = Math.floor(Math.random() * 3) + 3; // 3-5 points per question
-        const score = isCorrect ? maxScore : Math.floor(Math.random() * (maxScore - 1)); // Less than max if incorrect
-        
+        const score = isCorrect
+          ? maxScore
+          : Math.floor(Math.random() * (maxScore - 1)); // Less than max if incorrect
+
         const yourAnswer = isCorrect
           ? q.questionAnswer
           : q.options
@@ -62,13 +69,13 @@ function StudentResultDetails() {
           feedback = [
             "Excellent answer! You've demonstrated a thorough understanding of the concept.",
             "Good job! Your response shows a clear grasp of the material.",
-            "Well done! Your answer addresses all key points."
+            "Well done! Your answer addresses all key points.",
           ][Math.floor(Math.random() * 3)];
         } else {
           feedback = [
             "Your answer is partially correct, but misses some key points. Review the material on this topic.",
             "Your answer shows some understanding, but there are significant gaps in comprehension.",
-            "This answer needs improvement. Consider revisiting the concept in your study materials."
+            "This answer needs improvement. Consider revisiting the concept in your study materials.",
           ][Math.floor(Math.random() * 3)];
         }
 
@@ -79,16 +86,24 @@ function StudentResultDetails() {
           isCorrect,
           feedback,
           score,
-          maxScore
+          maxScore,
         };
       });
 
-      const correctCount = mockQuestions.filter((q: Question) => q.isCorrect).length;
+      const correctCount = mockQuestions.filter(
+        (q: Question) => q.isCorrect,
+      ).length;
       const totalQuestions = mockQuestions.length;
       const scorePercentage = Math.round((correctCount / totalQuestions) * 100);
-      const totalScore = mockQuestions.reduce((acc: number, q: Question) => acc + q.score, 0);
-      const maxPossibleScore = mockQuestions.reduce((acc: number, q: Question) => acc + q.maxScore, 0);
-      
+      const totalScore = mockQuestions.reduce(
+        (acc: number, q: Question) => acc + q.score,
+        0,
+      );
+      const maxPossibleScore = mockQuestions.reduce(
+        (acc: number, q: Question) => acc + q.maxScore,
+        0,
+      );
+
       let overallFeedback = "";
       if (scorePercentage >= 90) overallFeedback = "Excellent";
       else if (scorePercentage >= 80) overallFeedback = "Very Good";
@@ -105,18 +120,20 @@ function StudentResultDetails() {
         totalQuestions,
         timeSpent: `${Math.floor(Math.random() * 30) + 15} minutes`,
         submittedAt: new Date(
-          new Date(exam.dueDate).getTime() - Math.random() * 86400000
+          new Date(exam.dueDate).getTime() - Math.random() * 86400000,
         ).toISOString(),
         feedback: overallFeedback,
         questions: mockQuestions,
         examTitle: exam.title,
         examClass: exam.className,
-        examType: ["Quiz", "Midterm", "Final", "Assessment"][Math.floor(Math.random() * 4)]
+        examType: ["Quiz", "Midterm", "Final", "Assessment"][
+          Math.floor(Math.random() * 4)
+        ],
       };
 
       setResults(mockResults);
     }
-    
+
     setLoading(false);
   }, [examId]);
 
@@ -126,17 +143,21 @@ function StudentResultDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
             <p className="text-xs text-gray-500 mb-1">Your Answer:</p>
-            <p className="text-sm bg-white p-2 rounded border">{question.yourAnswer}</p>
+            <p className="text-sm bg-white p-2 rounded border">
+              {question.yourAnswer}
+            </p>
           </div>
-          
+
           {!question.isCorrect && (
             <div>
               <p className="text-xs text-gray-500 mb-1">Correct Answer:</p>
-              <p className="text-sm bg-white p-2 rounded border">{question.correctAnswer}</p>
+              <p className="text-sm bg-white p-2 rounded border">
+                {question.correctAnswer}
+              </p>
             </div>
           )}
         </div>
-        
+
         <div className="mt-3">
           <div className="flex justify-between items-center">
             <p className="text-xs font-semibold text-gray-500">Feedback:</p>
@@ -144,12 +165,14 @@ function StudentResultDetails() {
               Score: {question.score}/{question.maxScore}
             </p>
           </div>
-          <p className="text-sm mt-1 italic text-gray-700">{question.feedback}</p>
+          <p className="text-sm mt-1 italic text-gray-700">
+            {question.feedback}
+          </p>
         </div>
       </div>
     );
   };
-  
+
   const getScoreColorClass = (score: number): string => {
     if (score >= 90) return "text-green-600";
     if (score >= 80) return "text-blue-600";
@@ -167,33 +190,37 @@ function StudentResultDetails() {
         ) : results ? (
           <>
             <div className="mb-6">
-              <button 
-                onClick={() => navigate('/user/s/results')}
+              <button
+                onClick={() => navigate("/user/s/results")}
                 className="flex items-center text-primary hover:text-primary/80"
               >
                 <FiArrowLeft className="mr-1" /> Back to Results
               </button>
             </div>
-          
+
             <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-800">{results.examTitle}</h1>
-              <p className="text-gray-600">{results.examClass} • {results.examType}</p>
-              
+              <h1 className="text-2xl font-bold text-gray-800">
+                {results.examTitle}
+              </h1>
+              <p className="text-gray-600">
+                {results.examClass} • {results.examType}
+              </p>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-500 mb-1">Score</p>
-                  <p className={`text-2xl font-bold ${getScoreColorClass(results.score)}`}>
+                  <p
+                    className={`text-2xl font-bold ${getScoreColorClass(results.score)}`}
+                  >
                     {results.score}%
                   </p>
                 </div>
-                
+
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-500 mb-1">Overall Feedback</p>
-                  <p className="text-lg font-semibold">
-                    {results.feedback}
-                  </p>
+                  <p className="text-lg font-semibold">{results.feedback}</p>
                 </div>
-                
+
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-500 mb-1">Time Taken</p>
                   <div className="flex items-center">
@@ -201,20 +228,24 @@ function StudentResultDetails() {
                     <p className="text-lg">{results.timeSpent}</p>
                   </div>
                 </div>
-                
+
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-500 mb-1">Date Taken</p>
                   <div className="flex items-center">
                     <FiCalendar className="mr-1 text-gray-400" />
-                    <p className="text-lg">{new Date(results.submittedAt).toLocaleDateString()}</p>
+                    <p className="text-lg">
+                      {new Date(results.submittedAt).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-8">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Questions & Answers</h2>
-              
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                Questions & Answers
+              </h2>
+
               <div className="space-y-6">
                 {results.questions.map((q, index) => (
                   <div
