@@ -61,10 +61,10 @@ function ExamDetailsPage() {
   // Helper function to render question based on type
   const renderQuestionContent = (question: Question) => {
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col animate-fadeIn" style={{animationDelay: "0.3s"}}>
         <p className="text-p mb-3">{question.questionText}</p>
         {question.type === 'multi-choice' && question.options && (
-          <div className="ml-6 mb-4">
+          <div className="ml-6 mb-4 animate-fadeIn" style={{animationDelay: "0.4s"}}>
             {question.options.map((option, i) => (
               <div
                 key={i}
@@ -91,13 +91,13 @@ function ExamDetailsPage() {
           </div>
         )}
         {question.type === 'fill-ins' && (
-          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md animate-fadeIn" style={{animationDelay: "0.5s"}}>
             <span className="text-p font-semibold text-blue-700">Correct Answer: </span>
             <span className="text-p text-blue-900">{question.questionAnswer}</span>
           </div>
         )}
         {question.type === 'essay' && (
-          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md animate-fadeIn" style={{animationDelay: "0.5s"}}>
             <span className="text-p font-semibold text-blue-700">Model Answer: </span>
             <span className="text-p text-blue-900">{question.questionAnswer}</span>
             <p className="mt-2 text-xs text-blue-700">
@@ -115,15 +115,15 @@ function ExamDetailsPage() {
       showAddHeadbarButton={false}
       buttonTitle=""
     >
-      <div className="p-6 bg-white rounded-md shadow-md flex flex-col gap-5">
-        <div className="border border-slate-200 rounded-lg p-8">
-          <div className="flex flex-col">
-            <div className="flex flex-row items-center justify-between mb-4">
-              <div className="flex flex-col">
+      <div className="p-6 bg-white rounded-md shadow-md flex flex-col gap-5 animate-fadeIn" style={{animationDelay: "0s"}}>
+        <div className="border border-slate-200 rounded-lg p-8 animate-fadeIn" style={{animationDelay: "0.2s"}}>
+          <div className="flex flex-col animate-fadeIn" style={{animationDelay: "0.2s"}}>
+            <div className="flex flex-row items-center justify-between mb-4 animate-fadeIn" style={{animationDelay: "0.2s"}}>
+              <div className="flex flex-col animate-fadeIn" style={{animationDelay: "0.2s"}}>
                 <h6 className="text-h6 text-slate-500">Title</h6>
                 <h5 className="text-h5 mb-4 text-dark">{examDetails.title}</h5>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 animate-fadeIn" style={{animationDelay: "0.2s"}}>
                 <span
                   className={`px-3 py-1 rounded-full text-sm capitalize ${
                     examDetails.status === 'scheduled' 
@@ -141,7 +141,7 @@ function ExamDetailsPage() {
                 </span>
                 <button 
                   onClick={handleEditClick}
-                  className="flex items-center gap-2 bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors"
+                  className="flex items-center gap-2 bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors animate-fadeIn" style={{animationDelay: "0.2s"}}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -150,12 +150,12 @@ function ExamDetailsPage() {
                 </button>
               </div>
             </div>
-            <div className="flex flex-wrap gap-4 md:gap-8">
-              <div className="flex flex-col gap-1">
+            <div className="flex flex-wrap gap-4 md:gap-8 animate-fadeIn" style={{animationDelay: "0.2s"}}>
+              <div className="flex flex-col gap-1 animate-fadeIn" style={{animationDelay: "0.2s"}}>
                 <span className="text-p text-gray-400 font-normal">Date</span>
                 <h6 className="text-p text-slate-900">{examDetails.dueDate}</h6>
               </div>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 animate-fadeIn" style={{animationDelay: "0.2s"}}>
                 <span className="text-p text-gray-400 font-normal">
                   Duration
                 </span>
@@ -163,7 +163,7 @@ function ExamDetailsPage() {
                   {examDetails.duration}
                 </h6>
               </div>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 animate-fadeIn" style={{animationDelay: "0.2s"}}>
                 <span className="text-p text-gray-400 font-normal">
                   Start Time
                 </span>
@@ -171,7 +171,7 @@ function ExamDetailsPage() {
                   {examDetails.startTime === "00:00" ? "Any time" : examDetails.startTime}
                 </h6>
               </div>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 animate-fadeIn" style={{animationDelay: "0.2s"}}>
                 <span className="text-p text-gray-400 font-normal">
                   End Time
                 </span>
@@ -182,7 +182,7 @@ function ExamDetailsPage() {
             </div>
 
             {examDetails.description && (
-              <div className="mt-4">
+              <div className="mt-4 animate-fadeIn" style={{animationDelay: "0.2s"}}>
                 <span className="text-p text-gray-400 font-normal">Description</span>
                 <p className="text-p text-slate-900">{examDetails.description}</p>
               </div>
@@ -190,17 +190,17 @@ function ExamDetailsPage() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 animate-fadeIn" style={{animationDelay: "0.2s"}}>
           {examDetails.questions.map((question) => (
-            <div key={question.id}>
-              <div className="flex rounded-lg rounded-b-none flex-row items-center justify-start bg-gray-100 p-4 gap-2">
+            <div key={question.id} className="animate-fadeIn" style={{animationDelay: "0.3s"}}>
+              <div className="flex rounded-lg rounded-b-none flex-row items-center justify-start bg-gray-100 p-4 gap-2 animate-fadeIn" style={{animationDelay: "0.3s"}}>
                 <RiQuestionFill className="text-2xl text-blue-500" />
                 <h5 className="text-h5 font-semibold">Question {question.id}</h5>
-                <span className="ml-auto px-2 py-1 text-xs font-medium uppercase bg-blue-100 text-blue-700 rounded">
+                <span className="ml-auto px-2 py-1 text-xs font-medium uppercase bg-blue-100 text-blue-700 rounded animate-fadeIn" style={{animationDelay: "0.3s"}}>
                   {question.type}
                 </span>
               </div>
-              <div className="mb-2 border flex flex-col gap-4 border-gray-200 rounded-lg rounded-t-none p-5">
+              <div className="mb-2 border flex flex-col gap-4 border-gray-200 rounded-lg rounded-t-none p-5 animate-fadeIn" style={{animationDelay: "0.3s"}}>
                 {renderQuestionContent(question)}
               </div>
             </div>

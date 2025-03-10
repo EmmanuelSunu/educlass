@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
 import { BsCalendarEvent, BsClockHistory, BsGraphUp, BsPeople } from "react-icons/bs";
 import examsData from "../exams/data/exams.json";
+import { useTransition, animated } from 'react-spring';
 
 // Define the type for the exam object to avoid TypeScript errors
 interface Exam {
@@ -98,6 +99,28 @@ function Dashboard() {
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
 
+  const transitions = useTransition(stats, {
+    from: { opacity: 0, transform: 'translate3d(10px,0,0)' },
+    enter: { opacity: 1, transform: 'translate3d(0,0,0)' },
+    leave: { opacity: 0, transform: 'translate3d(-10px,0,0)' },
+    config: { duration: 300 }
+  });
+
+  const examTransitions = useTransition(upcomingExams, {
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    enter: { opacity: 1, transform: 'translateY(0)' },
+    leave: { opacity: 0, transform: 'translateY(20px)' },
+    config: { duration: 300 }
+  });
+
+
+  const ongoingExamTransitions = useTransition(ongoingExams, {
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    enter: { opacity: 1, transform: 'translateY(0)' },
+    leave: { opacity: 0, transform: 'translateY(20px)' },
+    config: { duration: 300 }
+  });
+
   return (
     <DashboardLayout
       title="Dashboard"
@@ -107,18 +130,19 @@ function Dashboard() {
     >
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-slate-500 text-sm font-medium">Total Exams</p>
-              <h3 className="text-2xl font-bold text-slate-800 mt-1">{stats.totalExams}</h3>
+        {transitions((style, item) => (
+          <animated.div style={style} className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-500 text-sm font-medium">Total Exams</p>
+                <h3 className="text-2xl font-bold text-slate-800 mt-1">{item.totalExams}</h3>
+              </div>
+              <div className="bg-blue-100 p-3 rounded-full">
+                <BsGraphUp className="text-primary text-xl" />
+              </div>
             </div>
-            <div className="bg-blue-100 p-3 rounded-full">
-              <BsGraphUp className="text-primary text-xl" />
-            </div>
-          </div>
-        </div>
-
+          </animated.div>
+        ))}
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -162,28 +186,23 @@ function Dashboard() {
         <div className="lg:col-span-2">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Upcoming Exams</h2>
           <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
-            {upcomingExams.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {upcomingExams.map((exam) => (
-                  <div key={exam.id} className="flex justify-between items-center border-b border-slate-100 pb-4 last:border-0 last:pb-0">
-                    <div>
-                      <h3 className="font-medium text-slate-800">{exam.title}</h3>
-                      <p className="text-sm text-slate-500 mt-1">
-                        Due: {formatDate(exam.dueDate)} • {exam.className}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleViewExam(exam.id)}
-                      className="px-3 py-1 bg-primary/10 text-primary rounded-md text-sm font-medium hover:bg-primary/20"
-                    >
-                      View
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-slate-500">No upcoming exams.</p>
-            )}
+            {examTransitions((style, exam) => (
+              <animated.div style={style} key={exam.id} className="flex justify-between items-center border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+                <div>
+                  <h3 className="font-medium text-slate-800">{exam.title}</h3>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Due: {formatDate(exam.dueDate)} • {exam.className}
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleViewExam(exam.id)}
+                  className="px-3 py-1 bg-primary/10 text-primary rounded-md text-sm font-medium hover:bg-primary/20"
+                >
+                  View
+                </button>
+              </animated.div>
+            ))}
+            {upcomingExams.length ===0 && <p className="text-slate-500">No upcoming exams.</p>}
           </div>
 
           {/* Recent Activity Section */}
@@ -227,28 +246,23 @@ function Dashboard() {
         <div>
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Ongoing Exams</h2>
           <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5 mb-6">
-            {ongoingExams.length > 0 ? (
-              <div className="space-y-4">
-                {ongoingExams.map((exam) => (
-                  <div key={exam.id} className="border-l-4 border-amber-500 pl-3 py-2">
-                    <h3 className="font-medium text-slate-800">{exam.title}</h3>
-                    <div className="flex justify-between items-center mt-1">
-                      <p className="text-xs text-slate-500">
-                        {exam.type} • {exam.duration}
-                      </p>
-                      <button
-                        onClick={() => handleViewExam(exam.id)}
-                        className="px-2 py-1 bg-amber-100 text-amber-600 rounded text-xs font-medium hover:bg-amber-200"
-                      >
-                        Monitor
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-slate-500">No ongoing exams.</p>
-            )}
+            {ongoingExamTransitions((style, exam) => (
+              <animated.div style={style} key={exam.id} className="border-l-4 border-amber-500 pl-3 py-2">
+                <h3 className="font-medium text-slate-800">{exam.title}</h3>
+                <div className="flex justify-between items-center mt-1">
+                  <p className="text-xs text-slate-500">
+                    {exam.type} • {exam.duration}
+                  </p>
+                  <button
+                    onClick={() => handleViewExam(exam.id)}
+                    className="px-2 py-1 bg-amber-100 text-amber-600 rounded text-xs font-medium hover:bg-amber-200"
+                  >
+                    Monitor
+                  </button>
+                </div>
+              </animated.div>
+            ))}
+            {ongoingExams.length === 0 && <p className="text-slate-500">No ongoing exams.</p>}
           </div>
 
           {/* Upcoming Schedule */}

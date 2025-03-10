@@ -30,8 +30,8 @@ function CreateExam() {
             type: q.type as "multi-choice" | "essay" | "fill-ins", // Explicitly cast type
           })),
         };
-        
-        
+
+
         setExamDetails(updatedExam);
       } else {
         console.log("Exam not found with id:", id);

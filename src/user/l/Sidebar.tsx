@@ -19,7 +19,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
@@ -64,34 +64,46 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           </div>
           <div className="flex flex-col h-screen justify-between">
             <nav className="flex flex-col mt-4 space-y-1">
-              <MenuItem
-                to={URLS.DASHBOARD}
-                icon={<RiDashboardHorizontalLine />}
-                label="Dashboard"
-              />
-              <MenuItem
-                to={URLS.SCHEDULE}
-                icon={<RiCalendarEventLine />}
-                label="Schedules"
-              />
-              <MenuItem to="/user/l/exams" icon={<RiArticleLine />} label="Exams" />
-              <MenuItem
-                to={URLS.CLASS}
-                icon={<RiGraduationCapLine />}
-                label="Class"
-              />
-              <MenuItem
-                to={URLS.GRADING}
-                icon={<RiMedalLine />}
-                label="Grading"
-              />
-              <MenuItem
-                to={URLS.SETTINGS}
-                icon={<RiSettings3Line />}
-                label="Settings"
-              />
+              <div className="animate-slideInLeft" style={{ animationDelay: "0s" }}>
+                <MenuItem
+                  to={URLS.DASHBOARD}
+                  icon={<RiDashboardHorizontalLine />}
+                  label="Dashboard"
+                />
+              </div>
+              <div className="animate-slideInLeft" style={{ animationDelay: "0.05s" }}>
+                <MenuItem
+                  to={URLS.SCHEDULE}
+                  icon={<RiCalendarEventLine />}
+                  label="Schedules"
+                />
+              </div>
+              <div className="animate-slideInLeft" style={{ animationDelay: "0.1s" }}>
+                <MenuItem to="/user/l/exams" icon={<RiArticleLine />} label="Exams" />
+              </div>
+              <div className="animate-slideInLeft" style={{ animationDelay: "0.15s" }}>
+                <MenuItem
+                  to={URLS.CLASS}
+                  icon={<RiGraduationCapLine />}
+                  label="Class"
+                />
+              </div>
+              <div className="animate-slideInLeft" style={{ animationDelay: "0.2s" }}>
+                <MenuItem
+                  to={URLS.GRADING}
+                  icon={<RiMedalLine />}
+                  label="Grading"
+                />
+              </div>
+              <div className="animate-slideInLeft" style={{ animationDelay: "0.25s" }}>
+                <MenuItem
+                  to={URLS.SETTINGS}
+                  icon={<RiSettings3Line />}
+                  label="Settings"
+                />
+              </div>
             </nav>
-            <div className="pt-0 border-slate-200 border-t-2">
+            <div className="pt-0 border-slate-200 border-t-2 animate-fadeIn" style={{ animationDelay: "0.3s" }}>
               <MenuItem to="/" icon={<RiLogoutCircleRLine />} label="Logout" />
             </div>
           </div>
