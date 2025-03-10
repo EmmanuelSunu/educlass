@@ -3,7 +3,7 @@ import DashboardLayout from "../layout";
 import ScheduleCalendar from "../../../components/ScheduleCalendar";
 import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";
-import { RiCalendarLine, RiListCheck2, RiUploadCloud2Line } from "react-icons/ri";
+import { RiCalendarLine, RiListCheck2, RiUploadCloud2Line, RiAddLine } from "react-icons/ri";
 import { Schedule } from "./types";
 import ScheduleFileUpload from "./ScheduleFileUpload";
 import Modal from '../../../components/Modal';
@@ -42,72 +42,81 @@ const mockSchedules: Schedule[] = [
 ];
 
 const Schedules = () => {
-  const [view, setView] = useState<'calendar' | 'table'>('calendar');
+  const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  const handleAddSchedule = (schedule: Schedule) => {
-    setSchedules([...schedules, schedule]);
+  const handleEdit = (id: string) => {
+    console.log(`Edit schedule with ID: ${id}`);
   };
 
-  const handleImportSchedules = (newSchedules: Schedule[]) => {
-    setSchedules([...schedules, ...newSchedules]);
-    setIsUploadModalOpen(false);
+  const handleDelete = (id: string) => {
+    setSchedules(schedules.filter(schedule => schedule.id !== id));
   };
 
   return (
-    <DashboardLayout>
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex flex-row justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold text-gray-800">Schedule Management</h1>
+    <DashboardLayout title="Schedule" buttonTitle="" showAddHeadbarButton={false}>
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-gray-800 mb-4">Schedule Management</h1>
 
-          <div className="flex items-center space-x-2">
-            <div className="bg-slate-100 rounded-lg p-1 flex">
-              <button
-                className={`px-4 py-2 rounded-md flex items-center ${
-                  view === 'calendar' ? 'bg-white shadow-sm' : ''
-                }`}
-                onClick={() => setView('calendar')}
-              >
-                <RiCalendarLine className="mr-2" />
-                Calendar
-              </button>
-              <button
-                className={`px-4 py-2 rounded-md flex items-center ${
-                  view === 'table' ? 'bg-white shadow-sm' : ''
-                }`}
-                onClick={() => setView('table')}
-              >
-                <RiListCheck2 className="mr-2" />
-                Table
-              </button>
-            </div>
-
-            <button
-              className="p-2 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary-dark transition-colors"
-              onClick={() => setIsUploadModalOpen(true)}
-              title="Upload Schedule Data"
+        <div className="flex justify-between items-center">
+          {/* Group 1 - View toggles (left side) */}
+          <div className="flex space-x-2">
+            <ButtonProps
+              variant={viewMode === "calendar" ? "primary" : "secondary"}
+              onClick={() => setViewMode("calendar")}
+              className="flex gap-2 items-center"
             >
-              <RiUploadCloud2Line size={24} />
-            </button>
+              <RiCalendarLine />
+              Calendar
+            </ButtonProps>
+            <ButtonProps
+              variant={viewMode === "table" ? "primary" : "secondary"}
+              onClick={() => setViewMode("table")}
+              className="flex gap-2 items-center"
+            >
+              <RiListCheck2 />
+              Table
+            </ButtonProps>
+          </div>
+
+          {/* Group 2 - Action buttons (right side) */}
+          <div className="flex space-x-2">
+            <ButtonProps
+              variant="secondary"
+              onClick={() => setShowUploadModal(true)}
+              className="flex gap-2 items-center"
+            >
+              <RiUploadCloud2Line />
+              Upload
+            </ButtonProps>
+            <ButtonProps
+              variant="primary"
+              onClick={() => console.log("Add schedule clicked")}
+              className="flex gap-2 items-center"
+            >
+              <RiAddLine />
+              Add Schedule
+            </ButtonProps>
           </div>
         </div>
-
-        {view === 'calendar' ? (
-          <ScheduleCalendar schedules={schedules} />
-        ) : (
-          <ScheduleTable schedules={schedules} />
-        )}
       </div>
 
+      {viewMode === "calendar" ? (
+        <ScheduleCalendar schedules={schedules} onEdit={handleEdit} onDelete={handleDelete} />
+      ) : (
+        <ScheduleTable schedules={schedules} onEdit={handleEdit} onDelete={handleDelete} />
+      )}
+
+
       {/* Upload Schedule Modal */}
-      {isUploadModalOpen && (
+      {showUploadModal && (
         <Modal
-          isOpen={isUploadModalOpen}
-          onClose={() => setIsUploadModalOpen(false)}
+          isOpen={showUploadModal}
+          onClose={() => setShowUploadModal(false)}
           title="Upload Schedule Data"
         >
-          <ScheduleFileUpload onImport={handleImportSchedules} />
+          <ScheduleFileUpload onImport={() => {}} /> {/* Placeholder for import functionality */}
         </Modal>
       )}
     </DashboardLayout>
