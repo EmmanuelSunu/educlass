@@ -1,13 +1,13 @@
 import React from "react";
-import { Headbar } from "../../components/Headbar";
+import Headbar from "../../components/HeaderBar";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  FiHome, 
-  FiCalendar, 
-  FiFileText, 
-  FiCheckSquare, 
+import {
+  FiHome,
+  FiCalendar,
+  FiFileText,
+  FiCheckSquare,
   FiBookOpen,
-  FiSettings
+  FiSettings,
 } from "react-icons/fi";
 import URLS from "./url";
 

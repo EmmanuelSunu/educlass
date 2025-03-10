@@ -1,4 +1,3 @@
-
 import React from "react";
 import ButtonProps from "./ButtonProps";
 import { RiAddLine } from "react-icons/ri";
@@ -6,7 +5,7 @@ import { RiAddLine } from "react-icons/ri";
 interface HeaderBarProps {
   title: string;
   buttonTitle: string;
-  showAddHeadbarButton?: boolean;
+  showAddButton: boolean;
   onAddHeadbarButton?: () => void;
 }
 
