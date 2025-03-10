@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiCalendar, FiClock, FiFileText, FiBook } from 'react-icons/fi';
-import DashboardLayout from '../layout/index';
-import examsData from '../../l/exams/data/exams.json';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FiCalendar, FiClock, FiBook } from "react-icons/fi";
+import DashboardLayout from "../layout";
+import examsData from "../../l/exams/data/exams.json";
 // Mock student class IDs for demo purposes
 const studentClassIds = [1, 2, 3, 4];
 
@@ -55,9 +55,11 @@ function StudentResults() {
         ).toISOString(),
         examTitle: exam.title,
         examClass: exam.className,
-        examType: ["Quiz", "Midterm", "Final", "Assessment"][Math.floor(Math.random() * 4)],
+        examType: ["Quiz", "Midterm", "Final", "Assessment"][
+          Math.floor(Math.random() * 4)
+        ],
         timeTaken,
-        feedback
+        feedback,
       } as ExamResult;
     });
 
@@ -95,12 +97,18 @@ function StudentResults() {
               >
                 <div className="p-4">
                   <div className="flex items-center mb-2">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded ${
-                      result.status === "passed" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                    }`}>
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded ${
+                        result.status === "passed"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
                       {result.status === "passed" ? "Passed" : "Failed"}
                     </span>
-                    <span className="ml-2 text-xs text-gray-500">{result.examType}</span>
+                    <span className="ml-2 text-xs text-gray-500">
+                      {result.examType}
+                    </span>
                   </div>
 
                   <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-1">
@@ -115,7 +123,9 @@ function StudentResults() {
                   <div className="grid grid-cols-2 gap-2 mt-3">
                     <div className="flex items-center text-sm text-gray-600">
                       <FiCalendar className="mr-1" />
-                      <span>{new Date(result.submittedAt).toLocaleDateString()}</span>
+                      <span>
+                        {new Date(result.submittedAt).toLocaleDateString()}
+                      </span>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <FiClock className="mr-1" />
@@ -125,7 +135,9 @@ function StudentResults() {
 
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center">
-                      <span className={`text-xl font-bold ${getScoreColor(result.score)}`}>
+                      <span
+                        className={`text-xl font-bold ${getScoreColor(result.score)}`}
+                      >
                         {result.score}%
                       </span>
                     </div>

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -56,7 +55,10 @@ function App() {
           <Route path="exams/details/:id" element={<StudentExamDetails />} />
           <Route path="exams/results/:id" element={<StudentExamResults />} />
           <Route path="results" element={<StudentResults />} />
-          <Route path="results/details/:examId" element={<StudentResultDetails />} />
+          <Route
+            path="results/details/:examId"
+            element={<StudentResultDetails />}
+          />
           <Route path="classes" element={<StudentClasses />} />
           <Route path="settings" element={<StudentSettings />} />
         </Route>

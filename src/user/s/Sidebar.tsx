@@ -11,7 +11,7 @@ import {
   RiLogoutCircleLine,
   RiMenuLine,
   RiCloseLine,
-  RiFileListLine
+  RiFileListLine,
 } from "react-icons/ri";
 import URLS from "./url";
 
@@ -46,6 +46,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       title: "Schedule",
       icon: <RiCalendarLine className="text-xl" />,
       url: URLS.SCHEDULE,
+    },
+    {
+      title: "Results",
+      icon: <RiBookOpenLine className="text-xl" />,
+      url: URLS.RESULTS,
     },
     {
       title: "Settings",
@@ -104,7 +109,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                   label={link.title}
                 />
               ))}
-              <MenuItem to="/user/s/results" icon={<RiFileListLine className="text-xl"/>} label="Results" />
             </nav>
 
             {/* Logout Button */}
