@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { FiCalendar, FiClock, FiFileText, FiBook } from 'react-icons/fi';
 import DashboardLayout from '../layout/index';
 import examsData from '../../l/exams/data/exams.json';
-import { studentClassIds } from '../../../data/studentData';
+// Mock student class IDs for demo purposes
+const studentClassIds = [1, 2, 3, 4];
 
 interface ExamResult {
   examId: number;
