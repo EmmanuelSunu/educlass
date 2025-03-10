@@ -113,7 +113,7 @@ function StudentExams() {
           <p className="text-gray-600">No exams available at this time.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 card-grid">
           {availableExams.map((exam) => {
             const statusInfo = getExamStatusLabel(exam);
 

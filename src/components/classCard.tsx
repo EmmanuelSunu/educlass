@@ -17,7 +17,7 @@ const ClassCard: React.FC<ClassCardProps> = ({
 }) => {
   return (
     <div
-      className={`border rounded-md p-4 bg-white shadow-sm hover:shadow-md transition-shadow ${className}`}
+      className={`border rounded-md p-4 bg-white shadow-sm hover:shadow-md transition-shadow card-animate ${className}`}
     >
       <div className="flex justify-between items-center">
         <h5 className="text-lg font-bold text-dark">Class ID: {classId}</h5>

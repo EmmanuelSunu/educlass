@@ -86,7 +86,7 @@ const ExamCard: React.FC<ExamCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className="bg-white rounded-lg shadow-sm border border-slate-200 p-5 hover:shadow-md transition-all duration-200 cursor-pointer relative"
+      className="bg-white rounded-lg shadow-sm border border-slate-200 p-5 hover:shadow-md transition-all duration-200 cursor-pointer relative card-animate"
     >
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center gap-2">

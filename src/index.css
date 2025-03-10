@@ -130,3 +130,42 @@
     transform: scale(1);
   }
 }
+
+/* Card loading animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-animate {
+  animation: fadeInUp 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.card-grid {
+  display: grid;
+}
+
+.card-grid > * {
+  animation: fadeInUp 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* Apply staggered delays to grid children */
+.card-grid > *:nth-child(1) { animation-delay: 0.05s; }
+.card-grid > *:nth-child(2) { animation-delay: 0.1s; }
+.card-grid > *:nth-child(3) { animation-delay: 0.15s; }
+.card-grid > *:nth-child(4) { animation-delay: 0.2s; }
+.card-grid > *:nth-child(5) { animation-delay: 0.25s; }
+.card-grid > *:nth-child(6) { animation-delay: 0.3s; }
+.card-grid > *:nth-child(7) { animation-delay: 0.35s; }
+.card-grid > *:nth-child(8) { animation-delay: 0.4s; }
+.card-grid > *:nth-child(9) { animation-delay: 0.45s; }
+.card-grid > *:nth-child(10) { animation-delay: 0.5s; }
+.card-grid > *:nth-child(n+11) { animation-delay: 0.55s; }
