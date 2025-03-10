@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
-import examsData from "../../l/exams/data/exams.json";
+import { useApi } from "../../../contexts/ApiContext";
 import { FiCalendar, FiClock } from "react-icons/fi";
 
 // Define interfaces for TypeScript

@@ -7,6 +7,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { ApiProvider } from './contexts/ApiContext';
 import Login from "./login";
 import Dashboard from "./user/l/dashboard";
 import LecturerSchedule from "./user/l/schedules/";
@@ -79,9 +80,11 @@ const AnimatedRoutes = () => {
 
 function App() {
   return (
-    <Router>
-      <AnimatedRoutes />
-    </Router>
+    <ApiProvider>
+      <Router>
+        <AnimatedRoutes />
+      </Router>
+    </ApiProvider>
   );
 }
 
