@@ -7,7 +7,7 @@ const URLS = {
   SCHEDULE: "/user/s/schedules",
   EXAMS: "/user/s/exams",
   SETTINGS: "/user/s/settings",
-  RESULTS: "user/s/results",
+  RESULTS: "/user/s/results",
 
   // Exam specific routes
   EXAM_DETAILS: (id: string) => `/user/s/exams/details/${id}`,
