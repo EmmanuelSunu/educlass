@@ -175,12 +175,25 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
       disabled={disabled}
       rows={rows}
       draggable="false"
+      spellCheck="false"
+      autoCorrect="off"
+      autoCapitalize="off"
+      data-secure-field="true"
       style={
         {
           WebkitUserSelect: "text",
           userSelect: "text",
+          WebkitUserDrag: "none",
+          MozUserDrag: "none",
+          msUserDrag: "none",
+          userDrag: "none",
         } as React.CSSProperties
       }
+      onContextMenu={(e) => {
+        // Optional: Prevent right-click menu for additional security
+        // e.preventDefault();
+        // return false;
+      }}
     />
   );
 };

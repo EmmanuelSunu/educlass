@@ -36,6 +36,38 @@
 
 /* Prevent text selection */
 .select-none {
+
+/* Enhanced drag prevention for secure fields */
+[data-secure-field="true"],
+.no-drag-drop,
+.secure-content,
+.exam-area textarea,
+.exam-area input {
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+  user-drag: none !important;
+  
+  /* Prevent selection but allow cursor */
+  cursor: text !important;
+}
+
+/* Capturing events at document level */
+:root {
+  --drag-prevention-active: true;
+}
+
+/* Target all elements with drag-related attributes */
+[draggable]:not([draggable="false"]) {
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+  -moz-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
