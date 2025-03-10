@@ -1,14 +1,34 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import DashboardLayout from "../../layout";
+import { FiArrowLeft, FiCheckCircle, FiXCircle, FiClock, FiCalendar } from "react-icons/fi";
+import DashboardLayout from "../layout";
 import { examsData } from "../../data/exams";
-import { FiClock, FiCalendar, FiArrowLeft } from "react-icons/fi";
+
+type Question = {
+  question: string;
+  yourAnswer: string;
+  isCorrect: boolean;
+  type?: string;
+  feedback?: string;
+};
+
+type Results = {
+  examTitle: string;
+  examClass: string;
+  examType: string;
+  score: number;
+  status: "passed" | "failed";
+  timeTaken: string;
+  dateTaken: string;
+  overallFeedback: string;
+  questions: Question[];
+};
 
 function StudentResultDetails() {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
-  const [results, setResults] = useState<any>({
+  const [results, setResults] = useState<Results>({
     examTitle: "",
     examClass: "",
     examType: "",
@@ -16,6 +36,7 @@ function StudentResultDetails() {
     status: "failed",
     timeTaken: "",
     dateTaken: "",
+    overallFeedback: "",
     questions: [],
   });
   const [loading, setLoading] = useState(true);
@@ -39,29 +60,44 @@ function StudentResultDetails() {
       minutes ? minutes + "m" : ""
     }`;
 
-    // Create mock questions results
-    const questionsResults = exam.questions.map((q: any) => {
+    // Generate feedback based on score
+    const overallFeedback = score >= 80 
+      ? "Very Good" 
+      : score >= 60 
+      ? "Good" 
+      : score >= 40 
+      ? "Fair" 
+      : "Needs Improvement";
+
+    // Generate mock answers and feedback for questions
+    const mockQuestions = exam.questions.map((q) => {
       const isEssay = q.type === "essay";
-      const isCorrect = isEssay ? true : Math.random() > 0.3; // For essay answers, we don't mark right/wrong
-      let userAnswer = "";
+      const isCorrect = isEssay ? Math.random() > 0.3 : Math.random() > 0.3;
       
-      if (isEssay) {
+      // For multiple choice
+      let yourAnswer = "";
+      if (!isEssay && q.options) {
+        yourAnswer = isCorrect
+          ? q.questionAnswer
+          : q.options[Math.floor(Math.random() * q.options.length)];
+      } else if (isEssay) {
         // Mock essay answer
-        userAnswer = "This is a sample student response to the essay question that demonstrates understanding of the topic.";
-      } else if (q.type === "multi-choice") {
-        // Mock multiple choice answer
-        userAnswer = isCorrect ? q.questionAnswer : q.options[Math.floor(Math.random() * q.options.length)];
-      } else if (q.type === "fill-ins") {
-        // Mock fill-in answer
-        userAnswer = isCorrect ? q.questionAnswer : q.questionAnswer.split("").reverse().join("");
+        yourAnswer = "A comprehensive explanation of encapsulation, inheritance, polymorphism, and abstraction with relevant examples.";
       }
+
+      // Generate feedback for essay questions
+      const feedback = isEssay
+        ? isCorrect
+          ? "Excellent explanation that covers all key concepts with clear examples."
+          : "Your answer lacks depth in explaining polymorphism. Consider adding more concrete examples."
+        : "";
 
       return {
         question: q.questionText,
-        type: q.type,
+        yourAnswer,
         isCorrect,
-        userAnswer,
-        correctAnswer: q.questionAnswer,
+        type: q.type,
+        feedback,
       };
     });
 
@@ -73,7 +109,8 @@ function StudentResultDetails() {
       status: score >= 60 ? "passed" : "failed",
       timeTaken,
       dateTaken,
-      questions: questionsResults,
+      overallFeedback,
+      questions: mockQuestions,
     });
 
     setLoading(false);
@@ -81,6 +118,33 @@ function StudentResultDetails() {
 
   const goBack = () => {
     navigate("/user/s/results");
+  };
+
+  const renderStudentAnswer = (question: Question) => {
+    if (question.type === "essay") {
+      return (
+        <div>
+          <p className="text-sm font-medium text-slate-600 mb-1">Your Answer:</p>
+          <div className="bg-white p-3 rounded-md border border-slate-200 mb-3">
+            <p className="text-slate-700">{question.yourAnswer}</p>
+          </div>
+          
+          <p className="text-sm font-medium text-slate-600 mb-1">Feedback:</p>
+          <div className="bg-blue-50 p-3 rounded-md border-l-4 border-blue-400">
+            <p className="text-slate-700">{question.feedback}</p>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div>
+        <p className="text-sm font-medium text-slate-600 mb-1">Your Answer:</p>
+        <div className="bg-white p-3 rounded-md border border-slate-200">
+          <p className="text-slate-700">{question.yourAnswer}</p>
+        </div>
+      </div>
+    );
   };
 
   if (loading) {
@@ -102,92 +166,61 @@ function StudentResultDetails() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
+      <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mb-6">
         <div className="p-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">{results.examTitle}</h1>
-              <p className="text-gray-500 mb-4">
-                {results.examClass} • {results.examType}
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">{results.examTitle}</h1>
+          <p className="text-slate-600 mb-6">{results.examClass} • {results.examType}</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <h3 className="text-sm text-slate-500 mb-1">Score</h3>
+              <p className={`text-3xl font-bold ${results.status === "passed" ? "text-blue-600" : "text-red-600"}`}>
+                {results.score}%
               </p>
             </div>
-
-            <div className="flex items-center bg-primary/10 p-4 rounded-lg mt-4 md:mt-0">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center border-4 border-primary bg-white text-primary mr-4">
-                <span className="text-2xl font-bold">{results.score}%</span>
-              </div>
-              <div>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    results.status === "passed"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {results.status === "passed" ? "Passed" : "Failed"}
-                </span>
-                <div className="flex items-center text-sm text-gray-600 mt-2">
-                  <FiClock className="mr-1" />
-                  {results.timeTaken}
-                </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <FiCalendar className="mr-1" />
-                  {results.dateTaken}
-                </div>
-              </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <h3 className="text-sm text-slate-500 mb-1">Overall Feedback</h3>
+              <p className="text-xl font-semibold text-slate-800">{results.overallFeedback}</p>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <h3 className="text-sm text-slate-500 mb-1">Time Taken</h3>
+              <p className="text-xl font-semibold text-slate-800 flex items-center">
+                <FiClock className="mr-2 text-slate-400" />
+                {results.timeTaken || "31 minutes"}
+              </p>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <h3 className="text-sm text-slate-500 mb-1">Date Taken</h3>
+              <p className="text-xl font-semibold text-slate-800 flex items-center">
+                <FiCalendar className="mr-2 text-slate-400" />
+                {results.dateTaken}
+              </p>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Questions & Answers</h2>
+          <h2 className="text-xl font-bold text-slate-800 mb-4">Questions & Answers</h2>
+          
           <div className="space-y-6">
-            {results.questions.map((q: any, index: number) => (
-              <div key={index} className="border-b pb-6 last:border-b-0 last:pb-0">
+            {results.questions.map((q, index) => (
+              <div 
+                key={index} 
+                className={`p-6 rounded-lg border ${
+                  q.isCorrect 
+                    ? 'border-green-200 bg-green-50' 
+                    : 'border-red-200 bg-red-50'
+                }`}
+              >
                 <div className="flex items-start">
-                  <div className="bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center text-gray-600 font-medium mr-3 shrink-0">
-                    {index + 1}
+                  <div className={`mr-3 mt-1 ${q.isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+                    {q.isCorrect ? <FiCheckCircle size={20} /> : <FiXCircle size={20} />}
                   </div>
-                  <div className="grow">
-                    <p className="font-medium mb-3">{q.question}</p>
-
-                    {q.type === "essay" ? (
-                      <div className="p-3 rounded-lg mb-3 bg-blue-50 border border-blue-100">
-                        <p className="text-sm text-gray-600 mb-1">Your Essay Response:</p>
-                        <p className="text-gray-700">{q.userAnswer}</p>
-                        <p className="mt-2 text-sm text-gray-500 italic">
-                          Essay responses are manually evaluated by your instructor.
-                        </p>
-                      </div>
-                    ) : (
-                      <div
-                        className={`p-3 rounded-lg mb-3 ${
-                          q.isCorrect
-                            ? "bg-green-50 border border-green-100"
-                            : "bg-red-50 border border-red-100"
-                        }`}
-                      >
-                        <p className="text-sm text-gray-600 mb-1">Your Answer:</p>
-                        <p
-                          className={
-                            q.isCorrect ? "text-green-700" : "text-red-700"
-                          }
-                        >
-                          {q.userAnswer}
-                        </p>
-                      </div>
-                    )}
-
-                    {!q.isCorrect && q.type !== "essay" && (
-                      <div className="p-3 rounded-lg bg-blue-50 border border-blue-100">
-                        <p className="text-sm text-gray-600 mb-1">
-                          Correct Answer:
-                        </p>
-                        <p className="text-blue-700">{q.correctAnswer}</p>
-                      </div>
-                    )}
+                  <div className="flex-1">
+                    <h3 className="font-medium text-slate-800 mb-2">Question {index + 1}</h3>
+                    <p className="text-slate-700 mb-4">{q.question}</p>
+                    {renderStudentAnswer(q)}
                   </div>
                 </div>
               </div>
