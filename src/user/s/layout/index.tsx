@@ -1,4 +1,3 @@
-
 import React from "react";
 import Sidebar from "../Sidebar";
 import Breadcrumb from "../../../components/Breadcrumb";
@@ -19,7 +18,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   showAddHeadbarButton = false,
   addButtonClick,
   buttonTitle = "Add New",
-  buttonIcon,
 }: DashboardLayoutProps) => {
   return (
     <div className="lg:flex lg:flex-row">
@@ -30,9 +28,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <h1 className="text-xl font-bold text-slate-800">{title}</h1>
           </div>
           {showAddHeadbarButton && (
-            <ButtonProps onClick={addButtonClick}>
-              {buttonTitle}
-            </ButtonProps>
+            <ButtonProps onClick={addButtonClick}>{buttonTitle}</ButtonProps>
           )}
         </header>
         <div className="flex-1 p-6 overflow-auto">

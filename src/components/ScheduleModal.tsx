@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Schedule } from '../user/l/schedules/types';
-import ButtonProps from './ButtonProps';
-import { RiCloseLine } from 'react-icons/ri';
+import React, { useState } from "react";
+import { Schedule } from "../user/l/schedules/types";
+import ButtonProps from "./ButtonProps";
+import { RiCloseLine } from "react-icons/ri";
 
 interface ScheduleModalProps {
   isOpen: boolean;
@@ -14,19 +14,19 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   isOpen,
   onClose,
   onSave,
-  schedule
+  schedule,
 }) => {
   const [formData, setFormData] = useState<Partial<Schedule>>(
     schedule || {
-      title: '',
-      type: 'class',
-      date: '',
-      startTime: '',
-      endTime: '',
-      location: '',
+      title: "",
+      type: "class",
+      date: "",
+      startTime: "",
+      endTime: "",
+      location: "",
       isRecurring: false,
-      recurrence: undefined
-    }
+      recurrence: undefined,
+    },
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,12 +36,12 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   };
 
   const handleRecurrenceChange = (isRecurring: boolean) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       isRecurring,
-      recurrence: isRecurring 
-        ? { frequency: 'weekly', endDate: '' }  // Initialize with default values
-        : undefined  // Remove recurrence when not recurring
+      recurrence: isRecurring
+        ? { frequency: "weekly", endDate: "" } // Initialize with default values
+        : undefined, // Remove recurrence when not recurring
     }));
   };
 
@@ -60,26 +60,37 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
           </button>
 
           <h2 className="text-xl font-semibold mb-4">
-            {schedule ? 'Edit Schedule' : 'Add New Schedule'}
+            {schedule ? "Edit Schedule" : "Add New Schedule"}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Title</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Title
+              </label>
               <input
                 type="text"
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Type</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Type
+              </label>
               <select
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as unknown as Schedule })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    type: e.target.value as Schedule["type"],
+                  })
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                 required
               >
@@ -92,21 +103,29 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Date</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Date
+                </label>
                 <input
                   type="date"
                   value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, date: e.target.value })
+                  }
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Start Time</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Start Time
+                </label>
                 <input
                   type="time"
                   value={formData.startTime}
-                  onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, startTime: e.target.value })
+                  }
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                   required
                 />
@@ -114,11 +133,15 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Location</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Location
+              </label>
               <input
                 type="text"
                 value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, location: e.target.value })
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
               />
             </div>
@@ -130,22 +153,31 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 onChange={(e) => handleRecurrenceChange(e.target.checked)}
                 className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
               />
-              <label className="ml-2 block text-sm text-gray-900">Recurring Schedule</label>
+              <label className="ml-2 block text-sm text-gray-900">
+                Recurring Schedule
+              </label>
             </div>
 
             {formData.isRecurring && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Frequency</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Frequency
+                  </label>
                   <select
                     value={formData.recurrence?.frequency}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      recurrence: {
-                        frequency: e.target.value as 'daily' | 'weekly' | 'monthly',
-                        endDate: formData.recurrence?.endDate || ''
-                      }
-                    })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        recurrence: {
+                          frequency: e.target.value as
+                            | "daily"
+                            | "weekly"
+                            | "monthly",
+                          endDate: formData.recurrence?.endDate || "",
+                        },
+                      })
+                    }
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                     required
                   >
@@ -156,17 +188,21 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">End Date</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    End Date
+                  </label>
                   <input
                     type="date"
                     value={formData.recurrence?.endDate}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      recurrence: {
-                        frequency: formData.recurrence?.frequency || 'weekly',
-                        endDate: e.target.value
-                      }
-                    })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        recurrence: {
+                          frequency: formData.recurrence?.frequency || "weekly",
+                          endDate: e.target.value,
+                        },
+                      })
+                    }
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                     required
                   />
@@ -175,18 +211,11 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             )}
 
             <div className="flex justify-end space-x-3 mt-6">
-              <ButtonProps
-                variant="secondary"
-                onClick={onClose}
-                type="button"
-              >
+              <ButtonProps variant="secondary" onClick={onClose} type="button">
                 Cancel
               </ButtonProps>
-              <ButtonProps
-                variant="primary"
-                type="submit"
-              >
-                {schedule ? 'Update' : 'Create'}
+              <ButtonProps variant="primary" type="submit">
+                {schedule ? "Update" : "Create"}
               </ButtonProps>
             </div>
           </form>

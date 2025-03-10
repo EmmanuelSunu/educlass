@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, ClipboardEvent, KeyboardEvent } from "react";
+import React from "react";
 
 interface SecureTextFieldProps {
   value: string;
@@ -21,138 +21,24 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
   id,
   name,
 }) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Add comprehensive event listeners to prevent drag and drop globally
-  useEffect(() => {
-    // More aggressive approach to prevent drag events
-    const preventDragEvents = (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    };
-
-    // Handle focus to disable clipboard operations
-    const handleFocus = () => {
-      if (textareaRef.current) {
-        // Force disable browser's native drag behavior
-        textareaRef.current.setAttribute("ondragstart", "return false;");
-        textareaRef.current.setAttribute("ondrop", "return false;");
-      }
-    };
-
-    // Prevent browser default behavior for these events
-    window.addEventListener("dragstart", preventDragEvents, true);
-    window.addEventListener("dragenter", preventDragEvents, true);
-    window.addEventListener("dragover", preventDragEvents, true);
-    window.addEventListener("drop", preventDragEvents, true);
-
-    // For iOS Safari which handles events differently
-    if (textareaRef.current) {
-      textareaRef.current.addEventListener("focus", handleFocus);
-    }
-
-    return () => {
-      // Clean up
-      document.removeEventListener("dragstart", preventDragEvents, true);
-      document.removeEventListener("dragenter", preventDragEvents, true);
-      document.removeEventListener("dragover", preventDragEvents, true);
-      document.removeEventListener("drop", preventDragEvents, true);
-
-      if (textareaRef.current) {
-        textareaRef.current.removeEventListener("focus", handleFocus);
-      }
-    };
-  }, []);
-
-  // Prevent paste
-  const handlePaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    alert("Pasting is not allowed for security reasons");
-    return false;
-  };
-
-  // Prevent cut
-  const handleCut = (e: ClipboardEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    return false;
-  };
-
-  // Handle key combinations for copy/paste
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    // Prevent Ctrl+V (paste)
-    if (e.ctrlKey && (e.key === "v" || e.key === "V")) {
-      e.preventDefault();
-      alert("Pasting is not allowed for security reasons");
-      return false;
-    }
-
-    // Prevent Ctrl+C (copy)
-    if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
-      e.preventDefault();
-      alert("Copying is not allowed for security reasons");
-      return false;
-    }
-
-    // Prevent Ctrl+X (cut)
-    if (e.ctrlKey && (e.key === "x" || e.key === "X")) {
-      e.preventDefault();
-      return false;
-    }
-  };
-
   return (
     <textarea
-      ref={textareaRef}
       id={id}
       name={name}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      onPaste={handlePaste}
-      onCut={handleCut}
-      onKeyDown={handleKeyDown}
-      onDragOver={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }}
-      onDrop={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        alert("Dragging content into this field is not allowed");
-        return false;
-      }}
-      onDragEnter={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }}
-      onDragLeave={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }}
-      onDragStart={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }}
-      onDrag={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }}
+      onPaste={(e) => e.preventDefault()}
+      onDrop={(e) => e.preventDefault()}
+      onDragOver={(e) => e.preventDefault()}
+      onDragEnter={(e) => e.preventDefault()}
       placeholder={placeholder}
-      className={`no-drag-drop ${className}`}
+      className={className}
       disabled={disabled}
       rows={rows}
-      draggable="false"
       style={{
-        MozUserDrag: "none",
-        msUserDrag: "none",
-        userDrag: "none",
-        WebkitUserSelect: "text",
         userSelect: "text",
+        WebkitUserSelect: "text",
+        MozUserSelect: "text",
       }}
     />
   );

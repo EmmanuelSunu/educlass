@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
 import { examsData } from "../data/exams";
@@ -20,12 +20,12 @@ function StudentResults() {
           .filter(
             (exam) =>
               studentClassIds.includes(exam.classId) &&
-              ["completed", "in-progress"].includes(exam.status)
+              ["completed", "in-progress"].includes(exam.status),
           )
           .map((exam) => {
             const score = Math.floor(Math.random() * 100) + 1;
             const dateTaken = new Date(
-              new Date(exam.dueDate).getTime() - Math.random() * 86400000 * 5
+              new Date(exam.dueDate).getTime() - Math.random() * 86400000 * 5,
             ).toLocaleDateString();
             const hours = Math.floor(Math.random() * exam.durationHours);
             const minutes = Math.floor(Math.random() * exam.durationMinutes);

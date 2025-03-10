@@ -33,10 +33,10 @@ const studentClassIds = [1, 2, 3, 5]; // Classes the student is enrolled in
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { 
-    month: 'short', 
-    day: 'numeric', 
-    year: 'numeric' 
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   });
 }
 
@@ -59,8 +59,8 @@ function StudentExams() {
     const typedExamsData = examsData as Exam[];
 
     // Filter exams to only show those from classes the student is enrolled in
-    const studentExams = typedExamsData.filter(exam => 
-      studentClassIds.includes(exam.classId)
+    const studentExams = typedExamsData.filter((exam) =>
+      studentClassIds.includes(exam.classId),
     );
 
     setAvailableExams(studentExams);
@@ -80,7 +80,7 @@ function StudentExams() {
     // Check if exam is in the past
     if (now > dueDate) {
       return { label: "Unavailable", color: "bg-gray-100 text-gray-600" };
-    } 
+    }
     // Check if exam is today - both within time window or not yet started
     else if (isSameDate(now, dueDate)) {
       return { label: "Available", color: "bg-blue-100 text-blue-600" }; // All exams on current day are "Available"
@@ -98,7 +98,9 @@ function StudentExams() {
       buttonTitle=""
     >
       <div className="mb-6">
-        <h2 className="text-lg font-medium text-gray-800 mb-2">Available Exams</h2>
+        <h2 className="text-lg font-medium text-gray-800 mb-2">
+          Available Exams
+        </h2>
         <p className="text-sm text-gray-600">
           View and take exams from your enrolled classes
         </p>
@@ -127,14 +129,14 @@ function StudentExams() {
                   <h3 className="text-lg font-medium text-gray-800">
                     {exam.title}
                   </h3>
-                  <span className={`px-2 py-1 text-xs rounded-full ${statusInfo.color}`}>
+                  <span
+                    className={`px-2 py-1 text-xs rounded-full ${statusInfo.color}`}
+                  >
                     {statusInfo.label}
                   </span>
                 </div>
 
-                <p className="text-sm text-gray-500 mb-3">
-                  {exam.className}
-                </p>
+                <p className="text-sm text-gray-500 mb-3">{exam.className}</p>
 
                 <div className="grid grid-cols-2 gap-2 mt-3">
                   <div className="flex items-center text-sm text-gray-600">
