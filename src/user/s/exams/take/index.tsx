@@ -169,10 +169,23 @@ function TakeExamPage() {
     );
   }
 
-  // Compare exam date with current date
-  const currentDate = new Date();
-  const examDate = new Date(exam.dueDate);
-  const isExamInPast = examDate < currentDate;
+  // Check if exam due date has passed
+  const examDueDate = new Date(exam.dueDate + 'T' + exam.endTime);
+  const now = new Date();
+
+  // For debugging
+  console.log("Exam availability check:", {
+    examId: exam.id,
+    examDueDate: examDueDate.toISOString(),
+    currentDate: now.toISOString(),
+    examStatus: exam.status
+  });
+
+  // Only consider exam unavailable if it's more than a day past due date
+  // or if the status is explicitly set to "completed"
+  const isExamInPast = (now > examDueDate && 
+    (now.getTime() - examDueDate.getTime() > 24 * 60 * 60 * 1000)) || 
+    exam.status === "completed";
 
   if (isExamInPast) {
     return (
