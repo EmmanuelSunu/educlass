@@ -51,6 +51,9 @@
   -webkit-user-drag: none;
   -khtml-user-drag: none;
   -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
 
 /* Prevent text selection in exam questions */
 .exam-question {
@@ -65,10 +68,6 @@ textarea.secure-text-field {
   -webkit-user-drag: none;
   -khtml-user-drag: none;
   -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
-}
-
   -o-user-drag: none;
   user-drag: none;
 }
