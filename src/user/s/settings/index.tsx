@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import DashboardLayout from "../layout";
+import DashboardLayout from "../layout/index";
 import { FiUser, FiBell, FiLock, FiSave } from "react-icons/fi";
 
 function StudentSettings() {

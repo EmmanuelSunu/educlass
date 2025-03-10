@@ -1,6 +1,6 @@
 
 import React from "react";
-import DashboardLayout from "../../layout";
+import DashboardLayout from "../../layout/index";
 import { FiCalendar, FiUsers } from "react-icons/fi";
 import examsData from "../../../user/l/exams/data/exams.json";
 

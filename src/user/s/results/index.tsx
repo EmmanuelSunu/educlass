@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiCalendar, FiClock, FiBook } from "react-icons/fi";
-import DashboardLayout from "../layout";
+import DashboardLayout from "../layout/index";
 import examsData from "../../l/exams/data/exams.json";
 // Mock student class IDs for demo purposes
 const studentClassIds = [1, 2, 3, 4];
