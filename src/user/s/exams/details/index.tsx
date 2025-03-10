@@ -163,7 +163,7 @@ function ExamDetailsPage() {
               )
             ) : isFutureExam ? (
               // Future exam - show when it will be available
-              <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded font-medium">
+              <div className="bg-purple-100 text-purple-600 px-4 py-2 rounded font-medium">
                 Available on{" "}
                 {new Date(examDetails.dueDate).toLocaleDateString()}
               </div>
@@ -228,20 +228,20 @@ function ExamDetailsPage() {
                 <span
                   className={`font-medium capitalize ${
                     isPastExam
-                      ? "text-gray-800"
+                      ? "text-gray-600"
                       : isFutureExam
-                        ? "text-purple-800"
+                        ? "text-purple-600"
                         : isAvailable
-                          ? "text-green-600"
+                          ? "text-blue-600"
                           : "text-amber-600"
                   }`}
                 >
                   {isPastExam
-                    ? "Past"
+                    ? "Unavailable"
                     : isFutureExam
                       ? "Scheduled"
                       : isAvailable
-                        ? "Available Now"
+                        ? "Available"
                         : "Not Available Yet"}
                 </span>
               </li>

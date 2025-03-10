@@ -126,10 +126,18 @@ function ExamDetailsPage() {
               <div className="flex items-center gap-2">
                 <span
                   className={`px-3 py-1 rounded-full text-sm capitalize ${
-                    statusColors[examDetails.status]
-                  }`}
+                    examDetails.status === 'scheduled' 
+                    ? 'bg-purple-100 text-purple-600' 
+                    : examDetails.status === 'in-progress' 
+                    ? 'bg-blue-100 text-blue-600' 
+                    : 'bg-gray-100 text-gray-600'
+                }`}
                 >
-                  {examDetails.status}
+                  {examDetails.status === 'completed' 
+                    ? 'Unavailable' 
+                    : examDetails.status === 'in-progress'
+                    ? 'Available'
+                    : examDetails.status.charAt(0).toUpperCase() + examDetails.status.slice(1)}
                 </span>
                 <button 
                   onClick={handleEditClick}

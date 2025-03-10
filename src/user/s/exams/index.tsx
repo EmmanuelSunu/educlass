@@ -76,22 +76,22 @@ function StudentExams() {
     const now = new Date();
     const dueDate = new Date(`${exam.dueDate} ${exam.endTime}`);
     const examStartDate = new Date(`${exam.dueDate} ${exam.startTime}`);
-    
+
     // Check if exam is in the past
     if (now > dueDate) {
-      return { label: "Completed", color: "bg-green-100 text-green-800" };
+      return { label: "Unavailable", color: "bg-gray-100 text-gray-600" };
     } 
     // Check if exam is today and within time window
     else if (isSameDate(now, dueDate) && now >= examStartDate && now <= dueDate) {
-      return { label: "Available", color: "bg-blue-100 text-blue-800" };
+      return { label: "Available", color: "bg-blue-100 text-blue-600" };
     } 
     // Check if exam is today but not yet started
     else if (isSameDate(now, dueDate) && now < examStartDate) {
-      return { label: "Today", color: "bg-amber-100 text-amber-800" };
+      return { label: "Available", color: "bg-blue-100 text-blue-600" }; // Treat as available if today but not started
     }
     // Otherwise, it's a future exam
     else {
-      return { label: "Scheduled", color: "bg-purple-100 text-purple-800" };
+      return { label: "Scheduled", color: "bg-purple-100 text-purple-600" };
     }
   };
 

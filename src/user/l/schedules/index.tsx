@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import DashboardLayout from "../layout";
-import ScheduleModal from "../../../components/ScheduleModal";
 import ScheduleCalendar from "../../../components/ScheduleCalendar";
 import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";
+import { RiCalendarLine, RiListCheck2, RiUploadCloud2Line } from "react-icons/ri";
 import { Schedule } from "./types";
-import { RiCalendarLine, RiListCheck2 } from "react-icons/ri";
+import ScheduleFileUpload from "./ScheduleFileUpload";
+import Modal from '../../../components/Modal';
+
 
 // Mock data for demonstration
 const mockSchedules: Schedule[] = [
@@ -39,91 +41,77 @@ const mockSchedules: Schedule[] = [
   },
 ];
 
-const SchedulesPage: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | undefined>(undefined);
+const Schedules = () => {
+  const [view, setView] = useState<'calendar' | 'table'>('calendar');
   const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  const handleAddSchedule = (scheduleData: Partial<Schedule>) => {
-    const newSchedule: Schedule = {
-      ...scheduleData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    } as Schedule;
-
-    setSchedules([...schedules, newSchedule]);
+  const handleAddSchedule = (schedule: Schedule) => {
+    setSchedules([...schedules, schedule]);
   };
 
-  const handleEditSchedule = (schedule: Schedule) => {
-    setSelectedSchedule(schedule);
-    setIsModalOpen(true);
-  };
-
-  const handleDateSelect = () => {
-    setSelectedSchedule(undefined);
-    setIsModalOpen(true);
+  const handleImportSchedules = (newSchedules: Schedule[]) => {
+    setSchedules([...schedules, ...newSchedules]);
+    setIsUploadModalOpen(false);
   };
 
   return (
-    <DashboardLayout
-      title="Schedules"
-      showAddHeadbarButton={true}
-      onAddHeadbarButton={() => {
-        setSelectedSchedule(undefined);
-        setIsModalOpen(true);
-      }}
-      buttonTitle="Add Schedule"
-    >
-      <div className="mb-6 flex items-center">
-        <div className="flex space-x-2">
-          <ButtonProps
-            variant={viewMode === "calendar" ? "primary" : "secondary"}
-            onClick={() => setViewMode("calendar")}
-            className="gap-2"
-          >
-            <RiCalendarLine />
-            Calendar
-          </ButtonProps>
-          <ButtonProps
-            variant={viewMode === "table" ? "primary" : "secondary"}
-            onClick={() => setViewMode("table")}
-            className="gap-2"
-          >
-            <RiListCheck2 />
-            Table
-          </ButtonProps>
+    <DashboardLayout>
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="flex flex-row justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold text-gray-800">Schedule Management</h1>
+
+          <div className="flex items-center space-x-2">
+            <div className="bg-slate-100 rounded-lg p-1 flex">
+              <button
+                className={`px-4 py-2 rounded-md flex items-center ${
+                  view === 'calendar' ? 'bg-white shadow-sm' : ''
+                }`}
+                onClick={() => setView('calendar')}
+              >
+                <RiCalendarLine className="mr-2" />
+                Calendar
+              </button>
+              <button
+                className={`px-4 py-2 rounded-md flex items-center ${
+                  view === 'table' ? 'bg-white shadow-sm' : ''
+                }`}
+                onClick={() => setView('table')}
+              >
+                <RiListCheck2 className="mr-2" />
+                Table
+              </button>
+            </div>
+
+            <button
+              className="p-2 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary-dark transition-colors"
+              onClick={() => setIsUploadModalOpen(true)}
+              title="Upload Schedule Data"
+            >
+              <RiUploadCloud2Line size={24} />
+            </button>
+          </div>
         </div>
+
+        {view === 'calendar' ? (
+          <ScheduleCalendar schedules={schedules} />
+        ) : (
+          <ScheduleTable schedules={schedules} />
+        )}
       </div>
 
-      {viewMode === "calendar" ? (
-        <ScheduleCalendar
-          schedules={schedules}
-          onEventClick={handleEditSchedule}
-          onDateSelect={handleDateSelect}
-        />
-      ) : (
-        <ScheduleTable
-          schedules={schedules}
-          onEdit={handleEditSchedule}
-          onDelete={(scheduleId) =>
-            setSchedules((prev) => prev.filter((s) => s.id !== scheduleId))
-          }
-        />
+      {/* Upload Schedule Modal */}
+      {isUploadModalOpen && (
+        <Modal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          title="Upload Schedule Data"
+        >
+          <ScheduleFileUpload onImport={handleImportSchedules} />
+        </Modal>
       )}
-
-      <ScheduleModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedSchedule(undefined);
-        }}
-        onSave={handleAddSchedule}
-        schedule={selectedSchedule}
-      />
     </DashboardLayout>
   );
 };
 
-export default SchedulesPage;
+export default Schedules;

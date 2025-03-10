@@ -1,6 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Suspense } from "react"; // Keep React import for JSX
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Outlet as RouterOutlet,
+  Navigate,
+} from "react-router-dom";
 import Login from "./login";
 import Dashboard from "./user/l/dashboard";
 import LecturerSchedule from "./user/l/schedules/";
@@ -13,62 +18,52 @@ import CreateExam from "./user/l/exams/create";
 
 // Student imports
 import StudentDashboard from "./user/s/dashboard";
-import StudentSchedule from "./user/s/schedules";
 import StudentExams from "./user/s/exams";
 import StudentSettings from "./user/s/settings";
 import StudentExamDetails from "./user/s/exams/details";
 import StudentExamTake from "./user/s/exams/take";
 import StudentExamResults from "./user/s/exams/results";
+import StudentResults from "./user/s/results";
+import StudentResultDetails from "./user/s/results/details";
+import StudentCalender from "./user/s/schedules";
+import StudentClasses from "./user/s/classes";
 
 function App() {
   return (
     <Router>
-      <>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          {/* Lecturer Routes */}
-          <Route path="/user/l/dashboard" element={<Dashboard />} />
-          <Route path="/user/l/schedules" element={<LecturerSchedule />} />
-          <Route path="/user/l/exams" element={<LecturerExams />} />
-          <Route path="/user/l/exams/create" element={<CreateExam />} />
-          <Route path="/user/l/exams/create/:id" element={<CreateExam />} />
-          <Route path="/user/l/exams/details/:id" element={<ExamDetailsPage />} />
-          <Route path="/user/l/grading" element={<LecturerGrading />} />
-          <Route path="/user/l/settings" element={<LecturerSettings />} />
-          <Route path="/user/l/class" element={<LecturerClass />} />
-          <Route path="/exams/details/:id" element={<ExamDetailsPage />} />
+      <Routes>
+        {/* Login Route */}
+        <Route path="/" element={<Login />} />
 
-          {/* Student Routes */}
-          <Route path="/user/s/dashboard" element={<StudentDashboard />} />
-          <Route path="/user/s/schedules" element={<StudentSchedule />} />
-          <Route path="/user/s/exams" element={<StudentExams />} />
+        {/* Lecturer Routes */}
+        <Route path="/user/l/dashboard" element={<Dashboard />} />
+        <Route path="/user/l/schedules" element={<LecturerSchedule />} />
+        <Route path="/user/l/exams" element={<LecturerExams />} />
+        <Route path="/user/l/exams/create" element={<CreateExam />} />
+        <Route path="/user/l/exams/create/:id" element={<CreateExam />} />
+        <Route path="/user/l/exams/details/:id" element={<ExamDetailsPage />} />
+        <Route path="/user/l/grading" element={<LecturerGrading />} />
+        <Route path="/user/l/settings" element={<LecturerSettings />} />
+        <Route path="/user/l/class" element={<LecturerClass />} />
+
+        {/* Student Routes */}
+        <Route path="/user/s" element={<RouterOutlet />}>
+          <Route index element={<Navigate to="/user/s/dashboard" replace />} />
+          <Route path="dashboard" element={<StudentDashboard />} />
+          <Route path="calendar" element={<StudentCalender />} />
+          <Route path="exams" element={<StudentExams />} />
+          <Route path="exams/take/:id" element={<StudentExamTake />} />
+          <Route path="exams/details/:id" element={<StudentExamDetails />} />
+          <Route path="exams/results/:id" element={<StudentExamResults />} />
+          <Route path="results" element={<StudentResults />} />
           <Route
-            path="/user/s/exams/details/:id"
-            element={
-              <Suspense fallback={<div>Loading...</div>}>
-                <StudentExamDetails />
-              </Suspense>
-            }
+            path="results/details/:examId"
+            element={<StudentResultDetails />}
           />
-          <Route
-            path="/user/s/exams/take/:id"
-            element={
-              <Suspense fallback={<div>Loading...</div>}>
-                <StudentExamTake />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/user/s/exams/results/:id"
-            element={
-              <Suspense fallback={<div>Loading...</div>}>
-                <StudentExamResults />
-              </Suspense>
-            }
-          />
-          <Route path="/user/s/settings" element={<StudentSettings />} />
-        </Routes>
-      </>
+          <Route path="classes" element={<StudentClasses />} />
+          <Route path="settings" element={<StudentSettings />} />
+        </Route>
+      </Routes>
     </Router>
   );
 }
