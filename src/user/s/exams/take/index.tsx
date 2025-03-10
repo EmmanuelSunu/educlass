@@ -296,8 +296,7 @@ function TakeExamPage() {
                   {question.points ?? 5} points
                 </span>
               </div>
-              <div 
-                className="text-gray-700 mb-5 select-none" 
+              <div className="exam-question text-gray-700 mb-5 select-none" 
                 onCopy={(e) => e.preventDefault()} 
                 onDragStart={(e) => e.preventDefault()}
                 onContextMenu={(e) => e.preventDefault()}
