@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, ClipboardEvent, KeyboardEvent } from "react";
 
 interface SecureTextFieldProps {
@@ -23,7 +22,7 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
   name,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  
+
   // Add comprehensive event listeners to prevent drag and drop globally
   useEffect(() => {
     // More aggressive approach to prevent drag events
@@ -32,36 +31,36 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
       e.stopPropagation();
       return false;
     };
-    
+
     // Handle focus to disable clipboard operations
     const handleFocus = () => {
       if (textareaRef.current) {
         // Force disable browser's native drag behavior
-        textareaRef.current.setAttribute('ondragstart', 'return false;');
-        textareaRef.current.setAttribute('ondrop', 'return false;');
+        textareaRef.current.setAttribute("ondragstart", "return false;");
+        textareaRef.current.setAttribute("ondrop", "return false;");
       }
     };
-    
+
     // Prevent browser default behavior for these events
-    window.addEventListener('dragstart', preventDragEvents, true);
-    window.addEventListener('dragenter', preventDragEvents, true);
-    window.addEventListener('dragover', preventDragEvents, true);
-    window.addEventListener('drop', preventDragEvents, true);
-    
+    window.addEventListener("dragstart", preventDragEvents, true);
+    window.addEventListener("dragenter", preventDragEvents, true);
+    window.addEventListener("dragover", preventDragEvents, true);
+    window.addEventListener("drop", preventDragEvents, true);
+
     // For iOS Safari which handles events differently
     if (textareaRef.current) {
-      textareaRef.current.addEventListener('focus', handleFocus);
+      textareaRef.current.addEventListener("focus", handleFocus);
     }
-    
+
     return () => {
       // Clean up
-      document.removeEventListener('dragstart', preventDragEvents, true);
-      document.removeEventListener('dragenter', preventDragEvents, true);
-      document.removeEventListener('dragover', preventDragEvents, true);
-      document.removeEventListener('drop', preventDragEvents, true);
-      
+      document.removeEventListener("dragstart", preventDragEvents, true);
+      document.removeEventListener("dragenter", preventDragEvents, true);
+      document.removeEventListener("dragover", preventDragEvents, true);
+      document.removeEventListener("drop", preventDragEvents, true);
+
       if (textareaRef.current) {
-        textareaRef.current.removeEventListener('focus', handleFocus);
+        textareaRef.current.removeEventListener("focus", handleFocus);
       }
     };
   }, []);
@@ -79,32 +78,6 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
     return false;
   };
 
-  // Prevent drag and drop operations
-  const handleDragOver = (e: React.DragEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    alert("Dragging content into this field is not allowed for security reasons");
-    return false;
-  };
-
-  const handleDragEnter = (e: React.DragEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  };
-
-  const handleDragLeave = (e: React.DragEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  };
-
   // Handle key combinations for copy/paste
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Prevent Ctrl+V (paste)
@@ -113,8 +86,8 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
       alert("Pasting is not allowed for security reasons");
       return false;
     }
-    
-    // Prevent Ctrl+C (copy) 
+
+    // Prevent Ctrl+C (copy)
     if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
       e.preventDefault();
       alert("Copying is not allowed for security reasons");
@@ -138,24 +111,48 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
       onPaste={handlePaste}
       onCut={handleCut}
       onKeyDown={handleKeyDown}
-      onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
-      onDrop={(e) => { e.preventDefault(); e.stopPropagation(); alert("Dragging content into this field is not allowed"); return false; }}
-      onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
-      onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
-      onDragStart={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
-      onDrag={(e) => { e.preventDefault(); e.stopPropagation(); return false; }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        alert("Dragging content into this field is not allowed");
+        return false;
+      }}
+      onDragEnter={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }}
+      onDragLeave={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }}
+      onDragStart={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }}
+      onDrag={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }}
       placeholder={placeholder}
       className={`no-drag-drop ${className}`}
       disabled={disabled}
       rows={rows}
       draggable="false"
-      style={{ 
-        WebkitUserDrag: 'none',
-        MozUserDrag: 'none',
-        msUserDrag: 'none',
-        userDrag: 'none',
-        WebkitUserSelect: 'text',
-        userSelect: 'text'
+      style={{
+        MozUserDrag: "none",
+        msUserDrag: "none",
+        userDrag: "none",
+        WebkitUserSelect: "text",
+        userSelect: "text",
       }}
     />
   );

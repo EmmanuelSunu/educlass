@@ -20,7 +20,7 @@ const ExamCard: React.FC<ExamCardProps> = ({
   duration,
   startTime,
   endTime,
-  status,
+  // Remove 'status' from here since it's never used,
   dueDate,
   className,
 }) => {
@@ -41,9 +41,9 @@ const ExamCard: React.FC<ExamCardProps> = ({
     const examDate = new Date(dueDate);
 
     // Check if dates are same (only comparing year, month, day)
-    const isSameDay = (d1: Date, d2: Date) => 
-      d1.getFullYear() === d2.getFullYear() && 
-      d1.getMonth() === d2.getMonth() && 
+    const isSameDay = (d1: Date, d2: Date) =>
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
       d1.getDate() === d2.getDate();
 
     if (examDate < now) {

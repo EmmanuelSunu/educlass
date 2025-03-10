@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Schedule, ScheduleType } from '../user/l/schedules/types';
+import { Schedule } from '../user/l/schedules/types';
 import ButtonProps from './ButtonProps';
 import { RiCloseLine } from 'react-icons/ri';
 
@@ -23,7 +23,6 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       date: '',
       startTime: '',
       endTime: '',
-      description: '',
       location: '',
       isRecurring: false,
       recurrence: undefined
@@ -80,7 +79,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
               <label className="block text-sm font-medium text-gray-700">Type</label>
               <select
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as ScheduleType })}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as unknown as Schedule })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                 required
               >
