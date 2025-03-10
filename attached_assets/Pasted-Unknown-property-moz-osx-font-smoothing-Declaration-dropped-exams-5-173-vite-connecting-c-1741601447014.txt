@@ -1,0 +1,55 @@
+Unknown property ‘-moz-osx-font-smoothing’.  Declaration dropped. exams:5:173
+[vite] connecting... client:495:9
+[vite] connected. client:614:15
+Error in parsing value for ‘-webkit-text-size-adjust’.  Declaration dropped. exams:141:29
+Unknown property ‘-moz-user-drag’.  Declaration dropped. exams:1914:18
+Unknown property ‘user-drag’.  Declaration dropped. exams:1925:13
+Uncaught ReferenceError: examsData is not defined
+    StudentExams index.tsx:59
+    React 13
+    workLoop scheduler.development.js:266
+    flushWork scheduler.development.js:239
+    performWorkUntilDeadline scheduler.development.js:533
+index.tsx:40:28
+Uncaught ReferenceError: examsData is not defined
+    StudentExams index.tsx:59
+    React 12
+    workLoop scheduler.development.js:266
+    flushWork scheduler.development.js:239
+    performWorkUntilDeadline scheduler.development.js:533
+index.tsx:40:28
+The above error occurred in the <StudentExams> component:
+
+StudentExams@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/src/user/s/exams/index.tsx:36:20
+RenderedRoute@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=0f1ce3df:5360:23
+Outlet@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=0f1ce3df:6024:20
+RenderedRoute@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=0f1ce3df:5360:23
+Routes@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=0f1ce3df:6089:16
+Transition2@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/node_modules/.vite/deps/react-transition-group.js?v=97d03d45:905:30
+CSSTransition2@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/node_modules/.vite/deps/react-transition-group.js?v=97d03d45:1322:35
+div
+TransitionGroup2@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/node_modules/.vite/deps/react-transition-group.js?v=97d03d45:1691:30
+AnimatedRoutes@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/src/App.tsx:49:20
+Router@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=0f1ce3df:6032:16
+BrowserRouter@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=0f1ce3df:8071:23
+ApiProvider@https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/src/contexts/ApiContext.tsx:28:28
+App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. 2 <anonymous code>:1:145535
+Uncaught ReferenceError: examsData is not defined
+    StudentExams index.tsx:59
+    React 13
+    workLoop scheduler.development.js:266
+    flushWork scheduler.development.js:239
+    performWorkUntilDeadline scheduler.development.js:533
+index.tsx:40:28
+Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://api.example.com/exams. (Reason: CORS request did not succeed). Status code: (null). 4
+Source map error: Error: JSON.parse: unexpected character at line 1 column 1 of the JSON data
+Stack in the worker:parseSourceMapInput@resource://devtools/client/shared/vendor/source-map/lib/util.js:163:15
+_factory@resource://devtools/client/shared/vendor/source-map/lib/source-map-consumer.js:1066:22
+SourceMapConsumer@resource://devtools/client/shared/vendor/source-map/lib/source-map-consumer.js:26:12
+_fetch@resource://devtools/client/shared/source-map-loader/utils/fetchSourceMap.js:83:19
+
+Resource URL: https://aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev/user/s/%3Canonymous%20code%3E
+Source Map URL: installHook.js.map
