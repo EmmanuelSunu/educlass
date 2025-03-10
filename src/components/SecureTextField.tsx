@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, ClipboardEvent, KeyboardEvent } from "react";
+import React, { useRef, ClipboardEvent, KeyboardEvent } from "react";
 
 interface SecureTextFieldProps {
   value: string;
@@ -22,6 +22,8 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
   id,
   name,
 }) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   // Prevent paste
   const handlePaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
@@ -38,12 +40,26 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
   // Prevent drag and drop operations
   const handleDragOver = (e: React.DragEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     return false;
   };
 
   const handleDrop = (e: React.DragEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     alert("Dragging content into this field is not allowed for security reasons");
+    return false;
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     return false;
   };
 
@@ -72,6 +88,7 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
 
   return (
     <textarea
+      ref={textareaRef}
       id={id}
       name={name}
       value={value}
@@ -81,10 +98,13 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
       onKeyDown={handleKeyDown}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
       placeholder={placeholder}
       className={className}
       disabled={disabled}
       rows={rows}
+      style={{ WebkitUserDrag: 'none' }}
     />
   );
 };

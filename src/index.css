@@ -97,6 +97,15 @@ textarea.secure-text-field {
 }
 
 .question-type-essay {
+
+/* Prevent dragging on elements */
+textarea, input[type="text"], .secure-content {
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-user-select: text; /* Allow text selection */
+  user-select: text;
+}
+
   background-color: #f3e8ff;
   color: #7e22ce;
 }
