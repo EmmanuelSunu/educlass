@@ -1,15 +1,14 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiCalendar, FiClock, FiBook } from "react-icons/fi";
 import DashboardLayout from "../layout";
-import examsData from "../../l/exams/data/exams.json";
-// Mock student class IDs for demo purposes
-const studentClassIds = [1, 2, 3, 4];
+import { examsData } from "../../data/exams";
+import { studentClassIds } from "../../data/student";
 
 interface ExamResult {
   examId: number;
   score: number;
-  status: "passed" | "failed";
+  status: string;
   submittedAt: string;
   examTitle: string;
   examClass: string;
@@ -67,87 +66,87 @@ function StudentResults() {
     setLoading(false);
   }, []);
 
-  const handleResultClick = (examId: number) => {
-    navigate(`/user/s/results/${examId}`);
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
-  const getScoreColor = (score: number): string => {
-    if (score >= 90) return "text-green-600";
-    if (score >= 80) return "text-blue-600";
-    if (score >= 70) return "text-yellow-600";
-    return "text-red-600";
+  const getStatusColor = (status: string) => {
+    return status === "passed" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800";
   };
 
   return (
-    <DashboardLayout title="Exam Results">
-      <div className="p-6 bg-white rounded-lg shadow">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Exam Results</h1>
+    <DashboardLayout title="Exam Results" buttonTitle="View All">
+      <div className="p-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Exam Results</h1>
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 card-grid">
-            {completedExams.map((result) => (
-              <div
-                key={result.examId}
-                onClick={() => handleResultClick(result.examId)}
-                className="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-              >
-                <div className="p-4">
-                  <div className="flex items-center mb-2">
-                    <span
-                      className={`px-2 py-1 text-xs font-semibold rounded ${
-                        result.status === "passed"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {result.status === "passed" ? "Passed" : "Failed"}
-                    </span>
-                    <span className="ml-2 text-xs text-gray-500">
-                      {result.examType}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-semibold text-gray-800 mb-1 line-clamp-1">
-                    {result.examTitle}
-                  </h3>
-
-                  <div className="flex items-center text-sm text-gray-600 mb-2">
-                    <FiBook className="mr-1" />
-                    <span className="line-clamp-1">{result.examClass}</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 mt-3">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <FiCalendar className="mr-1" />
-                      <span>
-                        {new Date(result.submittedAt).toLocaleDateString()}
+        ) : completedExams.length > 0 ? (
+          <div className="bg-white shadow rounded-lg overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Exam
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Score
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {completedExams.map((exam) => (
+                  <tr key={exam.examId} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        <div className="text-sm font-medium text-gray-900">{exam.examTitle}</div>
+                        <div className="text-sm text-gray-500">{exam.examClass}</div>
+                        <div className="text-xs text-gray-400">{exam.examType}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{exam.score}%</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(exam.status)}`}>
+                        {exam.status.charAt(0).toUpperCase() + exam.status.slice(1)}
                       </span>
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <FiClock className="mr-1" />
-                      <span>{result.timeTaken}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center">
-                      <span
-                        className={`text-xl font-bold ${getScoreColor(result.score)}`}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {formatDate(exam.submittedAt)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => navigate(`/user/s/results/details/${exam.examId}`)}
+                        className="text-primary hover:text-primary-dark"
                       >
-                        {result.score}%
-                      </span>
-                    </div>
-                    <div className="text-sm font-medium text-gray-500">
-                      {result.feedback}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="bg-white p-6 rounded-lg shadow text-center">
+            <p className="text-gray-500">No exam results yet.</p>
           </div>
         )}
       </div>
