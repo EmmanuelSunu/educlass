@@ -48,7 +48,7 @@ const Schedules = () => {
   const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
   const [showAddModal, setShowAddModal] = useState(false); // State for Add Schedule Modal
   const [importSuccess, setImportSuccess] = useState(false); // State for import success indicator
-
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleEdit = (id: string) => {
     console.log(`Edit schedule with ID: ${id}`);
@@ -80,11 +80,11 @@ const Schedules = () => {
   const handleImportSchedules = (newSchedules: Schedule[]) => {
     setSchedules([...schedules, ...newSchedules]);
     setShowUploadModal(false);
-    setImportSuccess(true);
+    setShowSuccessPopup(true);
 
-    // Hide success message after 3 seconds
+    // Auto-hide success message after 3 seconds
     setTimeout(() => {
-      setImportSuccess(false);
+      setShowSuccessPopup(false);
     }, 3000);
   };
 
@@ -168,6 +168,21 @@ const Schedules = () => {
       {importSuccess && (
         <div className="bg-green-200 text-green-700 p-4 rounded mt-4">
           Schedules imported successfully!
+        </div>
+      )}
+
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
+            <div className="bg-green-100 p-3 rounded-full mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-lg font-semibold mb-2">Import Successful!</h2>
+            <p className="text-gray-600 text-center">Schedules have been imported successfully.</p>
+          </div>
         </div>
       )}
     </DashboardLayout>
