@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import DashboardLayout from "../layout";
 import { FiClock, FiCalendar, FiBook, FiCheckCircle } from "react-icons/fi";
 
 function Dashboard() {
-  
+
   const [stats, setStats] = useState({
     upcomingExams: 0,
     completedAssignments: 0,
@@ -29,7 +28,7 @@ function Dashboard() {
       buttonTitle=""
     >
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 w-full"> {/* Added w-full */}
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -41,7 +40,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -53,7 +52,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -65,7 +64,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -78,7 +77,7 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      
+
       {/* Main content area - placeholder for dashboard content */}
       <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
         <h2 className="text-lg font-semibold text-slate-800 mb-4">Welcome to Your Student Dashboard</h2>
