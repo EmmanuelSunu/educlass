@@ -1,36 +1,66 @@
 
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import DashboardLayout from "../../s/layout";
+import DashboardLayout from "../layout";
 import { FiCalendar, FiUsers, FiUser, FiBookOpen, FiClock } from "react-icons/fi";
 import examsData from "../../l/exams/data/exams.json";
 import classData from "../../l/class/data/class.json";
 import { Dialog } from "@headlessui/react";
-import URLS from "../url";
 
 // Mock data for student classes
 const studentClassIds = [1, 2, 3, 5]; // Classes the student is enrolled in
 
-// Student enrolled class IDs
+// Mock additional class details
+const classDetails = {
+  1: { 
+    duration: "16 weeks", 
+    level: "200", 
+    semester: "First Semester",
+    lecturer: "Dr. James Smith",
+    description: "An introduction to programming concepts, algorithms, and problem-solving techniques."
+  },
+  2: { 
+    duration: "14 weeks", 
+    level: "300", 
+    semester: "Second Semester",
+    lecturer: "Prof. Sarah Johnson",
+    description: "Advanced web development techniques using modern frameworks and tools."
+  },
+  3: { 
+    duration: "12 weeks", 
+    level: "400", 
+    semester: "First Semester",
+    lecturer: "Dr. Michael Chen",
+    description: "Comprehensive study of data structures and their applications in software engineering."
+  },
+  5: { 
+    duration: "16 weeks", 
+    level: "300", 
+    semester: "First Semester",
+    lecturer: "Dr. Emily Wilson",
+    description: "Introduction to machine learning algorithms and implementation techniques."
+  }
+};
 
 function StudentClasses() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState<any>(null);
   
-  // Get classes the student is enrolled in
-  const classes = classData
-    .filter(cls => studentClassIds.includes(cls.id))
-    .map(cls => ({
-      id: cls.id,
-      name: cls.name
-    }));
+  // Get unique classes from exams data
+  const classes = [...new Set(
+    examsData
+      .filter(exam => studentClassIds.includes(exam.classId))
+      .map(exam => ({
+        id: exam.classId,
+        name: exam.className
+      }))
+  )];
 
   const handleViewClassDetails = (classItem: any) => {
-    const classDetail = classData.find(cls => cls.id === classItem.id);
-    if (classDetail) {
-      setSelectedClass(classDetail);
-      setIsModalOpen(true);
-    }
+    setSelectedClass({
+      ...classItem,
+      ...classDetails[classItem.id as keyof typeof classDetails]
+    });
+    setIsModalOpen(true);
   };
 
   return (
@@ -50,22 +80,16 @@ function StudentClasses() {
               
               <div className="flex items-center text-sm text-slate-500 mb-4">
                 <FiCalendar className="mr-2" />
-                <span>Level {classData.find(cls => cls.id === classItem.id)?.level || "N/A"}</span>
+                <span>Level {classDetails[classItem.id as keyof typeof classDetails]?.level || "N/A"}</span>
               </div>
               
-              <div className="mt-4 space-y-2">
+              <div className="mt-4">
                 <button 
                   className="w-full px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition"
                   onClick={() => handleViewClassDetails(classItem)}
                 >
-                  Quick View
+                  View Class Details
                 </button>
-                <Link 
-                  to={URLS.CLASS_DETAILS(classItem.id.toString())}
-                  className="block w-full text-center px-4 py-2 bg-white border border-primary text-primary rounded-md hover:bg-primary/5 transition"
-                >
-                  View Full Details
-                </Link>
               </div>
             </div>
           ))}

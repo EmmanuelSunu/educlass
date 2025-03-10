@@ -1,95 +1,42 @@
-
 [
   {
-    "id": 1,
-    "level": "200",
-    "program": "Computer Science",
-    "duration": "16 weeks",
-    "semester": "First Semester",
-    "lecturer": "Dr. James Smith",
-    "description": "An introduction to programming concepts, algorithms, and problem-solving techniques.",
+    "id": "C101",
+    "level": "Undergraduate",
+    "program": "BSc ICT",
     "students": [
-      {
-        "id": "1",
-        "name": "John Doe"
-      },
-      {
-        "id": "2",
-        "name": "Jane Smith"
-      },
-      {
-        "id": "3",
-        "name": "Michael Johnson"
-      }
+      { "id": "S001", "name": "Alice" },
+      { "id": "S002", "name": "Bob" },
+      { "id": "S003", "name": "Charlie" }
     ]
   },
   {
-    "id": 2,
-    "level": "300",
-    "program": "Web Development",
-    "duration": "14 weeks",
-    "semester": "Second Semester",
-    "lecturer": "Prof. Sarah Johnson",
-    "description": "Advanced web development techniques using modern frameworks and tools.",
+    "id": "C102",
+    "level": "Postgraduate",
+    "program": "MSc CS",
     "students": [
-      {
-        "id": "2",
-        "name": "Jane Smith"
-      },
-      {
-        "id": "4",
-        "name": "Emily Davis"
-      },
-      {
-        "id": "5",
-        "name": "Robert Wilson"
-      }
+      { "id": "S004", "name": "David" },
+      { "id": "S005", "name": "Eve" }
     ]
   },
   {
-    "id": 3,
-    "level": "400",
-    "program": "Data Structures",
-    "duration": "12 weeks",
-    "semester": "First Semester",
-    "lecturer": "Dr. Michael Chen",
-    "description": "Comprehensive study of data structures and their applications in software engineering.",
+    "id": "C103",
+    "level": "Undergraduate",
+    "program": "BSc Software Engineering",
     "students": [
-      {
-        "id": "1",
-        "name": "John Doe"
-      },
-      {
-        "id": "3",
-        "name": "Michael Johnson"
-      },
-      {
-        "id": "6",
-        "name": "Lisa Brown"
-      }
+      { "id": "S006", "name": "Frank" },
+      { "id": "S007", "name": "Grace" },
+      { "id": "S008", "name": "Hannah" },
+      { "id": "S009", "name": "Ian" }
     ]
   },
   {
-    "id": 5,
-    "level": "300",
-    "program": "Machine Learning",
-    "duration": "16 weeks",
-    "semester": "First Semester",
-    "lecturer": "Dr. Emily Wilson",
-    "description": "Introduction to machine learning algorithms and implementation techniques.",
+    "id": "C104",
+    "level": "Postgraduate",
+    "program": "MSc Data Science",
     "students": [
-      {
-        "id": "2",
-        "name": "Jane Smith"
-      },
-      {
-        "id": "4",
-        "name": "Emily Davis"
-      },
-      {
-        "id": "7",
-        "name": "David Thompson"
-      }
+      { "id": "S010", "name": "Jack" },
+      { "id": "S011", "name": "Kate" },
+      { "id": "S012", "name": "Liam" }
     ]
   }
 ]
