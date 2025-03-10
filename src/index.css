@@ -1,9 +1,9 @@
+/* Import animations */
+@import url("../src/assets/animations.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import animations */
-@import url("../src/assets/animations.css");
 
 /* Custom utility classes for responsive behavior */
 @layer utilities {
