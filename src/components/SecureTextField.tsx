@@ -35,6 +35,18 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
     return false;
   };
 
+  // Prevent drag and drop operations
+  const handleDragOver = (e: React.DragEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    return false;
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    alert("Dragging content into this field is not allowed for security reasons");
+    return false;
+  };
+
   // Handle key combinations for copy/paste
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Prevent Ctrl+V (paste)
@@ -67,6 +79,8 @@ const SecureTextField: React.FC<SecureTextFieldProps> = ({
       onPaste={handlePaste}
       onCut={handleCut}
       onKeyDown={handleKeyDown}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
       placeholder={placeholder}
       className={className}
       disabled={disabled}

@@ -56,6 +56,15 @@
   -ms-user-select: none;
 }
 
+/* Prevent drag and drop in secure text areas */
+textarea.secure-text-field {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
   -o-user-drag: none;
   user-drag: none;
 }
