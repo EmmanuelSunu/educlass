@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
 import examsData from "../../l/exams/data/exams.json";
 import { FiCalendar, FiClock } from "react-icons/fi";
-import ExamDebugger from './debug-helper'; // Added import for the debugger component
 
 // Define interfaces for TypeScript
 interface Exam {
@@ -109,8 +108,6 @@ function StudentExams() {
         </p>
       </div>
 
-      <ExamDebugger examId={105} exams={examsData}/> {/* Added debugger component */}
-
       {loading ? (
         <div className="flex items-center justify-center h-64">
           <div className="text-lg text-slate-600">Loading exams...</div>
@@ -163,18 +160,3 @@ function StudentExams() {
 }
 
 export default StudentExams;
-
-// Added Debugger component
-const ExamDebugger = ({examId, exams}: {examId: number, exams: any}) => {
-  const exam = exams.find((e: any) => e.id === examId);
-  return (
-    <div>
-      <h2>Exam Debugger for ID: {examId}</h2>
-      {exam ? (
-        <pre>{JSON.stringify(exam, null, 2)}</pre>
-      ) : (
-        <p>Exam with ID {examId} not found.</p>
-      )}
-    </div>
-  );
-};

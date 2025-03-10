@@ -1,42 +1,5 @@
 [
   {
-    "id": 105,
-    "title": "Web Development Assignment",
-    "type": "exam",
-    "duration": "1 hour 30 minutes",
-    "durationHours": 1,
-    "durationMinutes": 30,
-    "startTime": "14:00",
-    "endTime": "15:30",
-    "status": "scheduled",
-    "dueDate": "2025-04-10",
-    "description": "Exam on fundamental web development concepts including HTML, CSS, and JavaScript",
-    "classId": 1,
-    "className": "Introduction to Programming",
-    "questions": [
-      {
-        "id": "1",
-        "type": "essay",
-        "questionText": "Explain the difference between HTML, CSS, and JavaScript and how they work together to create web pages.",
-        "questionAnswer": "A comprehensive explanation of the role of each technology in web development."
-      },
-      {
-        "id": "2", 
-        "type": "multi-choice",
-        "questionText": "Which of the following is NOT a valid CSS selector?",
-        "options": [".classname", "#idname", "*element", "~attribute"],
-        "questionAnswer": "~attribute"
-      },
-      {
-        "id": "3",
-        "type": "multi-choice",
-        "questionText": "Which JavaScript method is used to select an element by its ID?",
-        "options": ["document.getElement()", "document.querySelector()", "document.getElementById()", "document.findElement()"],
-        "questionAnswer": "document.getElementById()"
-      }
-    ]
-  },
-  {
     "id": 301,
     "title": "Advanced Programming Concepts Test",
     "type": "exam",
