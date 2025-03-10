@@ -359,7 +359,7 @@ function TakeExamPage() {
 export default TakeExamPage;
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import DashboardLayout from '../../layout';
+import DashboardLayout from '../../layout/index';
 import ExamSecurityScript from '../ExamSecurityScript';
 import SecureTextField from '../../../../components/SecureTextField';
 import examsData from '../../../l/exams/data/exams.json';
