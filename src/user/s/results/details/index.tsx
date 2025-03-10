@@ -182,7 +182,7 @@ function StudentResultDetails() {
 
   return (
     <DashboardLayout title="Result Details">
-      <div className="p-6 bg-white rounded-lg shadow">
+      <div className="bg-white rounded-lg shadow">
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>

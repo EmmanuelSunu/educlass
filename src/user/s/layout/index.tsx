@@ -28,11 +28,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <h1 className="text-xl font-bold text-slate-800">{title}</h1>
           </div>
           <div className="flex items-center">
-            <div className="relative">
-              <div className="flex items-center text-sm">
-                <span className="font-medium text-slate-700">Student</span>
-              </div>
-            </div>
+            {/* Removed Student text */}
           </div>
         </header>
         <div className="pt-4 px-8">
