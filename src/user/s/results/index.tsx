@@ -1,69 +1,59 @@
-
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
-import examsData from "../../l/exams/data/exams.json";
-import { studentClassIds } from "../exams/mock-data";
-
-interface ExamResult {
-  examId: number;
-  score: number;
-  status: "passed" | "failed";
-  submittedAt: string;
-  examTitle: string;
-  examClass: string;
-  examType: string;
-  timeTaken: string;
-  feedback: string;
-}
+import { examsData } from "../data/exams";
+import { studentClassIds } from "../data/student";
+import { FiClock, FiCalendar } from "react-icons/fi";
 
 function StudentResults() {
-  const navigate = useNavigate();
-  const [completedExams, setCompletedExams] = useState<ExamResult[]>([]);
+  const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulate loading exam results
-    setLoading(true);
+    // Fetch and process exam results
+    const fetchResults = () => {
+      setLoading(true);
+      try {
+        // For demo purposes, we'll create mock results based on exams
+        const mockResults = examsData
+          .filter(
+            (exam) =>
+              studentClassIds.includes(exam.classId) &&
+              ["completed", "in-progress"].includes(exam.status)
+          )
+          .map((exam) => {
+            const score = Math.floor(Math.random() * 100) + 1;
+            const dateTaken = new Date(
+              new Date(exam.dueDate).getTime() - Math.random() * 86400000 * 5
+            ).toLocaleDateString();
+            const hours = Math.floor(Math.random() * exam.durationHours);
+            const minutes = Math.floor(Math.random() * exam.durationMinutes);
+            const timeTaken = `${hours ? hours + "h " : ""}${
+              minutes ? minutes + "m" : ""
+            }`;
 
-    // Get exams data and filter for completed exams
-    const typedExamsData = examsData as any[];
-    const studentExams = typedExamsData.filter(
-      (exam) =>
-        studentClassIds.includes(exam.classId) &&
-        new Date(exam.dueDate) < new Date(),
-    );
+            return {
+              examId: exam.id,
+              examTitle: exam.title,
+              examType: exam.type,
+              examClass: exam.className,
+              score,
+              status: score >= 60 ? "passed" : "failed",
+              dateTaken,
+              timeTaken,
+            };
+          });
 
-    // Generate mock results for completed exams
-    const mockResults = studentExams.map((exam) => {
-      const score = Math.floor(Math.random() * 41) + 60; // Score between 60-100
-      const timeTaken = `${Math.floor(Math.random() * 30) + 15} min`;
-      let feedback = "";
+        setResults(mockResults);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching results:", error);
+        setLoading(false);
+      }
+    };
 
-      if (score >= 90) feedback = "Excellent";
-      else if (score >= 80) feedback = "Good";
-      else if (score >= 70) feedback = "Fair";
-      else feedback = "Poor";
-
-      return {
-        examId: exam.id,
-        score,
-        status: score >= 70 ? "passed" : "failed",
-        submittedAt: new Date(
-          new Date(exam.dueDate).getTime() - Math.random() * 86400000,
-        ).toISOString(),
-        examTitle: exam.title,
-        examClass: exam.className,
-        examType: ["Quiz", "Midterm", "Final", "Assessment"][
-          Math.floor(Math.random() * 4)
-        ],
-        timeTaken,
-        feedback,
-      } as ExamResult;
-    });
-
-    setCompletedExams(mockResults);
-    setLoading(false);
+    fetchResults();
   }, []);
 
   const handleViewResults = (examId: number) => {
@@ -71,53 +61,42 @@ function StudentResults() {
   };
 
   return (
-    <DashboardLayout title="Exam Results">
-      <div className="container mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold mb-6">Exam Results</h1>
-
+    <DashboardLayout title="Exam Results" buttonTitle="View History">
+      <div>
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          </div>
-        ) : completedExams.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-6 text-center">
-            <p className="text-gray-500">No exam results available.</p>
+          <div className="p-4 text-center">Loading results...</div>
+        ) : results.length === 0 ? (
+          <div className="bg-white p-8 rounded-lg shadow-sm text-center">
+            <h3 className="text-lg font-medium text-gray-900">
+              No exam results yet
+            </h3>
+            <p className="mt-2 text-gray-600">
+              Your completed exam results will appear here
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
-            {completedExams.map((result) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 card-grid">
+            {results.map((result) => (
               <div
                 key={result.examId}
-                className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+                onClick={() => handleViewResults(result.examId)}
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow cursor-pointer card-animate"
               >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div className="mb-4 md:mb-0">
-                    <h3 className="text-lg font-semibold">{result.examTitle}</h3>
-                    <p className="text-sm text-gray-500 mb-2">
-                      {result.examClass} • {result.examType}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Submitted:{" "}
-                      {new Date(result.submittedAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-1 text-gray-900">
+                    {result.examTitle}
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    {result.examClass} • {result.examType}
+                  </p>
 
-                  <div className="flex flex-col md:flex-row md:items-center gap-4">
-                    <div className="flex items-center">
-                      <div className="w-16 h-16 rounded-full flex items-center justify-center border-4 border-primary bg-primary/10 text-primary">
-                        <span className="text-xl font-bold">{result.score}%</span>
-                      </div>
+                  <div className="flex items-center mb-3">
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center border-4 border-primary bg-primary/10 text-primary mr-4">
+                      <span className="text-xl font-bold">{result.score}%</span>
                     </div>
-
-                    <div className="flex flex-col items-start">
+                    <div>
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium mb-2 ${
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
                           result.status === "passed"
                             ? "bg-green-100 text-green-800"
                             : "bg-red-100 text-red-800"
@@ -125,12 +104,15 @@ function StudentResults() {
                       >
                         {result.status === "passed" ? "Passed" : "Failed"}
                       </span>
-                      <button
-                        onClick={() => handleViewResults(result.examId)}
-                        className="text-primary hover:underline text-sm"
-                      >
-                        View Details
-                      </button>
+
+                      <div className="flex items-center text-sm text-gray-600 mt-2">
+                        <FiClock className="mr-1" />
+                        {result.timeTaken}
+                      </div>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <FiCalendar className="mr-1" />
+                        {result.dateTaken}
+                      </div>
                     </div>
                   </div>
                 </div>
