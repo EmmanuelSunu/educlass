@@ -8,13 +8,13 @@ import examsData from "./data/exams.json";
 interface Exam {
   id: number;
   title: string;
-  type: 'exam' | 'test' | 'assignment';
+  type: "exam" | "test" | "assignment";
   duration: string;
   startTime: string;
   endTime: string;
-  status: 'scheduled' | 'in-progress' | 'completed';
+  status: "scheduled" | "in-progress" | "completed";
   dueDate: string;
-  className?: string; 
+  className?: string;
 }
 
 function Exams() {
@@ -39,20 +39,21 @@ function Exams() {
     startTime: "",
     endTime: "",
     status: "scheduled",
-    dueDate: ""
+    dueDate: "",
   });
 
   const navigate = useNavigate();
 
   const handleAddHeadbarButton = () => {
-    navigate('/user/l/exams/create');
+    navigate("/user/l/exams/create");
   };
 
   const handleAddExam = () => {
     if (newExam.title && newExam.dueDate) {
       const newExamWithId = {
         ...newExam,
-        id: exams.length > 0 ? Math.max(...exams.map(exam => exam.id)) + 1 : 1
+        id:
+          exams.length > 0 ? Math.max(...exams.map((exam) => exam.id)) + 1 : 1,
       } as Exam;
 
       setExams([...exams, newExamWithId]);
@@ -64,7 +65,7 @@ function Exams() {
         startTime: "",
         endTime: "",
         status: "scheduled",
-        dueDate: ""
+        dueDate: "",
       });
     }
   };
@@ -85,20 +86,6 @@ function Exams() {
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'scheduled':
-        return <span className="bg-purple-100 text-purple-600 text-xs px-2.5 py-0.5 rounded-full">Scheduled</span>;
-      case 'in-progress':
-      case 'available':
-        return <span className="bg-blue-100 text-blue-600 text-xs px-2.5 py-0.5 rounded-full">Available</span>;
-      case 'completed':
-        return <span className="bg-gray-100 text-gray-600 text-xs px-2.5 py-0.5 rounded-full">Unavailable</span>;
-      default:
-        return <span className="bg-gray-100 text-gray-600 text-xs px-2.5 py-0.5 rounded-full">{status}</span>;
     }
   };
 
@@ -151,26 +138,39 @@ function Exams() {
       {isAddModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4 text-slate-800">Add New Exam</h2>
+            <h2 className="text-xl font-semibold mb-4 text-slate-800">
+              Add New Exam
+            </h2>
 
             <div className="space-y-4">
               <div className="mb-4">
-                <label className="block text-span text-dark font-medium pb-2">Title</label>
-                <input 
+                <label className="block text-span text-dark font-medium pb-2">
+                  Title
+                </label>
+                <input
                   type="text"
                   className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.title}
-                  onChange={(e) => setNewExam({...newExam, title: e.target.value})}
+                  onChange={(e) =>
+                    setNewExam({ ...newExam, title: e.target.value })
+                  }
                   placeholder="Exam title"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-span text-dark font-medium pb-2">Type</label>
-                <select 
+                <label className="block text-span text-dark font-medium pb-2">
+                  Type
+                </label>
+                <select
                   className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.type}
-                  onChange={(e) => setNewExam({...newExam, type: e.target.value as 'exam' | 'test' | 'assignment'})}
+                  onChange={(e) =>
+                    setNewExam({
+                      ...newExam,
+                      type: e.target.value as "exam" | "test" | "assignment",
+                    })
+                  }
                 >
                   <option value="exam">Exam</option>
                   <option value="test">Test</option>
@@ -179,55 +179,71 @@ function Exams() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-span text-dark font-medium pb-2">Duration</label>
-                <input 
+                <label className="block text-span text-dark font-medium pb-2">
+                  Duration
+                </label>
+                <input
                   type="text"
                   className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.duration}
-                  onChange={(e) => setNewExam({...newExam, duration: e.target.value})}
+                  onChange={(e) =>
+                    setNewExam({ ...newExam, duration: e.target.value })
+                  }
                   placeholder="e.g. 2 hours"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-span text-dark font-medium pb-2">Due Date</label>
-                <input 
+                <label className="block text-span text-dark font-medium pb-2">
+                  Due Date
+                </label>
+                <input
                   type="date"
                   className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.dueDate}
-                  onChange={(e) => setNewExam({...newExam, dueDate: e.target.value})}
+                  onChange={(e) =>
+                    setNewExam({ ...newExam, dueDate: e.target.value })
+                  }
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-span text-dark font-medium pb-2">Start Time</label>
-                <input 
+                <label className="block text-span text-dark font-medium pb-2">
+                  Start Time
+                </label>
+                <input
                   type="time"
                   className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.startTime}
-                  onChange={(e) => setNewExam({...newExam, startTime: e.target.value})}
+                  onChange={(e) =>
+                    setNewExam({ ...newExam, startTime: e.target.value })
+                  }
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-span text-dark font-medium pb-2">End Time</label>
-                <input 
+                <label className="block text-span text-dark font-medium pb-2">
+                  End Time
+                </label>
+                <input
                   type="time"
                   className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
                   value={newExam.endTime}
-                  onChange={(e) => setNewExam({...newExam, endTime: e.target.value})}
+                  onChange={(e) =>
+                    setNewExam({ ...newExam, endTime: e.target.value })
+                  }
                 />
               </div>
             </div>
 
             <div className="mt-6 flex justify-end space-x-3">
-              <button 
+              <button
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
                 onClick={() => setIsAddModalOpen(false)}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
                 onClick={handleAddExam}
               >

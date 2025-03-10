@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import rrulePlugin from "@fullcalendar/rrule";
 import { Schedule } from "../user/l/schedules/types";
 import "./calendar-styles.css";
 
@@ -10,34 +11,73 @@ interface ScheduleCalendarProps {
   schedules: Schedule[];
   onEventClick: (schedule: Schedule) => void;
   onDateSelect: (start: Date, end: Date) => void;
+  onDelete?: (id: string) => void;
+  onUpdateSchedule?: (updatedSchedule: Schedule) => void;
 }
 
-// Helper function to convert schedules to FullCalendar events
-const convertToCalendarEvents = (schedules: Schedule[]) => {
-  return schedules.map((schedule) => ({
-    id: schedule.id,
-    title: schedule.title,
-    start: `${schedule.date}T${schedule.startTime}`,
-    end: `${schedule.date}T${schedule.endTime}`,
-    backgroundColor: getEventColor(schedule.type),
-    borderColor: getEventColor(schedule.type),
-    extendedProps: { ...schedule },
-  }));
+interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  backgroundColor: string;
+  borderColor: string;
+  extendedProps: Schedule;
+  rrule?: {
+    freq: string;
+    until: string;
+    dtstart: string;
+  };
+}
+
+const convertToCalendarEvents = (schedules: Schedule[]): CalendarEvent[] => {
+  return schedules
+    .map((schedule) => {
+      try {
+        const start = new Date(`${schedule.date}T${schedule.startTime}`);
+        const end = new Date(`${schedule.date}T${schedule.endTime}`);
+        if (isNaN(start.getTime())) throw new Error("Invalid start date");
+        if (isNaN(end.getTime())) throw new Error("Invalid end date");
+
+        const event: CalendarEvent = {
+          id: schedule.id,
+          title: schedule.title,
+          start: start.toISOString(),
+          end: end.toISOString(),
+          backgroundColor: getEventColor(schedule.type),
+          borderColor: getEventColor(schedule.type),
+          extendedProps: { ...schedule },
+        };
+
+        if (schedule.isRecurring && schedule.recurrence) {
+          event.rrule = {
+            freq: schedule.recurrence.frequency.toUpperCase(),
+            until: schedule.recurrence.endDate,
+            dtstart: event.start,
+          };
+        }
+
+        return event;
+      } catch (error) {
+        console.error("Error converting schedule to calendar event:", error);
+        return null;
+      }
+    })
+    .filter(Boolean) as CalendarEvent[]; // Filter out invalid events
 };
 
-// Helper function to get color based on schedule type
-const getEventColor = (type: string) => {
+const getEventColor = (type: string): string => {
   switch (type) {
     case "class":
-      return "#2A9F06"; // Primary (for classes)
+      return "#2A9F06";
     case "examination":
-      return "#DC2626"; // Red
+      return "#DC2626";
     case "test":
-      return "#F59E0B"; // Amber
+      return "#F59E0B";
     case "meeting":
-      return "#3B82F6"; // Blue
+      return "#3B82F6";
     default:
-      return "#6B7280"; // Gray
+      return "#6B7280";
   }
 };
 
@@ -45,11 +85,18 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   schedules,
   onEventClick,
   onDateSelect,
+  onDelete,
+  onUpdateSchedule,
 }) => {
   return (
     <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 mb-6">
       <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        plugins={[
+          dayGridPlugin,
+          timeGridPlugin,
+          interactionPlugin,
+          rrulePlugin,
+        ]}
         initialView="dayGridMonth"
         headerToolbar={{
           left: "prev,next today",
@@ -73,7 +120,6 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
         height="auto"
         eventDisplay="block"
         stickyHeaderDates={true}
-        // Mobile responsive settings
         windowResize={(view) => {
           const calendarApi = view.view.calendar;
           if (window.innerWidth < 768) {
@@ -82,12 +128,14 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
               center: "title",
               right: "dayGridMonth,timeGridDay",
             });
+            calendarApi.setOption("height", "auto");
           } else {
             calendarApi.setOption("headerToolbar", {
               left: "prev,next today",
               center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay",
             });
+            calendarApi.setOption("height", "800px");
           }
         }}
         select={(selectInfo) => {
@@ -97,11 +145,38 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
           const schedule = schedules.find((s) => s.id === clickInfo.event.id);
           if (schedule) {
             onEventClick(schedule);
+            if (onDelete && window.confirm(`Delete ${schedule.title}?`)) {
+              onDelete(schedule.id);
+            }
+          }
+        }}
+        eventDrop={(dropInfo) => {
+          const schedule = schedules.find((s) => s.id === dropInfo.event.id);
+          if (schedule && onUpdateSchedule) {
+            const updatedSchedule: Schedule = {
+              ...schedule,
+              date: dropInfo.event.startStr.split("T")[0],
+              startTime: dropInfo.event.startStr.split("T")[1],
+              endTime: dropInfo.event.endStr.split("T")[1],
+            };
+            onUpdateSchedule(updatedSchedule);
+          }
+        }}
+        eventResize={(resizeInfo) => {
+          const schedule = schedules.find((s) => s.id === resizeInfo.event.id);
+          if (schedule && onUpdateSchedule) {
+            const updatedSchedule: Schedule = {
+              ...schedule,
+              endTime: resizeInfo.event.endStr.split("T")[1],
+            };
+            onUpdateSchedule(updatedSchedule);
           }
         }}
         eventClassNames="cursor-pointer rounded-md"
         slotMinTime="07:00:00"
         slotMaxTime="22:00:00"
+        aria-label="Schedule Calendar"
+        navLinks={true}
       />
 
       <div className="mt-6 border-t pt-4 border-slate-100">

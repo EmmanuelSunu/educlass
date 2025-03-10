@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import ButtonProps from "../../../components/ButtonProps";
-import { Schedule } from "./types";
+import { Schedule } from "./types"; // Ensure this import is correct
 
 interface AddScheduleFormProps {
   onSubmit: (schedule: Schedule) => void;
   onCancel: () => void;
 }
 
-const AddScheduleForm: React.FC<AddScheduleFormProps> = ({ onSubmit, onCancel }) => {
+const AddScheduleForm: React.FC<AddScheduleFormProps> = ({
+  onSubmit,
+  onCancel,
+}) => {
   const [formData, setFormData] = useState({
     title: "",
     type: "class",
@@ -15,13 +18,17 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({ onSubmit, onCancel })
     startTime: "",
     endTime: "",
     location: "",
-    description: "",
+    description: "", // Add this line
     isRecurring: false,
-    frequency: "weekly",
+    frequency: "weekly" as "daily" | "weekly" | "monthly", // Explicitly type frequency
     endDate: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value, type } = e.target;
 
     if (type === "checkbox") {
@@ -43,7 +50,7 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({ onSubmit, onCancel })
       startTime: formData.startTime,
       endTime: formData.endTime,
       location: formData.location,
-      description: formData.description,
+      description: formData.description, // Add this line
       isRecurring: formData.isRecurring,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -51,7 +58,7 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({ onSubmit, onCancel })
 
     if (formData.isRecurring) {
       newSchedule.recurrence = {
-        frequency: formData.frequency,
+        frequency: formData.frequency, // This is now correctly typed
         endDate: formData.endDate,
       };
     }
@@ -174,7 +181,10 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({ onSubmit, onCancel })
           onChange={handleChange}
           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
         />
-        <label htmlFor="isRecurring" className="ml-2 block text-sm text-gray-700">
+        <label
+          htmlFor="isRecurring"
+          className="ml-2 block text-sm text-gray-700"
+        >
           Recurring Event
         </label>
       </div>

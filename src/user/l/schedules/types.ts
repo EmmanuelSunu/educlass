@@ -1,4 +1,3 @@
-
 export interface Recurrence {
   frequency: "daily" | "weekly" | "monthly";
   endDate: string;
@@ -12,6 +11,7 @@ export interface Schedule {
   startTime: string;
   endTime: string;
   location: string;
+  description?: string; // Add this line
   isRecurring: boolean;
   recurrence?: Recurrence;
   createdAt: string;
