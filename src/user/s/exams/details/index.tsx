@@ -239,10 +239,10 @@ function ExamDetailsPage() {
                   {isPastExam
                     ? "Unavailable"
                     : isFutureExam
-                      ? "Scheduled"
+                      ? "Upcoming"
                       : isAvailable
                         ? "Available"
-                        : "Not Available Yet"}
+                        : "Available"}
                 </span>
               </li>
               {isPastExam && (

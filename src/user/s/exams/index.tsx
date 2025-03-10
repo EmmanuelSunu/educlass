@@ -81,17 +81,13 @@ function StudentExams() {
     if (now > dueDate) {
       return { label: "Unavailable", color: "bg-gray-100 text-gray-600" };
     } 
-    // Check if exam is today and within time window
-    else if (isSameDate(now, dueDate) && now >= examStartDate && now <= dueDate) {
-      return { label: "Available", color: "bg-blue-100 text-blue-600" };
-    } 
-    // Check if exam is today but not yet started
-    else if (isSameDate(now, dueDate) && now < examStartDate) {
-      return { label: "Available", color: "bg-blue-100 text-blue-600" }; // Treat as available if today but not started
+    // Check if exam is today - both within time window or not yet started
+    else if (isSameDate(now, dueDate)) {
+      return { label: "Available", color: "bg-blue-100 text-blue-600" }; // All exams on current day are "Available"
     }
     // Otherwise, it's a future exam
     else {
-      return { label: "Scheduled", color: "bg-purple-100 text-purple-600" };
+      return { label: "Upcoming", color: "bg-purple-100 text-purple-600" }; // Changed from "Scheduled" to "Upcoming"
     }
   };
 
