@@ -68,7 +68,7 @@ function StudentResults() {
   }, []);
 
   const handleResultClick = (examId: number) => {
-    navigate(`/user/s/results/details/${examId}`);
+    navigate(`/user/s/results/${examId}`);
   };
 
   const getScoreColor = (score: number): string => {

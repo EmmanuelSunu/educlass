@@ -54,10 +54,10 @@ function App() {
           <Route path="exams" element={<StudentExams />} />
           <Route path="exams/take/:id" element={<StudentExamTake />} />
           <Route path="exams/details/:id" element={<StudentExamDetails />} />
-          <Route path="exams/results/:id" element={<StudentExamResults />} />
+          {/* Remove exam-specific results route */}
           <Route path="results" element={<StudentResults />} />
           <Route
-            path="results/details/:examId"
+            path="results/:examId"
             element={<StudentResultDetails />}
           />
           <Route path="classes" element={<StudentClasses />} />

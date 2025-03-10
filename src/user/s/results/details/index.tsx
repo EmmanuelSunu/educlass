@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "../../layout";
-import { FiArrowLeft, FiCheckCircle, FiXCircle } from "react-icons/fi";
+import { FiArrowLeft, FiCheckCircle, FiXCircle, FiClock } from "react-icons/fi";
 
 // Mock data
 const mockResults = {
@@ -193,14 +193,20 @@ function StudentResultDetail() {
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow p-6">
-            <p className="text-center text-gray-500">Result not found</p>
-            <div className="mt-4 text-center">
+            <div className="mb-6">
               <button
                 onClick={() => navigate("/user/s/results")}
-                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90"
+                className="flex items-center text-primary hover:text-primary/80"
               >
-                Back to Results
+                <FiArrowLeft className="mr-1" /> Back to Results
               </button>
+            </div>
+            <div className="flex flex-col items-center justify-center h-64 text-center">
+              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-4">
+                <FiClock className="text-amber-500 text-2xl" />
+              </div>
+              <h3 className="text-lg font-semibold text-slate-800 mb-2">Results Pending</h3>
+              <p className="text-slate-600 max-w-md">Your exam has been submitted and is currently being processed. Results will be available soon.</p>
             </div>
           </div>
         )}

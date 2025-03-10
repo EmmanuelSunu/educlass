@@ -151,7 +151,7 @@ function ExamDetailsPage() {
               // Past exam - show results or "did not participate" message
               hasTakenExam ? (
                 <button
-                  onClick={handleViewResults}
+                  onClick={() => navigate(`/user/s/results/${examDetails.id}`)}
                   className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded"
                 >
                   View Results

@@ -131,7 +131,7 @@ function TakeExamPage() {
   };
 
   const handleViewResults = () => {
-    navigate(`/user/s/results`);
+    navigate(`/user/s/results/${id}`);
   };
 
   if (loading) {
