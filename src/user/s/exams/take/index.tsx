@@ -38,6 +38,7 @@ function TakeExamPage() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -117,13 +118,20 @@ function TakeExamPage() {
     setIsSubmitting(true);
 
     try {
-      console.log("Submitting answers:", answers);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate(`/user/s/exams/results/${id}`);
+      // Simulate API call with timeout
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Show success popup instead of immediate navigation
+      setShowSuccessPopup(true);
+      setIsSubmitting(false);
     } catch (error) {
-      console.error("Error submitting exam:", error);
+      console.error('Error submitting exam:', error);
       setIsSubmitting(false);
     }
+  };
+
+  const handleViewResults = () => {
+    navigate(`/user/s/exams/results/${id}`);
   };
 
   if (loading) {
@@ -276,6 +284,21 @@ function TakeExamPage() {
           <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-center space-x-3 text-amber-700">
             <FiAlertTriangle className="flex-shrink-0" />
             <p className="text-sm">You have unanswered questions. Please review before submitting.</p>
+          </div>
+        )}
+
+        {/* Success Popup */}
+        {showSuccessPopup && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-lg font-semibold mb-4">Exam Submitted Successfully!</h2>
+              <button
+                onClick={handleViewResults}
+                className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-md"
+              >
+                View Results
+              </button>
+            </div>
           </div>
         )}
       </div>
