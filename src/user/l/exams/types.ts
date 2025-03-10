@@ -7,6 +7,10 @@ export interface Exam {
   endTime: string;
   status: 'scheduled' | 'in-progress' | 'completed';
   dueDate: string;
+  description?: string;
+  classId?: number;
+  className?: string;
+  questions?: Question[];
 }
 
 export interface ExamDetails {
