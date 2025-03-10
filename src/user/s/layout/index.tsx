@@ -22,7 +22,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
-      <main className="flex-1 md:ml-72 transition-all duration-300">
+      <main className="flex-1 transition-all duration-300"> {/* Removed md:ml-72 */}
         <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-8 sticky top-0 z-20">
           <div className="flex items-center">
             <h1 className="text-xl font-bold text-slate-800">{title}</h1>
