@@ -1,74 +1,148 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { examsApi, resultsApi } from '../services/api';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useApiError } from '../hooks/useApiError';
 
-// Define context types
 interface ApiContextType {
-  exams: any[];
-  isLoading: boolean;
-  error: string | null;
-  refreshExams: () => Promise<void>;
-  getExamById: (id: number | string) => any;
+  apiGet: <T>(endpoint: string) => Promise<T>;
+  apiPost: <T>(endpoint: string, data: any) => Promise<T>;
+  apiPut: <T>(endpoint: string, data: any) => Promise<T>;
+  apiDelete: <T>(endpoint: string) => Promise<T>;
+  loading: boolean;
 }
 
-// Create context with default values
-const ApiContext = createContext<ApiContextType>({
-  exams: [],
-  isLoading: false,
-  error: null,
-  refreshExams: async () => {},
-  getExamById: () => null,
-});
+const ApiContext = createContext<ApiContextType | null>(null);
 
-// Create provider component
-export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [exams, setExams] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+export const useApi = () => {
+  const context = useContext(ApiContext);
+  if (!context) {
+    throw new Error('useApi must be used within an ApiProvider');
+  }
+  return context;
+};
 
-  // Function to fetch all exams
-  const refreshExams = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await examsApi.getAll();
-      if (response.success) {
-        setExams(response.data);
-      } else {
-        setError(response.message || 'Failed to fetch exams');
+interface ApiProviderProps {
+  children: ReactNode;
+}
+
+export const ApiProvider: React.FC<ApiProviderProps> = ({ children }) => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { handleApiError } = useApiError();
+  
+  // Get the API base URL from the environment variable
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.example.com';
+
+  const handleResponse = async (response: Response) => {
+    if (!response.ok) {
+      // Handle unauthorized status by redirecting to login
+      if (response.status === 401) {
+        navigate('/');
+        throw new Error('Unauthorized access. Please login again.');
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred');
-    } finally {
-      setIsLoading(false);
+      
+      // Handle other errors
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Error: ${response.status}`);
+    }
+    
+    // Handle successful responses
+    try {
+      return await response.json();
+    } catch (error) {
+      return null; // Return null for empty responses
     }
   };
 
-  // Get exam by ID
-  const getExamById = (id: number | string) => {
-    return exams.find(exam => exam.id === Number(id));
+  const apiGet = async <T,>(endpoint: string): Promise<T> => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      
+      const data = await handleResponse(response);
+      return data as T;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Load exams when the component mounts
-  useEffect(() => {
-    refreshExams();
-  }, []);
+  const apiPost = async <T,>(endpoint: string, data: any): Promise<T> => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(data),
+      });
+      
+      const responseData = await handleResponse(response);
+      return responseData as T;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Create context value
-  const contextValue: ApiContextType = {
-    exams,
-    isLoading,
-    error,
-    refreshExams,
-    getExamById,
+  const apiPut = async <T,>(endpoint: string, data: any): Promise<T> => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(data),
+      });
+      
+      const responseData = await handleResponse(response);
+      return responseData as T;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const apiDelete = async <T,>(endpoint: string): Promise<T> => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      
+      const responseData = await handleResponse(response);
+      return responseData as T;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <ApiContext.Provider value={contextValue}>
+    <ApiContext.Provider value={{ apiGet, apiPost, apiPut, apiDelete, loading }}>
       {children}
     </ApiContext.Provider>
   );
 };
-
-// Custom hook for using the API context
-export const useApi = () => useContext(ApiContext);

@@ -1,29 +1,25 @@
 
 import React from 'react';
-import { ApiError } from '../hooks/useApiError';
+import { RiErrorWarningLine } from 'react-icons/ri';
 
 interface ApiErrorAlertProps {
-  error: ApiError | null;
-  onDismiss: () => void;
+  message: string;
 }
 
-const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, onDismiss }) => {
-  if (!error || !error.isVisible) {
-    return null;
-  }
-
+const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ message }) => {
   return (
-    <div className="fixed top-4 right-4 z-50 max-w-md bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-md flex items-start" role="alert">
-      <div className="flex-grow mr-2">
-        <strong className="font-bold">Error!</strong>
-        <span className="block sm:inline ml-1">{error.message}</span>
+    <div className="p-4 bg-red-50 rounded-md">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <RiErrorWarningLine className="h-5 w-5 text-red-400" aria-hidden="true" />
+        </div>
+        <div className="ml-3">
+          <h3 className="text-sm font-medium text-red-800">Error</h3>
+          <div className="mt-2 text-sm text-red-700">
+            <p>{message}</p>
+          </div>
+        </div>
       </div>
-      <button 
-        onClick={onDismiss}
-        className="bg-transparent text-red-700 hover:text-red-900"
-      >
-        <span className="text-2xl">&times;</span>
-      </button>
     </div>
   );
 };

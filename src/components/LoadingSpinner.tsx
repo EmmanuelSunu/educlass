@@ -1,39 +1,25 @@
-
 import React from 'react';
 
 interface LoadingSpinnerProps {
-  size?: 'sm' | 'md' | 'lg';
-  fullScreen?: boolean;
-  message?: string;
+  size?: 'small' | 'medium' | 'large';
+  color?: string;
 }
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
-  size = 'md', 
-  fullScreen = false,
-  message = 'Loading...'
+  size = 'medium', 
+  color = 'text-primary'
 }) => {
-  const sizeClasses = {
-    sm: 'w-5 h-5',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12'
-  };
+  const sizeClass = {
+    small: 'w-4 h-4',
+    medium: 'w-8 h-8',
+    large: 'w-12 h-12',
+  }[size];
 
-  const spinner = (
-    <div className="flex flex-col items-center justify-center">
-      <div className={`animate-spin rounded-full border-b-2 border-primary ${sizeClasses[size]}`}></div>
-      {message && <p className="mt-2 text-gray-600">{message}</p>}
+  return (
+    <div className="flex justify-center items-center">
+      <div className={`${sizeClass} ${color} animate-spin rounded-full border-b-2 border-current`} />
     </div>
   );
-
-  if (fullScreen) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
-        {spinner}
-      </div>
-    );
-  }
-
-  return spinner;
 };
 
 export default LoadingSpinner;

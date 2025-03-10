@@ -1,32 +1,16 @@
-
 import { useState, useCallback } from 'react';
 
-export interface ApiError {
-  message: string;
-  statusCode?: number;
-  isVisible: boolean;
-}
+export const useApiError = () => {
+  const [error, setError] = useState<string | null>(null);
 
-export function useApiError() {
-  const [error, setError] = useState<ApiError | null>(null);
-
-  const handleError = useCallback((err: unknown) => {
-    if (err instanceof Error) {
-      setError({
-        message: err.message,
-        isVisible: true
-      });
-    } else if (typeof err === 'string') {
-      setError({
-        message: err,
-        isVisible: true
-      });
-    } else {
-      setError({
-        message: 'An unknown error occurred',
-        isVisible: true
-      });
-    }
+  const handleApiError = useCallback((error: any) => {
+    console.error('API Error:', error);
+    const errorMessage = error?.message || 'An unexpected error occurred';
+    setError(errorMessage);
+    setTimeout(() => {
+      setError(null);
+    }, 5000);
+    return errorMessage;
   }, []);
 
   const clearError = useCallback(() => {
@@ -34,18 +18,8 @@ export function useApiError() {
   }, []);
 
   const hideError = useCallback(() => {
-    if (error) {
-      setError({
-        ...error,
-        isVisible: false
-      });
-    }
-  }, [error]);
+    setError(null);
+  }, []);
 
-  return {
-    error,
-    handleError,
-    clearError,
-    hideError
-  };
-}
+  return { error, handleApiError, clearError, hideError };
+};
