@@ -54,6 +54,36 @@ export default {
         muted: '#6B7280', // For less prominent text
         lightGray: '#F6F8FA'
       },
+      animation: {
+        fadeIn: 'fadeIn 0.3s ease-in-out',
+        slideInLeft: 'slideInLeft 0.3s ease-in-out',
+        slideInRight: 'slideInRight 0.3s ease-in-out',
+        slideInUp: 'slideInUp 0.3s ease-in-out',
+        pulse: 'pulse 1.5s infinite ease-in-out',
+        spin: 'spin 1s linear infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideInLeft: {
+          '0%': { transform: 'translateX(-20px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideInRight: {
+          '0%': { transform: 'translateX(20px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideInUp: {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        pulse: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.05)' },
+        },
+      },
     },
   },
   plugins: [],

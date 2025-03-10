@@ -107,21 +107,24 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           <div className="flex flex-col h-screen justify-between">
             <nav className="flex flex-col mt-4 space-y-1">
               {sidebarLinks.map((link, index) => (
-                <MenuItem
-                  key={index}
-                  to={link.url}
-                  icon={link.icon}
-                  label={link.title}
-                />
+                <div key={index} className="animate-slideInLeft" style={{animationDelay: `${index * 0.05}s`}}>
+                  <MenuItem
+                    to={link.url}
+                    icon={link.icon}
+                    label={link.title}
+                    className="sidebar-item"
+                  />
+                </div>
               ))}
             </nav>
 
             {/* Logout Button */}
-            <div className="pt-0 border-slate-200 border-t-2">
+            <div className="pt-0 border-slate-200 border-t-2 animate-fadeIn" style={{animationDelay: "0.3s"}}>
               <MenuItem
                 to="/"
                 icon={<RiLogoutCircleLine className="text-xl" />}
                 label="Logout"
+                className="sidebar-item"
               />
             </div>
           </div>

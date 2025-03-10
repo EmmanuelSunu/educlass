@@ -2,10 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tailwind directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Import animations */
+@import url("../src/assets/animations.css");
 
 /* Custom utility classes for responsive behavior */
 @layer utilities {

@@ -1,30 +1,32 @@
-import { NavLink } from "react-router-dom";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 
 interface MenuItemProps {
-  to: string; // Path for the NavLink
-  icon: JSX.Element; // Icon component, e.g., <FaHouse />
-  label: string; // Text label, e.g., "Dashboard"
+  icon: React.ReactNode;
+  label: string;
+  to: string;
+  className?: string;
 }
 
-function MenuItem({ to, icon, label }: MenuItemProps) {
+const MenuItem: React.FC<MenuItemProps> = ({ icon, label, to, className = "" }) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+
   return (
-    <NavLink
+    <Link
       to={to}
-      className={({ isActive }) =>
-        `flex items-center justify-start gap-3 w-full p-2 py-3 pl-4
-         rounded-md fill-slate-400 text-slate-400 font-medium 
-         hover:bg-slate-100 hover:text-primary hover:font-semibold hover:fill-primary hover:ease-in
-         ${
-           isActive
-             ? "bg-slate-100 text-h6 !text-primary fill-primary !font-semibold transition duration-150 ease-out"
-             : ""
-         }`
-      }
+      className={`flex items-center px-4 py-2 text-gray-700 rounded-lg transition-all duration-200 ${
+        isActive
+          ? "bg-primary-500 bg-opacity-10 text-primary-500"
+          : "hover:bg-gray-100"
+      } ${className}`}
     >
-      <div className="text-2xl fill-current">{icon}</div>
-      <h6>{label}</h6>
-    </NavLink>
+      <span className={`${isActive ? "text-primary-500" : ""} transition-transform duration-200`}>{icon}</span>
+      <span className={`ml-3 font-medium ${isActive ? "text-primary-500" : ""} transition-all duration-200`}>
+        {label}
+      </span>
+    </Link>
   );
-}
+};
 
 export default MenuItem;
