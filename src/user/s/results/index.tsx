@@ -77,7 +77,7 @@ function StudentResults() {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout title="Exam Results">
       <div className="p-6 bg-white rounded-lg shadow">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Exam Results</h1>
 
