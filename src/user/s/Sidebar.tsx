@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
 import Logo from "../../assets/images/logo.svg";
 import MenuItem from "../../components/menu-itens";
 import {
@@ -21,7 +20,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -107,7 +105,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           <div className="flex flex-col h-screen justify-between">
             <nav className="flex flex-col mt-4 space-y-1">
               {sidebarLinks.map((link, index) => (
-                <div key={index} className="animate-slideInLeft" style={{animationDelay: `${index * 0.05}s`}}>
+                <div
+                  key={index}
+                  className="animate-slideInLeft"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
                   <MenuItem
                     to={link.url}
                     icon={link.icon}
@@ -119,7 +121,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             </nav>
 
             {/* Logout Button */}
-            <div className="pt-0 border-slate-200 border-t-2 animate-fadeIn" style={{animationDelay: "0.3s"}}>
+            <div
+              className="pt-0 border-slate-200 border-t-2 animate-fadeIn"
+              style={{ animationDelay: "0.3s" }}
+            >
               <MenuItem
                 to="/"
                 icon={<RiLogoutCircleLine className="text-xl" />}

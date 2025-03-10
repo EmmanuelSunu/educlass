@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import useState from "react";
 import DashboardLayout from "../layout";
 import {
   FiCalendar,
