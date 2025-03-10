@@ -149,7 +149,19 @@ const Schedules = () => {
 
       {viewMode === "calendar" ? (
         // Removed unsupported onEdit prop for ScheduleCalendar
-        <ScheduleCalendar schedules={schedules} onDelete={handleDelete} />
+        <ScheduleCalendar 
+          schedules={schedules} 
+          onDelete={handleDelete}
+          onEventClick={(schedule) => {
+            /* Handle event click - e.g., open edit modal */
+            setSelectedSchedule(schedule);
+            setIsEditModalOpen(true);
+          }}
+          onDateSelect={(start, end) => {
+            /* Handle date selection - e.g., open create modal with pre-filled dates */
+            setIsAddModalOpen(true);
+          }}
+        />
       ) : (
         <ScheduleTable
           schedules={schedules}
