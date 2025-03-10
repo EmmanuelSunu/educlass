@@ -213,46 +213,48 @@ function TakeExamPage() {
       case 'multi-choice':
         return (
           <div className="space-y-3">
-            {question.options?.map((option, index) => (
-              <label key={index} className="flex items-start cursor-pointer">
+            {question.options?.map((option, optionIndex) => (
+              <label key={optionIndex} className="flex items-start bg-slate-50 hover:bg-slate-100 p-3 rounded-md cursor-pointer">
                 <input
                   type="radio"
                   name={`question-${question.id}`}
-                  className="mt-0.5 mr-3"
+                  value={option}
                   checked={answers[question.id] === option}
                   onChange={() => handleAnswerChange(question.id, option)}
+                  className="mt-1"
                 />
-                <span className="text-base text-slate-800">{option}</span>
+                <span 
+                  className="ml-3 select-none" 
+                  onCopy={(e) => e.preventDefault()} 
+                  onDragStart={(e) => e.preventDefault()}
+                  onContextMenu={(e) => e.preventDefault()}
+                >
+                  {option}
+                </span>
               </label>
             ))}
           </div>
         );
       case 'fill-ins':
         return (
-          <div>
-            <input
-              type="text"
-              className="w-full p-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="Enter your answer"
-              value={answers[question.id] || ''}
-              onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-              onPaste={(e) => e.preventDefault()}
-            />
-          </div>
+          <input
+            type="text"
+            value={answers[question.id] || ''}
+            onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+            onPaste={(e) => e.preventDefault()}
+            placeholder="Your answer here..."
+            className="w-full p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:border-blue-300"
+          />
         );
       case 'essay':
         return (
-          <div>
-            <textarea
-              className="w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[150px]"
-              placeholder="Write your essay answer here..."
-              value={answers[question.id] || ''}
-              onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-              onPaste={(e) => e.preventDefault()}
-              onCopy={(e) => e.preventDefault()}
-              rows={6}
-            />
-          </div>
+          <textarea
+            value={answers[question.id] || ''}
+            onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+            onPaste={(e) => e.preventDefault()}
+            placeholder="Write your essay answer here..."
+            className="w-full p-3 border border-slate-300 rounded-md h-40 focus:ring-2 focus:ring-blue-300 focus:border-blue-300"
+          />
         );
       default:
         return <p className="text-red-500">Unsupported question type</p>;
@@ -290,9 +292,18 @@ function TakeExamPage() {
             <div key={question.id ?? index} className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between mb-4">
                 <h3 className="text-lg font-medium text-gray-800">Question {index + 1}</h3>
-                <span className="text-sm text-gray-500">{question.points ?? 5} points</span>
+                <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-sm font-medium">
+                  {question.points ?? 5} points
+                </span>
               </div>
-              <p className="text-gray-700 mb-4">{question.questionText}</p> 
+              <div 
+                className="text-gray-700 mb-5 select-none" 
+                onCopy={(e) => e.preventDefault()} 
+                onDragStart={(e) => e.preventDefault()}
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                {question.questionText}
+              </div> 
               {renderQuestionDisplay(question)}
             </div>
           ))}
@@ -329,7 +340,7 @@ function TakeExamPage() {
 
         {/* Success Popup */}
         {showSuccessPopup && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"> {/* Added fixed class for full-screen */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-lg font-semibold mb-4">Exam Submitted Successfully!</h2>
               <button
