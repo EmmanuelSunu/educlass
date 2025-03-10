@@ -91,9 +91,9 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       {/* Sidebar */}
       <aside
         className={`
-          w-64 bg-white border-r border-gray-200 h-screen overflow-hidden
+          fixed left-0 top-0 w-64 bg-white border-r border-gray-200 h-screen overflow-hidden
           z-40 transition-transform duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
           ${className || ""} 
         `}
       >

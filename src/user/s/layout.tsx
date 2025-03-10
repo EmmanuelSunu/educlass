@@ -20,7 +20,12 @@ function DashboardLayout({
 }: DashboardLayoutProps) {
   return (
     <div className="flex flex-col lg:flex-row w-full">
-      <Sidebar />
+      <div className="lg:block hidden">
+        <Sidebar />
+      </div>
+      <div className="lg:hidden block fixed z-50">
+        <Sidebar />
+      </div>
       <div className="flex-1 w-full h-screen bg-slate-100 flex flex-col">
         <HeaderBar
           title={title}
