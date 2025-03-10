@@ -47,6 +47,8 @@ const Schedules = () => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
   const [showAddModal, setShowAddModal] = useState(false); // State for Add Schedule Modal
+  const [importSuccess, setImportSuccess] = useState(false); // State for import success indicator
+
 
   const handleEdit = (id: string) => {
     console.log(`Edit schedule with ID: ${id}`);
@@ -57,8 +59,33 @@ const Schedules = () => {
   };
 
   const handleAddSchedule = (newSchedule: Schedule) => {
-    setSchedules([...schedules, newSchedule]);
+    // Generate a unique ID for the new schedule
+    const newScheduleWithId = {
+      ...newSchedule,
+      id: `schedule-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    setSchedules([...schedules, newScheduleWithId]);
     setShowAddModal(false);
+    setImportSuccess(true); // Show success message after adding
+
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      setImportSuccess(false);
+    }, 3000);
+  };
+
+  const handleImportSchedules = (newSchedules: Schedule[]) => {
+    setSchedules([...schedules, ...newSchedules]);
+    setShowUploadModal(false);
+    setImportSuccess(true);
+
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      setImportSuccess(false);
+    }, 3000);
   };
 
   return (
@@ -99,7 +126,7 @@ const Schedules = () => {
             </ButtonProps>
             <ButtonProps
               variant="primary"
-              onClick={() => setShowAddModal(true)} // Open Add Schedule Modal
+              onClick={() => setShowAddModal(true)}
               className="flex gap-2 items-center"
             >
               <RiAddLine />
@@ -123,10 +150,7 @@ const Schedules = () => {
           onClose={() => setShowUploadModal(false)}
           title="Upload Schedule Data"
         >
-          <ScheduleFileUpload onImport={(newSchedules) => {
-            setSchedules([...schedules, ...newSchedules]);
-            setShowUploadModal(false);
-          }} />
+          <ScheduleFileUpload onImport={handleImportSchedules} />
         </Modal>
       )}
 
@@ -137,11 +161,14 @@ const Schedules = () => {
           onClose={() => setShowAddModal(false)}
           title="Add New Schedule"
         >
-          <AddScheduleForm 
-            onSubmit={handleAddSchedule}
-            onCancel={() => setShowAddModal(false)}
-          />
+          <AddScheduleForm onSubmit={handleAddSchedule} />
         </Modal>
+      )}
+      {/* Success message after import */}
+      {importSuccess && (
+        <div className="bg-green-200 text-green-700 p-4 rounded mt-4">
+          Schedules imported successfully!
+        </div>
       )}
     </DashboardLayout>
   );

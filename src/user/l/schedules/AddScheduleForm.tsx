@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import ButtonProps from "../../../components/ButtonProps";
 import { Schedule } from "./types";
@@ -24,7 +23,7 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({ onSubmit, onCancel })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    
+
     if (type === "checkbox") {
       const checkbox = e.target as HTMLInputElement;
       setFormData({ ...formData, [name]: checkbox.checked });
@@ -35,7 +34,7 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({ onSubmit, onCancel })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const newSchedule: Schedule = {
       id: `schedule-${Date.now()}`,
       title: formData.title,
@@ -61,7 +60,7 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({ onSubmit, onCancel })
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="p-5 space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Title
