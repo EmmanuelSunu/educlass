@@ -154,12 +154,12 @@ const Schedules = () => {
           onDelete={handleDelete}
           onEventClick={(schedule) => {
             /* Handle event click - e.g., open edit modal */
-            setSelectedSchedule(schedule);
-            setIsEditModalOpen(true);
+            console.log("Event clicked:", schedule);
+            setShowAddModal(true); // Use existing state variable
           }}
-          onDateSelect={(start, end) => {
+          onDateSelect={() => {
             /* Handle date selection - e.g., open create modal with pre-filled dates */
-            setIsAddModalOpen(true);
+            setShowAddModal(true); // Use existing state variable
           }}
         />
       ) : (
