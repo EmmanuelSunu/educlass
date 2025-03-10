@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import Breadcrumb from "../../../components/Breadcrumb";
-import ButtonProps from "../../../components/button";
+import ButtonProps from "../../../components/ButtonProps";
 import Sidebar from "../Sidebar";
 
 interface DashboardLayoutProps {
