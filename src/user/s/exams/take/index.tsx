@@ -236,6 +236,7 @@ function TakeExamPage() {
               value={answers[question.id] || ''}
               onChange={(e) => handleAnswerChange(question.id, e.target.value)}
               onPaste={(e) => e.preventDefault()}
+              onCopy={(e) => e.preventDefault()}
               rows={6}
             />
           </div>
