@@ -50,6 +50,7 @@ function App() {
           <Route index element={<Navigate to="/user/s/dashboard" replace />} />
           <Route path="dashboard" element={<StudentDashboard />} />
           <Route path="calendar" element={<StudentCalender />} />
+          <Route path="schedules" element={<StudentCalender />} /> {/* Added correct route */}
           <Route path="exams" element={<StudentExams />} />
           <Route path="exams/take/:id" element={<StudentExamTake />} />
           <Route path="exams/details/:id" element={<StudentExamDetails />} />
