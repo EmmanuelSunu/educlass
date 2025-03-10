@@ -113,11 +113,7 @@ function StudentResultDetails() {
             </div>
 
             <div className="flex items-center bg-primary/10 p-4 rounded-lg mt-4 md:mt-0">
-              <div className={`w-20 h-20 rounded-full flex items-center justify-center border-4 ${
-                results.status === "passed" 
-                ? "border-green-500 bg-white text-green-600" 
-                : "border-red-500 bg-white text-red-600"
-              } mr-4`}>
+              <div className="w-20 h-20 rounded-full flex items-center justify-center border-4 border-primary bg-white text-primary mr-4">
                 <span className="text-2xl font-bold">{results.score}%</span>
               </div>
               <div>
