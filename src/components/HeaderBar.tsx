@@ -9,7 +9,7 @@ interface HeaderBarProps {
   onAddHeadbarButton?: () => void;
 }
 
-};const HeaderBar: React.FC<HeaderBarProps> = ({
+const HeaderBar: React.FC<HeaderBarProps> = ({
   title,
   buttonTitle,
   showAddButton = false,  // Use the correct property name
