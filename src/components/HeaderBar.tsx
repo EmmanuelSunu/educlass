@@ -9,10 +9,10 @@ interface HeaderBarProps {
   onAddHeadbarButton?: () => void;
 }
 
-const HeaderBar: React.FC<HeaderBarProps> = ({
+};const HeaderBar: React.FC<HeaderBarProps> = ({
   title,
   buttonTitle,
-  showAddHeadbarButton = false,
+  showAddButton = false,  // Use the correct property name
   onAddHeadbarButton,
 }) => {
   return (
@@ -21,7 +21,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
         <h1 className="text-2xl font-semibold text-slate-800">{title}</h1>
 
         <div className="flex items-center gap-4">
-          {showAddHeadbarButton && (
+          {showAddButton && (  // Use the correct property here as well
             <ButtonProps
               variant="primary"
               size="regular"

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  RiDashboardLine, 
-  RiMedalLine, 
+import {
+  RiDashboardLine,
+  RiMedalLine,
   RiCalendarLine,
   RiFileListLine,
   RiBookOpenLine,
   RiSettings4Line,
   RiMenuLine,
   RiCloseLine,
-  RiLogoutCircleLine
+  RiLogoutCircleLine,
 } from "react-icons/ri";
 import URLS from "./url";
 import Logo from "../../assets/images/logo.svg";
@@ -30,7 +30,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ to, icon, label, className }) => {
       to={to}
       className={`
         flex items-center space-x-3 p-3 rounded-lg transition-colors
-        ${isActive ? "bg-primary text-white" : "text-slate-700 hover:bg-slate-100"}
+        ${isActive ? "bg-primary-500 bg-opacity-10 text-primary-500" : "text-slate-700 hover:bg-slate-100"}
         ${className || ""}
       `}
     >
