@@ -26,9 +26,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       <div className="flex-1 flex flex-col">
         <Headbar
           title={title}
-          showAddButton={showAddHeadbarButton}
+          showAddHeadbarButton={showAddHeadbarButton}
           buttonTitle={buttonTitle}
-          onAddButton={onAddHeadbarButton}
+          onAddHeadbarButton={onAddHeadbarButton}
         />
         <main className="flex-grow p-6">{children}</main>
       </div>
