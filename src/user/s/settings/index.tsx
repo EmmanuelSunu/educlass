@@ -57,36 +57,36 @@ function StudentSettings() {
       buttonTitle=""
     >
       <div className="bg-white rounded-lg shadow-md">
-        <div className="flex border-b overflow-x-auto md:flex-wrap sm:flex-wrap">
+        <div className="flex flex-col sm:flex-row border-b overflow-x-auto">
           <button
-            className={`px-4 md:px-6 py-3 text-sm md:text-base font-medium flex items-center whitespace-nowrap ${
+            className={`px-4 md:px-6 py-3 text-sm md:text-base font-medium flex items-center whitespace-nowrap w-full sm:w-auto justify-start ${
               activeTab === "personal"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500 hover:text-primary"
+                ? "text-primary border-b-2 sm:border-b-2 border-primary"
+                : "text-gray-500 hover:text-primary border-b border-gray-200 sm:border-0"
             }`}
             onClick={() => setActiveTab("personal")}
           >
-            <FiUser className="mr-1 md:mr-2" /> <span className="md:inline">Personal Information</span><span className="inline md:hidden">Personal</span>
+            <FiUser className="mr-2" /> Personal Information
           </button>
           <button
-            className={`px-4 md:px-6 py-3 text-sm md:text-base font-medium flex items-center whitespace-nowrap ${
+            className={`px-4 md:px-6 py-3 text-sm md:text-base font-medium flex items-center whitespace-nowrap w-full sm:w-auto justify-start ${
               activeTab === "notifications"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500 hover:text-primary"
+                ? "text-primary border-b-2 sm:border-b-2 border-primary"
+                : "text-gray-500 hover:text-primary border-b border-gray-200 sm:border-0"
             }`}
             onClick={() => setActiveTab("notifications")}
           >
-            <FiBell className="mr-1 md:mr-2" /> Notifications
+            <FiBell className="mr-2" /> Notifications
           </button>
           <button
-            className={`px-4 md:px-6 py-3 text-sm md:text-base font-medium flex items-center whitespace-nowrap ${
+            className={`px-4 md:px-6 py-3 text-sm md:text-base font-medium flex items-center whitespace-nowrap w-full sm:w-auto justify-start ${
               activeTab === "security"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500 hover:text-primary"
+                ? "text-primary border-b-2 sm:border-b-2 border-primary"
+                : "text-gray-500 hover:text-primary border-b border-gray-200 sm:border-0"
             }`}
             onClick={() => setActiveTab("security")}
           >
-            <FiLock className="mr-1 md:mr-2" /> <span className="md:inline">Password & Security</span><span className="inline md:hidden">Security</span>
+            <FiLock className="mr-2" /> Password & Security
           </button>
         </div>
 
