@@ -213,6 +213,8 @@ function Login() {
                       onClick={(e) => {
                         e.preventDefault();
                         setIsForgotPassword(true);
+                        // This will be replaced when backend is ready
+                        // navigate("/forgot-password");
                       }}
                     >
                       Forgot Password?
