@@ -115,23 +115,24 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed md:sticky top-0 w-64 bg-white border-r border-slate-200 h-screen
-          z-40 transition-transform duration-300 ease-in-out overflow-y-auto
+          fixed md:static w-72 bg-white border-r-2 border-gray-200 h-[100dvh] 
+          z-40 transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           ${className || ""}
         `}
       >
-        <div className="p-4 flex flex-col h-full">
+        <div className="p-4 flex flex-col h-full overflow-y-auto">
           <div className="pb-4 w-full">
             <img src={Logo} alt="EduClass Logo" className="w-28" />
             <p className="text-sm text-slate-500 mt-1">Student Portal</p>
           </div>
-          <div className="flex flex-col h-full justify-between">
-            <nav className="flex flex-col mt-4 space-y-1">
+          <div className="flex flex-col space-y-2 h-full">
+            {/* Navigation Links */}
+            <div className="flex-grow">
               {sidebarLinks.map((link, index) => (
                 <div
                   key={link.url}
-                  className="animate-slideInLeft"
+                  className="animate-slideInLeft mb-2"
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   <MenuItem
@@ -142,11 +143,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                   />
                 </div>
               ))}
-            </nav>
+            </div>
 
             {/* Logout Button */}
             <div
-              className="pt-2 border-slate-200 border-t mt-auto animate-fadeIn"
+              className="pt-2 border-slate-200 border-t animate-fadeIn"
               style={{ animationDelay: "0.3s" }}
             >
               <MenuItem

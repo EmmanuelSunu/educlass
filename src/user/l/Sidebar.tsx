@@ -52,17 +52,17 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
       <aside
         className={`
-          fixed md:static w-72 bg-white border-r-2 border-gray-200 h-screen 
+          fixed md:static w-72 bg-white border-r-2 border-gray-200 h-[100dvh] 
           z-40 transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           ${className || ""}
         `}
       >
-        <div className="p-4 flex flex-col h-screen overflow-y-auto">
+        <div className="p-4 flex flex-col h-full overflow-y-auto">
           <div className="pb-4 w-full">
             <img src={Logo} alt="Logo" className="w-28" />
           </div>
-          <div className="flex flex-col h-screen justify-between">
+          <div className="flex flex-col h-full justify-between">
             <nav className="flex flex-col mt-4 space-y-1">
               <div className="animate-slideInLeft" style={{ animationDelay: "0s" }}>
                 <MenuItem
