@@ -29,7 +29,7 @@ function DashboardLayout({
           buttonTitle={buttonTitle}
         />
         <Breadcrumb />
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-6 overflow-auto pb-12 lg:pb-0"> {/* Added pb-12 for mobile, removed on lg screens */}
           {children}
         </main>
       </div>

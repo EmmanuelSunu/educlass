@@ -58,6 +58,18 @@
 /* Disable drag and drop */
 [unselectable="on"] {
   -webkit-user-drag: none;
+
+/* Add bottom padding for mobile content to prevent cut-off when scrolling */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding-bottom: 80px; /* Add extra padding at the bottom for mobile */
+  }
+  
+  main {
+    padding-bottom: 80px; /* Ensure main content areas have sufficient bottom padding */
+  }
+}
+
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;

@@ -32,7 +32,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             onAddHeadbarButton={onAddHeadbarButton}
           />
         </div>
-        <main className="flex-grow p-6 overflow-y-auto h-[calc(100vh-64px)]">{children}</main>
+        <main className="flex-grow p-6 overflow-y-auto h-[calc(100vh-64px)] dashboard-content pb-8 md:pb-0">{children}</main>
       </div>
     </div>
   );
