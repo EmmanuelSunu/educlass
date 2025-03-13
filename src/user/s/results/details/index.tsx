@@ -18,7 +18,7 @@ type Question = {
   feedback?: string;
 };
 
-type Results = {
+interface Results {
   examTitle: string;
   examClass: string;
   examType: string;
@@ -27,8 +27,14 @@ type Results = {
   timeTaken: string;
   dateTaken: string;
   overallFeedback: string;
+  detailedFeedback: {
+    strengths: string[];
+    areasForImprovement: string[];
+    specificComments: string;
+    nextSteps: string[];
+  };
   questions: Question[];
-};
+}
 
 function StudentResultDetails() {
   const { examId } = useParams<{ examId: string }>();
@@ -42,6 +48,12 @@ function StudentResultDetails() {
     timeTaken: "",
     dateTaken: "",
     overallFeedback: "",
+    detailedFeedback: {
+      strengths: [],
+      areasForImprovement: [],
+      specificComments: "",
+      nextSteps: [],
+    },
     questions: [],
   });
   const [loading, setLoading] = useState(true);
@@ -108,20 +120,122 @@ function StudentResultDetails() {
       };
     });
 
+    const detailedFeedback = {
+      strengths: generateStrengths(score, exam.title),
+      areasForImprovement: generateAreasForImprovement(score, exam.title),
+      specificComments: generateSpecificComments(score, exam.title),
+      nextSteps: generateNextSteps(score, exam.title),
+    };
+
+    // Set the results for the UI
     setResults({
       examTitle: exam.title,
       examClass: exam.className,
       examType: exam.type,
-      score,
+      score: score,
       status: score >= 60 ? "passed" : "failed",
-      timeTaken,
-      dateTaken,
-      overallFeedback,
+      timeTaken: timeTaken,
+      dateTaken: dateTaken,
+      overallFeedback: overallFeedback,
+      detailedFeedback: detailedFeedback,
       questions: mockQuestions,
     });
 
     setLoading(false);
   }, [examId, navigate]);
+
+  // Helper functions to generate detailed feedback
+  function generateStrengths(score: number, examTitle: string) {
+    const baseStrengths = [
+      "Good understanding of core concepts",
+      "Clear and structured answers",
+      "Effective use of technical terminology"
+    ];
+
+    if (score >= 80) {
+      return [
+        ...baseStrengths,
+        "Excellent critical thinking skills",
+        "Comprehensive understanding of all course materials",
+        "Creative problem-solving approaches"
+      ].slice(0, 4);
+    } else if (score >= 60) {
+      return [
+        ...baseStrengths,
+        "Solid grasp of most key concepts",
+        "Good effort in answering complex questions"
+      ].slice(0, 3);
+    } else {
+      return [
+        "Some understanding of basic concepts",
+        "Attempt to answer all questions",
+        "Potential shown in certain areas"
+      ].slice(0, 2);
+    }
+  }
+
+  function generateAreasForImprovement(score: number, examTitle: string) {
+    const baseAreas = [
+      "More detailed explanations needed in essay questions",
+      "Review core concepts from chapters 3-5",
+      "Practice more complex problem-solving scenarios"
+    ];
+
+    if (score >= 80) {
+      return [
+        "Consider more detailed examples in explanations",
+        "Minor improvements in technical precision"
+      ];
+    } else if (score >= 60) {
+      return baseAreas.slice(0, 2);
+    } else {
+      return [
+        ...baseAreas,
+        "Focus on understanding fundamental principles",
+        "Develop more structured approach to essays",
+        "Additional practice with multiple-choice questions"
+      ];
+    }
+  }
+
+  function generateSpecificComments(score: number, examTitle: string) {
+    if (score >= 80) {
+      return `Excellent work overall on the ${examTitle}. Your responses demonstrated a thorough understanding of the subject matter. Particularly impressive was your analysis of complex concepts. Continue with this level of detail and critical thinking in future assignments.`;
+    } else if (score >= 60) {
+      return `Good effort on the ${examTitle}. You've shown a solid understanding of most key concepts. Your answers to questions 2 and 4 were particularly well-structured. To improve further, focus on providing more detailed explanations and examples.`;
+    } else {
+      return `Thank you for completing the ${examTitle}. There are several areas where additional study would be beneficial. Focus particularly on the core concepts from chapters 3-5. I recommend reviewing the lecture notes and practice exercises for these sections.`;
+    }
+  }
+
+  function generateNextSteps(score: number, examTitle: string) {
+    const baseSteps = [
+      "Review feedback on individual questions",
+      "Attend office hours to discuss challenging concepts",
+      "Complete recommended practice exercises"
+    ];
+
+    if (score >= 80) {
+      return [
+        ...baseSteps,
+        "Consider exploring advanced topics in this area",
+        "Prepare for upcoming assessments building on these concepts"
+      ];
+    } else if (score >= 60) {
+      return [
+        ...baseSteps,
+        "Focus on areas noted for improvement before the next exam",
+        "Consider forming a study group for the next module"
+      ];
+    } else {
+      return [
+        ...baseSteps,
+        "Schedule a one-on-one session to review fundamentals",
+        "Complete all remedial exercises provided in the course materials",
+        "Consider additional tutoring resources available"
+      ];
+    }
+  }
 
   const goBack = () => {
     navigate("/user/s/results");
@@ -255,6 +369,43 @@ function StudentResultDetails() {
           </div>
         </div>
       </div>
+
+        {/* Detailed Feedback from Template */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4">Detailed Feedback</h2>
+
+          <div className="mb-4">
+            <h3 className="text-md font-medium text-primary mb-2">Strengths</h3>
+            <ul className="list-disc pl-5 space-y-1">
+              {results.detailedFeedback.strengths.map((strength, index) => (
+                <li key={index} className="text-gray-700">{strength}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mb-4">
+            <h3 className="text-md font-medium text-primary mb-2">Areas for Improvement</h3>
+            <ul className="list-disc pl-5 space-y-1">
+              {results.detailedFeedback.areasForImprovement.map((area, index) => (
+                <li key={index} className="text-gray-700">{area}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mb-4">
+            <h3 className="text-md font-medium text-primary mb-2">Specific Comments</h3>
+            <p className="text-gray-700">{results.detailedFeedback.specificComments}</p>
+          </div>
+
+          <div>
+            <h3 className="text-md font-medium text-primary mb-2">Recommended Next Steps</h3>
+            <ul className="list-disc pl-5 space-y-1">
+              {results.detailedFeedback.nextSteps.map((step, index) => (
+                <li key={index} className="text-gray-700">{step}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
     </DashboardLayout>
   );
 }
