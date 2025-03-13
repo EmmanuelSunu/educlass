@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar from "./Sidebar";
-import HeaderBar from "../../components/HeaderBar";
+import Headbar from "../../components/HeaderBar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -24,7 +24,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <HeaderBar
+        <Headbar
           title={title}
           showAddButton={showAddHeadbarButton}
           buttonTitle={buttonTitle}
