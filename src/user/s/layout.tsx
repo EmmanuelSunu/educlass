@@ -23,14 +23,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col w-full">
-        <Headbar
-          title={title}
-          showAddButton={showAddHeadbarButton}
-          buttonTitle={buttonTitle}
-          onAddHeadbarButton={onAddHeadbarButton}
-        />
-        <main className="flex-grow p-6">{children}</main>
+      <div className="flex-1 flex flex-col w-full h-screen">
+        <div className="sticky top-0 z-10">
+          <Headbar
+            title={title}
+            showAddButton={showAddHeadbarButton}
+            buttonTitle={buttonTitle}
+            onAddHeadbarButton={onAddHeadbarButton}
+          />
+        </div>
+        <main className="flex-grow p-6 overflow-y-auto h-[calc(100vh-64px)]">{children}</main>
       </div>
     </div>
   );

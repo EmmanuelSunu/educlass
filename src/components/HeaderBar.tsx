@@ -16,7 +16,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   onAddHeadbarButton,
 }) => {
   return (
-    <header className="bg-white w-full px-4 md:px-6 py-3 md:py-4 border-b border-slate-200">
+    <header className="bg-white w-full px-4 md:px-6 py-3 md:py-4 border-b border-slate-200 shadow-sm">
       <div className="flex items-center justify-between">
         <h1 className="text-xl md:text-2xl font-semibold text-slate-800">{title}</h1>
 
