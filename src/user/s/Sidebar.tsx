@@ -127,7 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             <p className="text-sm text-slate-500 mt-1">Student Portal</p>
           </div>
           <div className="flex flex-col h-full justify-between">
-            <nav className="flex flex-col mt-4 space-y-1 flex-grow">
+            <nav className="flex flex-col mt-4 space-y-1">
               {sidebarLinks.map((link, index) => (
                 <div
                   key={link.url}
@@ -145,7 +145,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             </nav>
 
             {/* Logout Button */}
-            <div className="mt-auto pt-6 border-slate-200 border-t animate-fadeIn" style={{ animationDelay: "0.3s" }}>
+            <div
+              className="pt-2 border-slate-200 border-t mt-auto animate-fadeIn"
+              style={{ animationDelay: "0.3s" }}
+            >
               <MenuItem
                 to="/"
                 icon={<RiLogoutCircleLine className="text-xl" />}
