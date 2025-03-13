@@ -16,21 +16,31 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   onAddHeadbarButton,
 }) => {
   return (
-    <header className="bg-white w-full px-6 py-4 border-b border-slate-200">
+    <header className="bg-white w-full px-4 md:px-6 py-3 md:py-4 border-b border-slate-200">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-800">{title}</h1>
+        <h1 className="text-xl md:text-2xl font-semibold text-slate-800">{title}</h1>
 
-        <div className="flex items-center gap-4">
-          {showAddButton && (  // Use the correct property here as well
-            <ButtonProps
-              variant="primary"
-              size="regular"
-              onClick={onAddHeadbarButton}
-              className="gap-2 bg-primary hover:bg-primary/90 hidden md:flex"
-            >
-              <RiAddLine className="w-5 h-5" />
-              <span className="font-semibold text-h6">{buttonTitle}</span>
-            </ButtonProps>
+        <div className="flex items-center gap-2 md:gap-4">
+          {showAddButton && (
+            <>
+              <ButtonProps
+                variant="primary"
+                size="regular"
+                onClick={onAddHeadbarButton}
+                className="gap-2 bg-primary hover:bg-primary/90 hidden md:flex"
+              >
+                <RiAddLine className="w-5 h-5" />
+                <span className="font-semibold text-h6">{buttonTitle}</span>
+              </ButtonProps>
+              <ButtonProps
+                variant="primary"
+                size="small"
+                onClick={onAddHeadbarButton}
+                className="p-2 bg-primary hover:bg-primary/90 flex md:hidden"
+              >
+                <RiAddLine className="w-5 h-5" />
+              </ButtonProps>
+            </>
           )}
         </div>
       </div>

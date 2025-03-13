@@ -18,12 +18,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   onAddHeadbarButton,
 }) => {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-slate-50">
       {/* Sidebar - will be responsive through its own implementation */}
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col w-full">
         <Headbar
           title={title}
           showAddButton={showAddHeadbarButton}

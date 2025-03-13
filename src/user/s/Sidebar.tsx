@@ -115,13 +115,13 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed md:static w-64 bg-white border-r border-slate-200 h-screen 
-          z-40 transition-transform duration-300 ease-in-out
+          fixed md:sticky top-0 w-64 bg-white border-r border-slate-200 h-screen
+          z-40 transition-transform duration-300 ease-in-out overflow-y-auto
           ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           ${className || ""}
         `}
       >
-        <div className="p-4 flex flex-col h-screen overflow-y-auto">
+        <div className="p-4 flex flex-col h-full">
           <div className="pb-4 w-full">
             <img src={Logo} alt="EduClass Logo" className="w-28" />
             <p className="text-sm text-slate-500 mt-1">Student Portal</p>
