@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import DashboardLayout from "../layout";
 import { FiUser, FiBell, FiLock, FiSave } from "react-icons/fi";
@@ -94,7 +93,7 @@ function StudentSettings() {
         <div className="p-6">
           {activeTab === "personal" && (
             <form onSubmit={handleSavePersonal}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     First Name
@@ -189,7 +188,7 @@ function StudentSettings() {
               <div className="mt-6">
                 <button
                   type="submit"
-                  className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  className="w-full md:w-auto inline-flex items-center justify-center px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
                   <FiSave className="mr-2" /> Save Changes
                 </button>
@@ -216,7 +215,7 @@ function StudentSettings() {
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                   </label>
                 </div>
-                
+
                 <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
                   <div>
                     <h3 className="font-medium text-gray-800">App Notifications</h3>
@@ -233,7 +232,7 @@ function StudentSettings() {
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                   </label>
                 </div>
-                
+
                 <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
                   <div>
                     <h3 className="font-medium text-gray-800">Exam Reminders</h3>
@@ -254,7 +253,7 @@ function StudentSettings() {
               <div className="mt-6">
                 <button
                   type="submit"
-                  className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  className="w-full md:w-auto inline-flex items-center justify-center px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
                   <FiSave className="mr-2" /> Save Preferences
                 </button>
@@ -325,7 +324,7 @@ function StudentSettings() {
               <div className="mt-6">
                 <button
                   type="submit"
-                  className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  className="w-full md:w-auto inline-flex items-center justify-center px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
                   <FiSave className="mr-2" /> Update Password
                 </button>
