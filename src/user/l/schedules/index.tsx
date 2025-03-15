@@ -103,35 +103,14 @@ const Schedules = () => {
     console.log("Edit schedule:", selectedSchedule);
   };
 
-  const handleDelete = () => {
-    // Add delete functionality
-    console.log("Delete schedule:", selectedSchedule);
-    setSelectedSchedule(null);
-  };
-
   const closeEventDetails = () => {
     setSelectedSchedule(null);
   };
 
-  const ScheduleDetailModal = ({schedule, isOpen, onClose, onEdit, onDelete, isLecturer}: any) => {
-    if (!schedule || !isOpen) return null;
-
-    return (
-      <Modal isOpen={isOpen} onClose={onClose} title="Schedule Details">
-        <div>
-          <h2>{schedule.title}</h2>
-          <p>Date: {schedule.date}</p>
-          <p>Time: {schedule.startTime} - {schedule.endTime}</p>
-          <p>Location: {schedule.location}</p>
-          {isLecturer && (
-            <>
-              <button onClick={onEdit}>Edit</button>
-              <button onClick={onDelete}>Delete</button>
-            </>
-          )}
-        </div>
-      </Modal>
-    );
+  const handleDelete = () => {
+    // Add delete functionality
+    console.log("Delete schedule:", selectedSchedule);
+    setSelectedSchedule(null);
   };
 
   return (
