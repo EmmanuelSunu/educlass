@@ -19,6 +19,7 @@ interface ExamDetails {
     questionText: string;
     options?: string[];
     questionAnswer: string;
+    points?: number;
   }>;
   classId?: number;
   className?: string;
@@ -95,6 +96,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
       questionText: "",
       questionAnswer: "",
       options: [] as string[], // Properly type the options array
+      points: 0,
     };
 
     onExamChange({
@@ -134,8 +136,8 @@ const ExamForm: React.FC<ExamFormProps> = ({
 
   const handleQuestionChange = (
     index: number,
-    field: "questionText" | "questionAnswer" | "type",
-    value: string,
+    field: "questionText" | "questionAnswer" | "type" | "points",
+    value: string | number,
   ) => {
     const updatedQuestions = [...examDetails.questions];
 
@@ -349,14 +351,9 @@ const ExamForm: React.FC<ExamFormProps> = ({
                           type="number"
                           min="0"
                           value={question.points || 0}
-                          onChange={(e) => {
-                            const newQuestions = [...examDetails.questions];
-                            newQuestions[index] = {
-                              ...question,
-                              points: parseInt(e.target.value) || 0
-                            };
-                            setExamDetails({...examDetails, questions: newQuestions});
-                          }}
+                          onChange={(e) =>
+                            handleQuestionChange(index, "points", parseInt(e.target.value, 10) || 0)
+                          }
                           className="w-20 px-2 py-1 border rounded"
                         />
                       </div>
