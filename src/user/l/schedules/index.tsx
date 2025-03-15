@@ -53,6 +53,7 @@ const Schedules = () => {
   const [showAddModal, setShowAddModal] = useState(false); // State for Add Schedule Modal
   const [importSuccess, setImportSuccess] = useState(false); // State for import success indicator
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
 
   // For ScheduleTable, onEdit expects a Schedule object.
   const handleEditTable = (schedule: Schedule) => {
@@ -91,6 +92,32 @@ const Schedules = () => {
     setTimeout(() => {
       setShowSuccessPopup(false);
     }, 3000);
+  };
+
+  const handleEventClick = (schedule: Schedule) => {
+    setSelectedSchedule(schedule);
+  };
+
+
+  const ScheduleDetailModal = ({schedule, isOpen, onClose, onEdit, onDelete, isLecturer}: any) => {
+    if (!schedule || !isOpen) return null;
+
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} title="Schedule Details">
+        <div>
+          <h2>{schedule.title}</h2>
+          <p>Date: {schedule.date}</p>
+          <p>Time: {schedule.startTime} - {schedule.endTime}</p>
+          <p>Location: {schedule.location}</p>
+          {isLecturer && (
+            <>
+              <button onClick={() => {onEdit(schedule); onClose()}}>Edit</button>
+              <button onClick={() => {onDelete(schedule.id); onClose()}}>Delete</button>
+            </>
+          )}
+        </div>
+      </Modal>
+    );
   };
 
   return (
@@ -152,15 +179,8 @@ const Schedules = () => {
         <ScheduleCalendar 
           schedules={schedules} 
           onDelete={handleDelete}
-          onEventClick={(schedule) => {
-            /* Handle event click - e.g., open edit modal */
-            console.log("Event clicked:", schedule);
-            setShowAddModal(true); // Use existing state variable
-          }}
-          onDateSelect={() => {
-            /* Handle date selection - e.g., open create modal with pre-filled dates */
-            setShowAddModal(true); // Use existing state variable
-          }}
+          onEventClick={handleEventClick}
+          onDateSelect={() => setShowAddModal(true)}
         />
       ) : (
         <ScheduleTable
@@ -229,6 +249,14 @@ const Schedules = () => {
           </div>
         </div>
       )}
+      <ScheduleDetailModal
+        schedule={selectedSchedule}
+        isOpen={!!selectedSchedule}
+        onClose={() => setSelectedSchedule(null)}
+        onEdit={handleEditTable}
+        onDelete={handleDelete}
+        isLecturer={true}
+      />
     </DashboardLayout>
   );
 };
