@@ -145,9 +145,6 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
           const schedule = schedules.find((s) => s.id === clickInfo.event.id);
           if (schedule) {
             onEventClick(schedule);
-            if (onDelete && window.confirm(`Delete ${schedule.title}?`)) {
-              onDelete(schedule.id);
-            }
           }
         }}
         eventDrop={(dropInfo) => {
