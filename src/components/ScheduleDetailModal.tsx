@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Schedule } from '../user/l/schedules/types';
 import ButtonProps from './ButtonProps';
@@ -22,9 +21,8 @@ const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 animate-fadeIn">
-        {/* Header */}
         <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="text-lg font-semibold text-slate-800">Schedule Details</h3>
+          <h3 className="text-lg font-semibold text-slate-800">{schedule.title}</h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -33,16 +31,18 @@ const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-4 space-y-4">
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Title</h4>
-            <p className="text-slate-800">{schedule.title}</p>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-sm font-medium text-gray-500">Date</h4>
+              <p className="text-slate-800">{schedule.date}</p>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-gray-500">Type</h4>
+              <p className="text-slate-800 capitalize">{schedule.type}</p>
+            </div>
           </div>
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Description</h4>
-            <p className="text-slate-800">{schedule.description}</p>
-          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h4 className="text-sm font-medium text-gray-500">Start Time</h4>
@@ -53,13 +53,20 @@ const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
               <p className="text-slate-800">{schedule.endTime}</p>
             </div>
           </div>
+
           <div>
-            <h4 className="text-sm font-medium text-gray-500">Date</h4>
-            <p className="text-slate-800">{schedule.date}</p>
+            <h4 className="text-sm font-medium text-gray-500">Location</h4>
+            <p className="text-slate-800">{schedule.location}</p>
           </div>
+
+          {schedule.isRecurring && (
+            <div>
+              <h4 className="text-sm font-medium text-gray-500">Recurring</h4>
+              <p className="text-slate-800 capitalize">{schedule.recurrence?.frequency}</p>
+            </div>
+          )}
         </div>
 
-        {/* Footer */}
         <div className="p-4 border-t flex justify-end space-x-2">
           {isLecturer ? (
             <>
