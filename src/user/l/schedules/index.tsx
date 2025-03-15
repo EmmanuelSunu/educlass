@@ -98,6 +98,20 @@ const Schedules = () => {
     setSelectedSchedule(schedule);
   };
 
+  const handleEdit = () => {
+    // Add edit functionality
+    console.log("Edit schedule:", selectedSchedule);
+  };
+
+  const handleDelete = () => {
+    // Add delete functionality
+    console.log("Delete schedule:", selectedSchedule);
+    setSelectedSchedule(null);
+  };
+
+  const closeEventDetails = () => {
+    setSelectedSchedule(null);
+  };
 
   const ScheduleDetailModal = ({schedule, isOpen, onClose, onEdit, onDelete, isLecturer}: any) => {
     if (!schedule || !isOpen) return null;
@@ -111,8 +125,8 @@ const Schedules = () => {
           <p>Location: {schedule.location}</p>
           {isLecturer && (
             <>
-              <button onClick={() => {onEdit(schedule); onClose()}}>Edit</button>
-              <button onClick={() => {onDelete(schedule.id); onClose()}}>Delete</button>
+              <button onClick={onEdit}>Edit</button>
+              <button onClick={onDelete}>Delete</button>
             </>
           )}
         </div>
@@ -249,14 +263,15 @@ const Schedules = () => {
           </div>
         </div>
       )}
-      <ScheduleDetailModal
-        schedule={selectedSchedule}
-        isOpen={!!selectedSchedule}
-        onClose={() => setSelectedSchedule(null)}
-        onEdit={handleEditTable}
-        onDelete={handleDelete}
-        isLecturer={true}
-      />
+      {selectedSchedule && (
+        <ScheduleDetailModal
+          schedule={selectedSchedule}
+          onClose={closeEventDetails}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          isLecturer={true}
+        />
+      )}
     </DashboardLayout>
   );
 };

@@ -116,12 +116,13 @@ const StudentSchedulePage: React.FC = () => {
           </div>
         )}
       </div>
-      <ScheduleDetailModal
-        schedule={selectedSchedule}
-        isOpen={!!selectedSchedule}
-        onClose={() => setSelectedSchedule(null)}
-        isLecturer={false}
-      />
+      {selectedSchedule && (
+        <ScheduleDetailModal
+          schedule={selectedSchedule}
+          onClose={closeEventDetails}
+          isLecturer={false}
+        />
+      )}
     </DashboardLayout>
   );
 };
