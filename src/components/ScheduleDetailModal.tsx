@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Schedule } from '../user/l/schedules/types';
 import ButtonProps from './ButtonProps';
@@ -42,6 +41,9 @@ const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
               <h4 className="text-sm font-medium text-gray-500">Type</h4>
               <p className="text-slate-800 capitalize">{schedule.type}</p>
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <h4 className="text-sm font-medium text-gray-500">Start Time</h4>
               <p className="text-slate-800">{schedule.startTime}</p>
@@ -51,6 +53,18 @@ const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
               <p className="text-slate-800">{schedule.endTime}</p>
             </div>
           </div>
+
+          <div>
+            <h4 className="text-sm font-medium text-gray-500">Location</h4>
+            <p className="text-slate-800">{schedule.location}</p>
+          </div>
+
+          {schedule.isRecurring && (
+            <div>
+              <h4 className="text-sm font-medium text-gray-500">Recurring</h4>
+              <p className="text-slate-800 capitalize">{schedule.recurrence?.frequency}</p>
+            </div>
+          )}
         </div>
 
         <div className="p-4 border-t flex justify-end space-x-2">
@@ -59,26 +73,22 @@ const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = ({
               <ButtonProps
                 variant="secondary"
                 onClick={onEdit}
-                className="flex items-center gap-2 px-4 py-2 text-sm"
+                className="flex items-center gap-2"
               >
-                <RiEditLine className="w-4 h-4" />
+                <RiEditLine />
                 Edit
               </ButtonProps>
               <ButtonProps
                 variant="danger"
                 onClick={onDelete}
-                className="flex items-center gap-2 px-4 py-2 text-sm"
+                className="flex items-center gap-2"
               >
-                <RiDeleteBinLine className="w-4 h-4" />
+                <RiDeleteBinLine />
                 Delete
               </ButtonProps>
             </>
           ) : (
-            <ButtonProps 
-              variant="secondary" 
-              onClick={onClose}
-              className="px-4 py-2 text-sm"
-            >
+            <ButtonProps variant="secondary" onClick={onClose}>
               Close
             </ButtonProps>
           )}
