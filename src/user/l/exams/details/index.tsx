@@ -10,6 +10,7 @@ interface Question {
   questionText: string;
   options?: string[];
   questionAnswer: string;
+  points: number; // Added points property
 }
 
 interface ExamDetails {
@@ -29,6 +30,17 @@ function ExamDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [examDetails, setExamDetails] = useState<ExamDetails | null>(null);
+
+  const handlePointsChange = (questionId: string, points: number) => {
+    if (!examDetails) return;
+
+    setExamDetails({
+      ...examDetails,
+      questions: examDetails.questions.map((q) =>
+        q.id === questionId ? { ...q, points } : q
+      ),
+    });
+  };
 
   useEffect(() => {
     if (id) {
