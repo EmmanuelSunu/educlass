@@ -175,6 +175,10 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
         eventClassNames="cursor-pointer rounded-md"
         slotMinTime="07:00:00"
         slotMaxTime="22:00:00"
+        eventClick={({ event }) => {
+          const schedule = event.extendedProps;
+          handleEventClick(schedule);
+        }}
         aria-label="Schedule Calendar"
         navLinks={true}
       />
