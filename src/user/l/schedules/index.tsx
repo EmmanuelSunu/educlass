@@ -57,14 +57,13 @@ const Schedules = () => {
   const [showEventModal, setShowEventModal] = useState(false);
   const isLecturer = true; // Assume lecturer view for simplicity
 
+  const handleEditTable = (schedule: Schedule) => {
+    console.log(`Edit schedule with ID: ${schedule.id}`);
+  };
 
   const handleEventClick = (schedule: Schedule) => {
     setSelectedEvent(schedule);
     setShowEventModal(true);
-  };
-
-  const handleEditTable = (schedule: Schedule) => {
-    console.log(`Edit schedule with ID: ${schedule.id}`);
   };
 
   const handleDelete = (id: string) => {
