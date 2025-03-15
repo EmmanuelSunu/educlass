@@ -293,7 +293,7 @@ function TakeExamPage() {
               <div className="flex justify-between mb-4">
                 <h3 className="text-lg font-medium text-gray-800">Question {index + 1}</h3>
                 <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-sm font-medium">
-                  {question.points ?? 5} points
+                  {question.points} points
                 </span>
               </div>
               <div className="exam-question text-gray-700 mb-5 select-none" 

@@ -17,6 +17,7 @@
       {
         "id": "1",
         "type": "essay",
+        "points": 20,
         "questionText": "Explain the key principles of object-oriented programming and provide examples of how they are applied in software development.",
         "questionAnswer": "A comprehensive explanation of encapsulation, inheritance, polymorphism, and abstraction with relevant examples."
       },

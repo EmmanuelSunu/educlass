@@ -5,6 +5,15 @@ import DashboardLayout from "../layout";
 import ExamCard from "../../../components/examCard";
 import examsData from "./data/exams.json";
 
+interface Question {
+  id: string;
+  type: "essay" | "multi-choice" | "fill-ins";
+  points: number;
+  questionText: string;
+  questionAnswer: string;
+  options?: string[];
+}
+
 interface Exam {
   id: number;
   title: string;
@@ -15,6 +24,8 @@ interface Exam {
   status: "scheduled" | "in-progress" | "completed";
   dueDate: string;
   className?: string;
+  questions?: Question[];
+  totalPoints?: number;
 }
 
 function Exams() {
