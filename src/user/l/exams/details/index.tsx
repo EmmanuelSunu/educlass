@@ -10,7 +10,7 @@ interface Question {
   questionText: string;
   options?: string[];
   questionAnswer: string;
-  points: number; // Added points property
+  points: number; 
 }
 
 interface ExamDetails {
@@ -65,7 +65,23 @@ function ExamDetailsPage() {
         className="flex flex-col animate-fadeIn"
         style={{ animationDelay: "0.3s" }}
       >
-        <p className="text-p mb-3">{question.questionText}</p>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex-grow">
+            <p className="text-p mb-3">{question.questionText}</p>
+          </div>
+          <div className="ml-4 flex items-center">
+            <label className="mr-2">Points:</label>
+            <input
+              type="number"
+              min="0"
+              value={question.points || 0}
+              onChange={(e) =>
+                handlePointsChange(question.id, parseInt(e.target.value, 10) || 0)
+              }
+              className="w-20 px-2 py-1 border rounded"
+            />
+          </div>
+        </div>
         {question.type === "multi-choice" && question.options && (
           <div
             className="ml-6 mb-4 animate-fadeIn"
