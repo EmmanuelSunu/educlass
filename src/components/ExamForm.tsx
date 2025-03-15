@@ -339,9 +339,28 @@ const ExamForm: React.FC<ExamFormProps> = ({
                   className="p-4 border border-gray-200 rounded-lg"
                 >
                   <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-md font-medium text-gray-900">
-                      Question {index + 1}
-                    </h4>
+                    <div className="flex items-center gap-4">
+                      <h4 className="text-md font-medium text-gray-900">
+                        Question {index + 1}
+                      </h4>
+                      <div className="flex items-center">
+                        <label className="mr-2 text-sm text-gray-600">Points:</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={question.points || 0}
+                          onChange={(e) => {
+                            const newQuestions = [...examDetails.questions];
+                            newQuestions[index] = {
+                              ...question,
+                              points: parseInt(e.target.value) || 0
+                            };
+                            setExamDetails({...examDetails, questions: newQuestions});
+                          }}
+                          className="w-20 px-2 py-1 border rounded"
+                        />
+                      </div>
+                    </div>
                     <button
                       onClick={() => handleRemoveQuestion(question.id)}
                       className="text-red-500 hover:text-red-700"
@@ -524,6 +543,13 @@ const ExamForm: React.FC<ExamFormProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+          {examDetails.questions.length > 0 && (
+            <div className="mt-6 pt-4 border-t">
+              <p className="text-right text-gray-700">
+                Total Points: {examDetails.questions.reduce((sum, q) => sum + (q.points || 0), 0)}
+              </p>
             </div>
           )}
         </div>

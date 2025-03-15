@@ -30,6 +30,7 @@ function ExamDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [examDetails, setExamDetails] = useState<ExamDetails | null>(null);
+  const [isEditing, setIsEditing] = useState(false); // Added state for edit mode
 
   const handlePointsChange = (questionId: string, points: number) => {
     if (!examDetails) return;
@@ -56,6 +57,7 @@ function ExamDetailsPage() {
   }
 
   const handleEditClick = () => {
+    setIsEditing(true); // Enable edit mode
     navigate(`/user/l/exams/create/${examDetails.id}`);
   };
 
@@ -65,22 +67,22 @@ function ExamDetailsPage() {
         className="flex flex-col animate-fadeIn"
         style={{ animationDelay: "0.3s" }}
       >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex-grow">
-            <p className="text-p mb-3">{question.questionText}</p>
-          </div>
-          <div className="ml-4 flex items-center">
-            <label className="mr-2">Points:</label>
-            <input
-              type="number"
-              min="0"
-              value={question.points || 0}
-              onChange={(e) =>
-                handlePointsChange(question.id, parseInt(e.target.value, 10) || 0)
-              }
-              className="w-20 px-2 py-1 border rounded"
-            />
-          </div>
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-p flex-grow">{question.questionText}</p>
+          {isEditing && ( // Conditionally render points input
+            <div className="ml-4 flex items-center">
+              <label className="mr-2">Points:</label>
+              <input
+                type="number"
+                min="0"
+                value={question.points || 0}
+                onChange={(e) =>
+                  handlePointsChange(question.id, parseInt(e.target.value) || 0)
+                }
+                className="w-20 px-2 py-1 border rounded"
+              />
+            </div>
+          )}
         </div>
         {question.type === "multi-choice" && question.options && (
           <div

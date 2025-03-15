@@ -24,6 +24,7 @@
       {
         "id": "2",
         "type": "multi-choice",
+        "points": 10,
         "questionText": "What is the time complexity of QuickSort in the average case?",
         "options": ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
         "questionAnswer": "O(n log n)"
@@ -31,6 +32,7 @@
       {
         "id": "2",
         "type": "multi-choice",
+        "points": 10,
         "questionText": "Which data structure uses LIFO (Last In First Out) principle?",
         "options": ["Queue", "Stack", "List", "Tree"],
         "questionAnswer": "Stack"
@@ -38,6 +40,7 @@
       {
         "id": "3",
         "type": "multi-choice",
+        "points": 10,
         "questionText": "What is a recursive function?",
         "options": [
           "A function that calls itself",
@@ -50,6 +53,7 @@
       {
         "id": "4",
         "type": "multi-choice",
+        "points": 10,
         "questionText": "Which sorting algorithm has the best average time complexity?",
         "options": [
           "Bubble Sort",
@@ -62,6 +66,7 @@
       {
         "id": "5",
         "type": "multi-choice",
+        "points": 10,
         "questionText": "What does DFS stand for in graph traversal?",
         "options": [
           "Data File System",
@@ -91,6 +96,7 @@
       {
         "id": "1",
         "type": "multi-choice",
+        "points": 15,
         "questionText": "Which programming paradigm emphasizes the use of functions and immutable data?",
         "options": [
           "Object-Oriented Programming",
@@ -103,12 +109,14 @@
       {
         "id": "2",
         "type": "essay",
+        "points": 25,
         "questionText": "Explain the concept of inheritance in Object-Oriented Programming and provide an example.",
         "questionAnswer": "Inheritance is a mechanism where a new class can derive properties and behaviors from an existing class. The new class is called the derived class or child class, and the existing class is called the base class or parent class. This promotes code reusability and establishes a relationship between classes."
       },
       {
         "id": "3",
         "type": "fill-ins",
+        "points": 10,
         "questionText": "The process of finding and fixing errors in a program is called _______.",
         "questionAnswer": "debugging"
       }
@@ -132,6 +140,7 @@
       {
         "id": "1",
         "type": "essay",
+        "points": 100,
         "questionText": "Design and implement a responsive website for a fictional business. Include at least 3 pages with appropriate navigation.",
         "questionAnswer": "The submission should include HTML, CSS, and JavaScript files that demonstrate responsive design principles, proper navigation structure, and content organization."
       }
@@ -155,6 +164,7 @@
       {
         "id": "1",
         "type": "multi-choice",
+        "points": 5,
         "questionText": "Which keyword is used to declare a constant in JavaScript?",
         "options": ["var", "let", "const", "final"],
         "questionAnswer": "const"
@@ -162,6 +172,7 @@
       {
         "id": "2",
         "type": "fill-ins",
+        "points": 5,
         "questionText": "In Python, a _______ is a collection of key-value pairs.",
         "questionAnswer": "dictionary"
       }
@@ -185,6 +196,7 @@
       {
         "id": "1",
         "type": "multi-choice",
+        "points": 10,
         "questionText": "Which normal form eliminates transitive dependencies?",
         "options": [
           "First Normal Form",
@@ -197,6 +209,7 @@
       {
         "id": "2",
         "type": "multi-choice",
+        "points": 10,
         "questionText": "Which SQL statement is used to retrieve data from a database?",
         "options": ["INSERT", "UPDATE", "SELECT", "DELETE"],
         "questionAnswer": "SELECT"
@@ -204,12 +217,14 @@
       {
         "id": "3",
         "type": "essay",
+        "points": 20,
         "questionText": "Describe the difference between a primary key and a foreign key in a relational database.",
         "questionAnswer": "A primary key is a column or set of columns that uniquely identifies each row in a table. A foreign key is a column or set of columns in one table that references the primary key in another table, establishing a relationship between the tables."
       },
       {
         "id": "4",
         "type": "fill-ins",
+        "points": 10,
         "questionText": "The process of organizing data to minimize redundancy is called database _______.",
         "questionAnswer": "normalization"
       }
@@ -233,6 +248,7 @@
       {
         "id": "1",
         "type": "essay",
+        "points": 100,
         "questionText": "Create a personal portfolio website that showcases your skills and projects. Include a responsive design that works on mobile and desktop devices.",
         "questionAnswer": "The submission should include a well-designed personal portfolio with responsive layouts, proper navigation, project showcases, and contact information."
       }
