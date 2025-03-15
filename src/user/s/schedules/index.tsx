@@ -56,16 +56,8 @@ const StudentSchedulePage: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<Schedule | null>(null);
 
   // Handle event click to show details
-  const [showEventModal, setShowEventModal] = useState(false);
-
   const handleEventClick = (schedule: Schedule) => {
     setSelectedEvent(schedule);
-    setShowEventModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowEventModal(false);
-    setSelectedEvent(null);
   };
 
   // Close event details
@@ -125,14 +117,6 @@ const StudentSchedulePage: React.FC = () => {
           </div>
         )}
       </div>
-      {selectedEvent && (
-        <ScheduleEventModal
-          schedule={selectedEvent}
-          isOpen={showEventModal}
-          onClose={handleCloseModal}
-          isLecturer={false}
-        />
-      )}
 
       {/* Event Details Popup */}
       {selectedEvent && (

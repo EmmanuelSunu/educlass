@@ -50,14 +50,11 @@ const Schedules = () => {
   const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
-  const [showAddModal, setShowAddModal] = useState(false); 
-  const [importSuccess, setImportSuccess] = useState(false); 
+  const [showAddModal, setShowAddModal] = useState(false); // State for Add Schedule Modal
+  const [importSuccess, setImportSuccess] = useState(false); // State for import success indicator
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<Schedule | null>(null);
-  const [showEventModal, setShowEventModal] = useState(false);
-  const isLecturer = true; // Assume lecturer view for simplicity
 
-
+  // For ScheduleTable, onEdit expects a Schedule object.
   const handleEditTable = (schedule: Schedule) => {
     console.log(`Edit schedule with ID: ${schedule.id}`);
   };
@@ -67,6 +64,7 @@ const Schedules = () => {
   };
 
   const handleAddSchedule = (newSchedule: Schedule) => {
+    // Generate a unique ID for the new schedule
     const newScheduleWithId = {
       ...newSchedule,
       id: `schedule-${Date.now()}`,
@@ -76,7 +74,9 @@ const Schedules = () => {
 
     setSchedules([...schedules, newScheduleWithId]);
     setShowAddModal(false);
-    setImportSuccess(true); 
+    setImportSuccess(true); // Show success message after adding
+
+    // Hide success message after 3 seconds
     setTimeout(() => {
       setImportSuccess(false);
     }, 3000);
@@ -86,27 +86,11 @@ const Schedules = () => {
     setSchedules([...schedules, ...newSchedules]);
     setShowUploadModal(false);
     setShowSuccessPopup(true);
+
+    // Auto-hide success message after 3 seconds
     setTimeout(() => {
       setShowSuccessPopup(false);
     }, 3000);
-  };
-
-  const handleEventClick = (schedule: Schedule) => {
-    setSelectedEvent(schedule);
-    setShowEventModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowEventModal(false);
-    setSelectedEvent(null);
-  };
-
-  const handleEditEvent = () => {
-    console.log("Edit event:", selectedEvent);
-  };
-
-  const handleDeleteEvent = () => {
-    console.log("Delete event:", selectedEvent);
   };
 
   return (
@@ -121,6 +105,7 @@ const Schedules = () => {
         </h1>
 
         <div className="flex justify-between items-center">
+          {/* Group 1 - View toggles (left side) */}
           <div className="flex space-x-2">
             <ButtonProps
               variant={viewMode === "calendar" ? "primary" : "secondary"}
@@ -140,6 +125,7 @@ const Schedules = () => {
             </ButtonProps>
           </div>
 
+          {/* Group 2 - Action buttons (right side) */}
           <div className="flex space-x-2">
             <ButtonProps
               variant="secondary"
@@ -162,11 +148,19 @@ const Schedules = () => {
       </div>
 
       {viewMode === "calendar" ? (
+        // Removed unsupported onEdit prop for ScheduleCalendar
         <ScheduleCalendar 
           schedules={schedules} 
           onDelete={handleDelete}
-          onEventClick={handleEventClick}
-          onDateSelect={() => setShowAddModal(true)}
+          onEventClick={(schedule) => {
+            /* Handle event click - e.g., open edit modal */
+            console.log("Event clicked:", schedule);
+            setShowAddModal(true); // Use existing state variable
+          }}
+          onDateSelect={() => {
+            /* Handle date selection - e.g., open create modal with pre-filled dates */
+            setShowAddModal(true); // Use existing state variable
+          }}
         />
       ) : (
         <ScheduleTable
@@ -176,6 +170,7 @@ const Schedules = () => {
         />
       )}
 
+      {/* Upload Schedule Modal */}
       {showUploadModal && (
         <Modal
           isOpen={showUploadModal}
@@ -186,6 +181,7 @@ const Schedules = () => {
         </Modal>
       )}
 
+      {/* Add Schedule Modal */}
       {showAddModal && (
         <Modal
           isOpen={showAddModal}
@@ -199,12 +195,14 @@ const Schedules = () => {
         </Modal>
       )}
 
+      {/* Success message after import */}
       {importSuccess && (
         <div className="bg-green-200 text-green-700 p-4 rounded mt-4">
           Schedules imported successfully!
         </div>
       )}
 
+      {/* Success Popup */}
       {showSuccessPopup && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
@@ -231,54 +229,7 @@ const Schedules = () => {
           </div>
         </div>
       )}
-
-      {selectedEvent && (
-        <ScheduleEventModal
-          schedule={selectedEvent}
-          isOpen={showEventModal}
-          onClose={handleCloseModal}
-          onEdit={handleEditEvent}
-          onDelete={handleDeleteEvent}
-          isLecturer={isLecturer}
-        />
-      )}
     </DashboardLayout>
-  );
-};
-
-// Added ScheduleEventModal Component -  Place this where appropriate in your project structure.
-const ScheduleEventModal = ({
-  schedule,
-  isOpen,
-  onClose,
-  onEdit,
-  onDelete,
-  isLecturer,
-}: {
-  schedule: Schedule | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
-  isLecturer: boolean;
-}) => {
-  if (!schedule || !isOpen) return null;
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Event Details">
-      <div>
-        <h3>{schedule.title}</h3>
-        <p>Date: {schedule.date}</p>
-        <p>Time: {schedule.startTime} - {schedule.endTime}</p>
-        <p>Location: {schedule.location}</p>
-        {isLecturer && (
-          <>
-            <button onClick={onEdit}>Edit</button>
-            <button onClick={onDelete}>Delete</button>
-          </>
-        )}
-      </div>
-    </Modal>
   );
 };
 
