@@ -157,15 +157,15 @@ function StudentResultDetails() {
     }
   }
 
-  function generateAreasForImprovement(score: number, examTitle: string) {
+  function generateAreasForImprovement(score: number, examTitle: string): string[] {
     if (score >= 90) {
-      return `For ${examTitle}, consider exploring advanced topics to further challenge yourself.`;
+      return [`Continue challenging yourself with advanced topics in ${examTitle}.`];
     } else if (score >= 80) {
-      return `In ${examTitle}, focus on fine-tuning your understanding of complex concepts.`;
+      return [`Review specific concepts in ${examTitle} where mistakes were made.`];
     } else if (score >= 70) {
-      return `For ${examTitle}, review challenging topics and practice more complex problems.`;
+      return [`Focus on strengthening core concepts in ${examTitle}.`];
     } else {
-      return `In ${examTitle}, focus on strengthening core concepts through additional practice.`;
+      return [`Work on building a stronger foundation in ${examTitle} fundamentals.`];
     }
   }
 
