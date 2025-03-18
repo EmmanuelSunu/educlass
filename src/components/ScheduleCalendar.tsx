@@ -85,7 +85,7 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   schedules,
   onEventClick,
   onDateSelect,
-  onDelete,
+  
   onUpdateSchedule,
 }) => {
   return (

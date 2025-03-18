@@ -145,15 +145,15 @@ function StudentResultDetails() {
   }, [examId, navigate]);
 
   // Helper functions to generate detailed feedback
-  function generateStrengths(score: number, examTitle: string) {
+  function generateStrengths(score: number, examTitle: string): string[] {
     if (score >= 90) {
-      return `Exceptional performance in ${examTitle}! You demonstrated mastery of the subject matter.`;
+      return [`Exceptional performance in ${examTitle}! You demonstrated mastery of the subject matter.`];
     } else if (score >= 80) {
-      return `Strong understanding of key concepts in ${examTitle} with good problem-solving skills.`;
+      return [`Strong understanding of key concepts in ${examTitle} with good problem-solving skills.`];
     } else if (score >= 70) {
-      return `Solid grasp of fundamental concepts in ${examTitle} with room for growth.`;
+      return [`Solid grasp of fundamental concepts in ${examTitle} with room for growth.`];
     } else {
-      return `Basic understanding demonstrated in some areas of ${examTitle}.`;
+      return [`Basic understanding demonstrated in some areas of ${examTitle}.`];
     }
   }
 
@@ -179,15 +179,15 @@ function StudentResultDetails() {
     }
   }
 
-  function generateNextSteps(score: number, examTitle: string) {
+  function generateNextSteps(score: number, examTitle: string): string[] {
     if (score >= 90) {
-      return `After your success in ${examTitle}, consider taking on more challenging coursework.`;
+      return [`After your success in ${examTitle}, consider taking on more challenging coursework.`];
     } else if (score >= 80) {
-      return `Review missed questions from ${examTitle} and strengthen weak areas.`;
+      return [`Review missed questions from ${examTitle} and strengthen weak areas.`];
     } else if (score >= 70) {
-      return `Create a structured study plan focusing on challenging topics from ${examTitle}.`;
+      return [`Create a structured study plan focusing on challenging topics from ${examTitle}.`];
     } else {
-      return `Schedule time with your instructor to review fundamental concepts from ${examTitle}.`;
+      return [`Schedule time with your instructor to review fundamental concepts from ${examTitle}.`];
     }
   }
 

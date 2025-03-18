@@ -79,7 +79,7 @@ const StudentSchedulePage: React.FC = () => {
             variant={viewMode === "calendar" ? "primary" : "secondary"}
             onClick={() => setViewMode("calendar")}
             className="flex items-center justify-center gap-2 flex-1 sm:flex-auto py-2 px-4"
-            size="sm"
+            size="small"
           >
             <RiCalendarLine />
             <span className="md:inline">Calendar</span>
@@ -88,7 +88,7 @@ const StudentSchedulePage: React.FC = () => {
             variant={viewMode === "table" ? "primary" : "secondary"}
             onClick={() => setViewMode("table")}
             className="flex items-center justify-center gap-2 flex-1 sm:flex-auto py-2 px-4"
-            size="sm"
+            size="small"
           >
             <RiListCheck2 />
             <span className="md:inline">Table</span>
