@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import DashboardLayout from "../layout";
 import ScheduleCalendar from "../../../components/ScheduleCalendar";
@@ -79,7 +78,7 @@ const StudentSchedulePage: React.FC = () => {
           <ButtonProps
             variant={viewMode === "calendar" ? "primary" : "secondary"}
             onClick={() => setViewMode("calendar")}
-            className="flex items-center justify-center gap-2 flex-1 sm:flex-auto"
+            className="flex items-center justify-center gap-2 flex-1 sm:flex-auto py-2 px-4"
             size="sm"
           >
             <RiCalendarLine />
@@ -88,7 +87,7 @@ const StudentSchedulePage: React.FC = () => {
           <ButtonProps
             variant={viewMode === "table" ? "primary" : "secondary"}
             onClick={() => setViewMode("table")}
-            className="flex items-center justify-center gap-2 flex-1 sm:flex-auto"
+            className="flex items-center justify-center gap-2 flex-1 sm:flex-auto py-2 px-4"
             size="sm"
           >
             <RiListCheck2 />
@@ -123,13 +122,24 @@ const StudentSchedulePage: React.FC = () => {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4">
           <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Event Details</h3>
+              <h3 className="text-lg font-semibold text-gray-800">
+                Event Details
+              </h3>
               <button
                 onClick={closeEventDetails}
                 className="text-gray-500 hover:text-gray-700"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </button>
             </div>
@@ -140,7 +150,9 @@ const StudentSchedulePage: React.FC = () => {
               </div>
               <div className="mb-3">
                 <span className="font-medium text-gray-600">Date:</span>
-                <div className="text-gray-800">{new Date(selectedEvent.date).toLocaleDateString()}</div>
+                <div className="text-gray-800">
+                  {new Date(selectedEvent.date).toLocaleDateString()}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <div>
@@ -158,15 +170,22 @@ const StudentSchedulePage: React.FC = () => {
               </div>
               <div className="mb-3">
                 <span className="font-medium text-gray-600">Type:</span>
-                <div className="text-gray-800 capitalize">{selectedEvent.type}</div>
+                <div className="text-gray-800 capitalize">
+                  {selectedEvent.type}
+                </div>
               </div>
               {selectedEvent.isRecurring && selectedEvent.recurrence && (
                 <div className="mb-3">
                   <span className="font-medium text-gray-600">Recurrence:</span>
                   <div className="text-gray-800">
-                    {selectedEvent.recurrence.frequency.charAt(0).toUpperCase() + 
-                    selectedEvent.recurrence.frequency.slice(1)} until {
-                    new Date(selectedEvent.recurrence.endDate).toLocaleDateString()}
+                    {selectedEvent.recurrence.frequency
+                      .charAt(0)
+                      .toUpperCase() +
+                      selectedEvent.recurrence.frequency.slice(1)}{" "}
+                    until{" "}
+                    {new Date(
+                      selectedEvent.recurrence.endDate,
+                    ).toLocaleDateString()}
                   </div>
                 </div>
               )}
