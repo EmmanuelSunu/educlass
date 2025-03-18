@@ -1,23 +1,16 @@
-// ButtonProps.tsx
 
 import React from 'react';
 
-// Define button variants
 type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'accent';
-
-// Define button sizes
 type ButtonSize = 'small' | 'regular' | 'medium' | 'large' | 'extra-large';
 
-// ButtonProps interface
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   children: React.ReactNode;
   className?: string;
-  type?: 'button' | 'submit' | 'reset';
 }
 
-// Style configuration objects
 const ButtonStyles = {
   base: 'inline-flex items-center justify-center font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition duration-150 ease-out',
 
@@ -38,7 +31,7 @@ const ButtonStyles = {
   } as const
 };
 
-export const ButtonProps: React.FC<ButtonProps> = ({
+const ButtonProps: React.FC<ButtonProps> = ({
   variant = 'primary',
   size = 'regular',
   children,
