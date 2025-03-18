@@ -205,57 +205,8 @@ textarea, input[type="text"], .secure-content {
   }
 }
 
-/* Card loading animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.card-animate {
-  animation: fadeInUp 0.4s ease-out forwards;
-  opacity: 0;
-}
-
 .card-grid {
   display: grid;
-}
-
-.card-grid > * {
-  animation: fadeInUp 0.4s ease-out forwards;
-  opacity: 0;
-}
-
-/* Apply staggered delays to grid children */
-.card-grid > *:nth-child(1) { animation-delay: 0.05s; }
-.card-grid > *:nth-child(2) { animation-delay: 0.1s; }
-.card-grid > *:nth-child(3) { animation-delay: 0.15s; }
-.card-grid > *:nth-child(4) { animation-delay: 0.2s; }
-.card-grid > *:nth-child(5) { animation-delay: 0.25s; }
-.card-grid > *:nth-child(6) { animation-delay: 0.3s; }
-.card-grid > *:nth-child(7) { animation-delay: 0.35s; }
-.card-grid > *:nth-child(8) { animation-delay: 0.4s; }
-.card-grid > *:nth-child(9) { animation-delay: 0.45s; }
-.card-grid > *:nth-child(10) { animation-delay: 0.5s; }
-.card-grid > *:nth-child(n+11) { animation-delay: 0.55s; }
-
-/* Button hover animations */
-.btn-primary, .btn-secondary {
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-primary:hover, .btn-secondary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.btn-primary:active, .btn-secondary:active {
-  transform: translateY(0);
 }
 
 /* Form animations */
