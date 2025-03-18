@@ -146,55 +146,26 @@ function StudentResultDetails() {
 
   // Helper functions to generate detailed feedback
   function generateStrengths(score: number, examTitle: string) {
-    const baseStrengths = [
-      "Good understanding of core concepts",
-      "Clear and structured answers",
-      "Effective use of technical terminology"
-    ];
-
-    if (score >= 80) {
-      return [
-        ...baseStrengths,
-        "Excellent critical thinking skills",
-        "Comprehensive understanding of all course materials",
-        "Creative problem-solving approaches"
-      ].slice(0, 4);
-    } else if (score >= 60) {
-      return [
-        ...baseStrengths,
-        "Solid grasp of most key concepts",
-        "Good effort in answering complex questions"
-      ].slice(0, 3);
+    if (score >= 90) {
+      return `Exceptional performance in ${examTitle}! You demonstrated mastery of the subject matter.`;
+    } else if (score >= 80) {
+      return `Strong understanding of key concepts in ${examTitle} with good problem-solving skills.`;
+    } else if (score >= 70) {
+      return `Solid grasp of fundamental concepts in ${examTitle} with room for growth.`;
     } else {
-      return [
-        "Some understanding of basic concepts",
-        "Attempt to answer all questions",
-        "Potential shown in certain areas"
-      ].slice(0, 2);
+      return `Basic understanding demonstrated in some areas of ${examTitle}.`;
     }
   }
 
   function generateAreasForImprovement(score: number, examTitle: string) {
-    const baseAreas = [
-      "More detailed explanations needed in essay questions",
-      "Review core concepts from chapters 3-5",
-      "Practice more complex problem-solving scenarios"
-    ];
-
-    if (score >= 80) {
-      return [
-        "Consider more detailed examples in explanations",
-        "Minor improvements in technical precision"
-      ];
-    } else if (score >= 60) {
-      return baseAreas.slice(0, 2);
+    if (score >= 90) {
+      return `For ${examTitle}, consider exploring advanced topics to further challenge yourself.`;
+    } else if (score >= 80) {
+      return `In ${examTitle}, focus on fine-tuning your understanding of complex concepts.`;
+    } else if (score >= 70) {
+      return `For ${examTitle}, review challenging topics and practice more complex problems.`;
     } else {
-      return [
-        ...baseAreas,
-        "Focus on understanding fundamental principles",
-        "Develop more structured approach to essays",
-        "Additional practice with multiple-choice questions"
-      ];
+      return `In ${examTitle}, focus on strengthening core concepts through additional practice.`;
     }
   }
 
@@ -209,31 +180,14 @@ function StudentResultDetails() {
   }
 
   function generateNextSteps(score: number, examTitle: string) {
-    const baseSteps = [
-      "Review feedback on individual questions",
-      "Attend office hours to discuss challenging concepts",
-      "Complete recommended practice exercises"
-    ];
-
-    if (score >= 80) {
-      return [
-        ...baseSteps,
-        "Consider exploring advanced topics in this area",
-        "Prepare for upcoming assessments building on these concepts"
-      ];
-    } else if (score >= 60) {
-      return [
-        ...baseSteps,
-        "Focus on areas noted for improvement before the next exam",
-        "Consider forming a study group for the next module"
-      ];
+    if (score >= 90) {
+      return `After your success in ${examTitle}, consider taking on more challenging coursework.`;
+    } else if (score >= 80) {
+      return `Review missed questions from ${examTitle} and strengthen weak areas.`;
+    } else if (score >= 70) {
+      return `Create a structured study plan focusing on challenging topics from ${examTitle}.`;
     } else {
-      return [
-        ...baseSteps,
-        "Schedule a one-on-one session to review fundamentals",
-        "Complete all remedial exercises provided in the course materials",
-        "Consider additional tutoring resources available"
-      ];
+      return `Schedule time with your instructor to review fundamental concepts from ${examTitle}.`;
     }
   }
 
