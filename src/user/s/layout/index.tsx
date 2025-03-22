@@ -7,37 +7,36 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
   title: string;
   showAddHeadbarButton?: boolean;
-  addButtonClick?: () => void;
   buttonTitle?: string;
-  buttonIcon?: JSX.Element;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({
-  children,
+function DashboardLayout({ 
+  children, 
   title,
   showAddHeadbarButton = false,
-  addButtonClick,
-  buttonTitle = "Add New",
-}: DashboardLayoutProps) => {
+  buttonTitle = ""
+}: DashboardLayoutProps) {
   return (
     <div className="lg:flex lg:flex-row">
       <Sidebar />
       <div className="flex-1 h-screen bg-slate-100 flex flex-col">
-        <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-8 sticky top-0 z-20">
-          <div className="flex items-center">
-            <h1 className="text-xl font-bold text-slate-800">{title}</h1>
+        <div className="bg-white border-b border-slate-200 px-6 py-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-semibold text-slate-800">{title}</h1>
+            {showAddHeadbarButton && (
+              <button className="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md transition-colors">
+                {buttonTitle}
+              </button>
+            )}
           </div>
-          {showAddHeadbarButton && (
-            <ButtonProps onClick={addButtonClick}>{buttonTitle}</ButtonProps>
-          )}
-        </header>
-        <div className="flex-1 p-6 overflow-auto">
-          <Breadcrumb />
-          {children}
         </div>
+        <Breadcrumb />
+        <main className="flex-1 p-6 overflow-auto pb-12 lg:pb-0">
+          {children}
+        </main>
       </div>
     </div>
   );
-};
+}
 
 export default DashboardLayout;

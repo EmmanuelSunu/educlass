@@ -1,304 +1,173 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DashboardLayout from "../layout";
-import { BsCalendarEvent, BsClockHistory, BsGraphUp, BsPeople } from "react-icons/bs";
-import examsData from "../exams/data/exams.json";
-import { useTransition, animated } from 'react-spring';
+import { exams } from "../../../data";
+import { FiUsers, FiClipboard, FiCalendar, FiClock } from "react-icons/fi";
+import { getExamStatus } from "../../../utils/examStatus";
 
-// Define the type for the exam object to avoid TypeScript errors
-interface Exam {
-  id: number;
-  title: string;
-  type: string;
-  duration: string;
-  durationHours: number;
-  durationMinutes: number;
-  startTime: string;
-  endTime: string;
-  status: string;
-  dueDate: string;
-  description: string;
-  classId: number;
-  className: string;
-  questions: Array<{
-    id: string;
-    type: string;
-    questionText: string; // Use `questionText` instead of `text`
-    options?: string[]; // `options` is optional
-    questionAnswer: string;
-  }>;
-}
-
-function Dashboard() {
-  const navigate = useNavigate();
-  const [upcomingExams, setUpcomingExams] = useState<Exam[]>([]);
-  const [ongoingExams, setOngoingExams] = useState<Exam[]>([]);
+const Dashboard = () => {
   const [stats, setStats] = useState({
     totalExams: 0,
-    totalClasses: 0,
-    totalStudents: 0,
-    completedExams: 0
+    activeExams: 0,
+    upcomingExams: 0,
+    completedExams: 0,
   });
 
   useEffect(() => {
-    // Process exams data from the imported JSON
-    const today = new Date();
+    // Calculate exam statistics
+    const examStats = exams.reduce(
+      (acc, exam) => {
+        acc.totalExams++;
+        const status = getExamStatus(exam, exam.id === 1);
+        if (status === "available") acc.activeExams++;
+        else if (status === "scheduled") acc.upcomingExams++;
+        else acc.completedExams++;
+        return acc;
+      },
+      {
+        totalExams: 0,
+        activeExams: 0,
+        upcomingExams: 0,
+        completedExams: 0,
+      }
+    );
 
-    // Type assertion to avoid TypeScript errors
-    const typedExamsData = examsData as Exam[];
-
-    // Process upcoming exams: those with due dates in the future and status "scheduled"
-    const upcoming = typedExamsData
-      .filter(exam => {
-        const examDate = new Date(exam.dueDate);
-        return examDate > today && exam.status === "scheduled";
-      })
-      .slice(0, 3);
-
-    // Process ongoing exams: those with status "in-progress" or due today
-    const ongoing = typedExamsData
-      .filter(exam => {
-        const examDate = new Date(exam.dueDate);
-        return (
-          exam.status === "in-progress" || 
-          (examDate.toDateString() === today.toDateString())
-        );
-      })
-      .slice(0, 2);
-
-    setUpcomingExams(upcoming);
-    setOngoingExams(ongoing);
-
-    // Calculate statistics
-    const uniqueClasses = [...new Set(typedExamsData.map(exam => exam.classId))];
-    const completedExams = typedExamsData.filter(exam => exam.status === "completed").length;
-
-    setStats({
-      totalExams: typedExamsData.length,
-      totalClasses: uniqueClasses.length,
-      totalStudents: 150, // This would ideally come from an API
-      completedExams: completedExams
-    });
+    setStats(examStats);
   }, []);
 
-  const handleAddHeadbarButton = () => {
-    navigate('/user/l/exams/create');
-  };
-
-  const handleViewExam = (examId: number) => {
-    navigate(`/user/l/exams/details/${examId}`);
-  };
-
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
-    };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-  };
-
-  const transitions = useTransition(stats, {
-    from: { opacity: 0, transform: 'translate3d(10px,0,0)' },
-    enter: { opacity: 1, transform: 'translate3d(0,0,0)' },
-    leave: { opacity: 0, transform: 'translate3d(-10px,0,0)' },
-    config: { duration: 300 }
-  });
-
-  const examTransitions = useTransition(upcomingExams, {
-    from: { opacity: 0, transform: 'translateY(20px)' },
-    enter: { opacity: 1, transform: 'translateY(0)' },
-    leave: { opacity: 0, transform: 'translateY(20px)' },
-    config: { duration: 300 }
-  });
-
-
-  const ongoingExamTransitions = useTransition(ongoingExams, {
-    from: { opacity: 0, transform: 'translateY(20px)' },
-    enter: { opacity: 1, transform: 'translateY(0)' },
-    leave: { opacity: 0, transform: 'translateY(20px)' },
-    config: { duration: 300 }
-  });
+  const statCards = [
+    {
+      title: "Total Exams",
+      value: stats.totalExams,
+      icon: <FiClipboard className="w-6 h-6" />,
+      color: "bg-blue-500",
+    },
+    {
+      title: "Active Exams",
+      value: stats.activeExams,
+      icon: <FiClock className="w-6 h-6" />,
+      color: "bg-green-500",
+    },
+    {
+      title: "Upcoming Exams",
+      value: stats.upcomingExams,
+      icon: <FiCalendar className="w-6 h-6" />,
+      color: "bg-purple-500",
+    },
+    {
+      title: "Completed Exams",
+      value: stats.completedExams,
+      icon: <FiUsers className="w-6 h-6" />,
+      color: "bg-orange-500",
+    },
+  ];
 
   return (
-    <DashboardLayout
-      title="Dashboard"
-      showAddHeadbarButton={true}
-      onAddHeadbarButton={handleAddHeadbarButton}
-      buttonTitle="Add Exams"
+    <DashboardLayout 
+      title="Dashboard" 
+      showAddHeadbarButton={false}
+      buttonTitle=""
     >
-      {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {transitions((style, item) => (
-          <animated.div style={style} className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {statCards.map((stat, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-lg shadow-sm border border-slate-200 p-6"
+          >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-500 text-sm font-medium">Total Exams</p>
-                <h3 className="text-2xl font-bold text-slate-800 mt-1">{item.totalExams}</h3>
+                <p className="text-sm font-medium text-slate-600">{stat.title}</p>
+                <h3 className="text-2xl font-bold text-slate-800 mt-1">
+                  {stat.value}
+                </h3>
               </div>
-              <div className="bg-blue-100 p-3 rounded-full">
-                <BsGraphUp className="text-primary text-xl" />
+              <div
+                className={`${stat.color} text-white p-3 rounded-lg bg-opacity-10`}
+              >
+                {stat.icon}
               </div>
             </div>
-          </animated.div>
+          </div>
         ))}
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-slate-500 text-sm font-medium">Total Classes</p>
-              <h3 className="text-2xl font-bold text-slate-800 mt-1">{stats.totalClasses}</h3>
-            </div>
-            <div className="bg-amber-100 p-3 rounded-full">
-              <BsCalendarEvent className="text-amber-600 text-xl" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-slate-500 text-sm font-medium">Total Students</p>
-              <h3 className="text-2xl font-bold text-slate-800 mt-1">{stats.totalStudents}</h3>
-            </div>
-            <div className="bg-emerald-100 p-3 rounded-full">
-              <BsPeople className="text-emerald-600 text-xl" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-slate-500 text-sm font-medium">Completed Exams</p>
-              <h3 className="text-2xl font-bold text-slate-800 mt-1">{stats.completedExams}</h3>
-            </div>
-            <div className="bg-purple-100 p-3 rounded-full">
-              <BsClockHistory className="text-purple-600 text-xl" />
-            </div>
-          </div>
-        </div>
       </div>
 
-      {/* Main Dashboard Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Upcoming Exams */}
-        <div className="lg:col-span-2">
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">Upcoming Exams</h2>
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
-            {examTransitions((style, exam) => (
-              <animated.div style={style} key={exam.id} className="flex justify-between items-center border-b border-slate-100 pb-4 last:border-0 last:pb-0">
-                <div>
-                  <h3 className="font-medium text-slate-800">{exam.title}</h3>
-                  <p className="text-sm text-slate-500 mt-1">
-                    Due: {formatDate(exam.dueDate)} • {exam.className}
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleViewExam(exam.id)}
-                  className="px-3 py-1 bg-primary/10 text-primary rounded-md text-sm font-medium hover:bg-primary/20"
-                >
-                  View
-                </button>
-              </animated.div>
-            ))}
-            {upcomingExams.length ===0 && <p className="text-slate-500">No upcoming exams.</p>}
-          </div>
-
-          {/* Recent Activity Section */}
-          <h2 className="text-lg font-semibold text-slate-800 mb-4 mt-6">Recent Activities</h2>
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
-            <div className="space-y-4">
-              <div className="flex items-start">
-                <div className="bg-blue-100 p-2 rounded-full mr-3">
-                  <BsCalendarEvent className="text-primary" />
-                </div>
-                <div>
-                  <p className="text-slate-800">You created "Calculus Final Exam"</p>
-                  <p className="text-xs text-slate-500">Today, 10:30 AM</p>
-                </div>
-              </div>
-
-              <div className="flex items-start">
-                <div className="bg-emerald-100 p-2 rounded-full mr-3">
-                  <BsPeople className="text-emerald-600" />
-                </div>
-                <div>
-                  <p className="text-slate-800">5 new students joined "Web Technologies"</p>
-                  <p className="text-xs text-slate-500">Yesterday, 2:15 PM</p>
-                </div>
-              </div>
-
-              <div className="flex items-start">
-                <div className="bg-amber-100 p-2 rounded-full mr-3">
-                  <BsGraphUp className="text-amber-600" />
-                </div>
-                <div>
-                  <p className="text-slate-800">Graded 15 submissions for "Database Management"</p>
-                  <p className="text-xs text-slate-500">2 days ago</p>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* Recent Exams */}
+      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-semibold text-slate-800">Recent Exams</h2>
+          <Link
+            to="/user/l/exams"
+            className="text-sm text-primary hover:text-primary/90"
+          >
+            View All
+          </Link>
         </div>
 
-        {/* Right Column - Ongoing Exams & Quick Stats */}
-        <div>
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">Ongoing Exams</h2>
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5 mb-6">
-            {ongoingExamTransitions((style, exam) => (
-              <animated.div style={style} key={exam.id} className="border-l-4 border-amber-500 pl-3 py-2">
-                <h3 className="font-medium text-slate-800">{exam.title}</h3>
-                <div className="flex justify-between items-center mt-1">
-                  <p className="text-xs text-slate-500">
-                    {exam.type} • {exam.duration}
-                  </p>
-                  <button
-                    onClick={() => handleViewExam(exam.id)}
-                    className="px-2 py-1 bg-amber-100 text-amber-600 rounded text-xs font-medium hover:bg-amber-200"
-                  >
-                    Monitor
-                  </button>
-                </div>
-              </animated.div>
-            ))}
-            {ongoingExams.length === 0 && <p className="text-slate-500">No ongoing exams.</p>}
-          </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-slate-200">
+                <th className="text-left py-3 px-4 text-sm font-medium text-slate-600">
+                  Title
+                </th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-slate-600">
+                  Class
+                </th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-slate-600">
+                  Due Date
+                </th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-slate-600">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {exams.slice(0, 5).map((exam) => {
+                const status = getExamStatus(exam, exam.id === 1);
+                const statusColors = {
+                  available: "bg-green-100 text-green-700",
+                  scheduled: "bg-purple-100 text-purple-700",
+                  past: "bg-slate-100 text-slate-700",
+                };
+                const statusLabels = {
+                  available: "Active",
+                  scheduled: "Upcoming",
+                  past: "Completed",
+                };
 
-          {/* Upcoming Schedule */}
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">Today's Schedule</h2>
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-5">
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <div className="w-2 h-2 rounded-full bg-primary mr-2"></div>
-                <span className="text-xs font-medium text-slate-500 mr-2">10:00 AM</span>
-                <span className="text-sm text-slate-700">Operating Systems Class</span>
-              </div>
-
-              <div className="flex items-center">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 mr-2"></div>
-                <span className="text-xs font-medium text-slate-500 mr-2">01:00 PM</span>
-                <span className="text-sm text-slate-700">Faculty Meeting</span>
-              </div>
-
-              <div className="flex items-center">
-                <div className="w-2 h-2 rounded-full bg-amber-500 mr-2"></div>
-                <span className="text-xs font-medium text-slate-500 mr-2">03:30 PM</span>
-                <span className="text-sm text-slate-700">Database Lab Session</span>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => navigate('/user/l/schedules')}
-              className="w-full mt-4 text-center text-primary text-sm font-medium hover:underline"
-            >
-              View Full Schedule
-            </button>
-          </div>
+                return (
+                  <tr key={exam.id} className="border-b border-slate-100">
+                    <td className="py-3 px-4">
+                      <Link
+                        to={`/user/l/exams/details/${exam.id}`}
+                        className="text-slate-800 hover:text-primary"
+                      >
+                        {exam.title}
+                      </Link>
+                    </td>
+                    <td className="py-3 px-4 text-slate-600">
+                      {exam.className}
+                    </td>
+                    <td className="py-3 px-4 text-slate-600">
+                      {new Date(exam.dueDate).toLocaleDateString()}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span
+                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${statusColors[status]}`}
+                      >
+                        {statusLabels[status]}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </DashboardLayout>
   );
-}
+};
 
 export default Dashboard;

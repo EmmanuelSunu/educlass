@@ -1,0 +1,8 @@
+{
+  "id": "s1",
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "program": "Computer Science",
+  "year": "400",
+  "classIds": [1, 2]
+} 

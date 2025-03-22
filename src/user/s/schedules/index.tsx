@@ -5,50 +5,50 @@ import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";
 import { RiCalendarLine, RiListCheck2 } from "react-icons/ri";
 import { Schedule } from "../../l/schedules/types";
+import { exams, classes, classDetails, studentClassIds } from "../../../data";
+import ScheduleEventModal from "../../../components/ScheduleEventModal";
 
-// Use some of the schedules from lecturer app for demonstration
-const schedules: Schedule[] = [
-  {
-    id: "1",
-    title: "Operating Systems Class",
-    type: "class",
-    date: "2024-12-24",
-    startTime: "09:00",
-    endTime: "10:30",
-    location: "Room 101",
-    isRecurring: true,
-    recurrence: {
-      frequency: "weekly",
-      endDate: "2025-03-24",
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "Database Final Exam",
-    type: "examination",
-    date: "2024-12-26",
-    startTime: "14:00",
-    endTime: "16:00",
-    location: "Main Hall",
+// Convert exams to schedule format
+const examSchedules: Schedule[] = exams
+  .filter(exam => exam.classId && studentClassIds.includes(exam.classId))
+  .map(exam => ({
+    id: exam.id.toString(),
+    title: exam.title,
+    type: exam.type === "exam" ? "examination" : exam.type,
+    date: exam.dueDate,
+    startTime: exam.startTime,
+    endTime: exam.endTime,
+    location: `${exam.className} Exam Hall`,
     isRecurring: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    title: "Physics Test",
-    type: "test",
-    date: "2024-12-28",
-    startTime: "11:00",
-    endTime: "12:30",
-    location: "Room 205",
-    isRecurring: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
+  }));
+
+// Convert classes to schedule format (weekly recurring)
+const classSchedules: Schedule[] = classes
+  .filter(cls => studentClassIds.includes(parseInt(cls.id)))
+  .map(cls => {
+    const details = classDetails[parseInt(cls.id)];
+    return {
+      id: `class-${cls.id}`,
+      title: details?.name || `Class ${cls.id}`,
+      type: "class",
+      date: "2024-03-25", // Starting date for the semester
+      startTime: "09:00", // Default time, should be fetched from actual data
+      endTime: "10:30",
+      location: `Room ${cls.id}`,
+      isRecurring: true,
+      recurrence: {
+        frequency: "weekly",
+        endDate: "2024-07-25", // End of semester date
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  });
+
+// Combine all schedules
+const allSchedules = [...examSchedules, ...classSchedules];
 
 const StudentSchedulePage: React.FC = () => {
   const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
@@ -100,7 +100,7 @@ const StudentSchedulePage: React.FC = () => {
         {viewMode === "calendar" ? (
           <div className="p-2 md:p-4">
             <ScheduleCalendar
-              schedules={schedules}
+              schedules={allSchedules}
               onEventClick={handleEventClick}
               onDateSelect={() => {}}
             />
@@ -108,7 +108,7 @@ const StudentSchedulePage: React.FC = () => {
         ) : (
           <div className="p-2 md:p-4 overflow-x-auto">
             <ScheduleTable
-              schedules={schedules}
+              schedules={allSchedules}
               onEdit={() => {}}
               onDelete={() => {}}
               viewOnly={true}
@@ -117,82 +117,12 @@ const StudentSchedulePage: React.FC = () => {
         )}
       </div>
 
-      {/* Event Details Popup */}
-      {selectedEvent && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Event Details
-              </h3>
-              <button
-                onClick={closeEventDetails}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div>
-              <div className="mb-3">
-                <span className="font-medium text-gray-600">Title:</span>
-                <div className="text-gray-800">{selectedEvent.title}</div>
-              </div>
-              <div className="mb-3">
-                <span className="font-medium text-gray-600">Date:</span>
-                <div className="text-gray-800">
-                  {new Date(selectedEvent.date).toLocaleDateString()}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3 mb-3">
-                <div>
-                  <span className="font-medium text-gray-600">Start Time:</span>
-                  <div className="text-gray-800">{selectedEvent.startTime}</div>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">End Time:</span>
-                  <div className="text-gray-800">{selectedEvent.endTime}</div>
-                </div>
-              </div>
-              <div className="mb-3">
-                <span className="font-medium text-gray-600">Location:</span>
-                <div className="text-gray-800">{selectedEvent.location}</div>
-              </div>
-              <div className="mb-3">
-                <span className="font-medium text-gray-600">Type:</span>
-                <div className="text-gray-800 capitalize">
-                  {selectedEvent.type}
-                </div>
-              </div>
-              {selectedEvent.isRecurring && selectedEvent.recurrence && (
-                <div className="mb-3">
-                  <span className="font-medium text-gray-600">Recurrence:</span>
-                  <div className="text-gray-800">
-                    {selectedEvent.recurrence.frequency
-                      .charAt(0)
-                      .toUpperCase() +
-                      selectedEvent.recurrence.frequency.slice(1)}{" "}
-                    until{" "}
-                    {new Date(
-                      selectedEvent.recurrence.endDate,
-                    ).toLocaleDateString()}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Event Details Modal */}
+      <ScheduleEventModal
+        schedule={selectedEvent!}
+        isOpen={selectedEvent !== null}
+        onClose={closeEventDetails}
+      />
     </DashboardLayout>
   );
 };

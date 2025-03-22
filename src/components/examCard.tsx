@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { MdOutlineAccessTime } from "react-icons/md";
+import { FiCalendar, FiClock, FiHelpCircle } from "react-icons/fi";
 
 interface ExamCardProps {
   id: number;
@@ -9,9 +9,9 @@ interface ExamCardProps {
   duration: string;
   startTime: string;
   endTime: string;
-  status: "scheduled" | "in-progress" | "completed";
   dueDate: string;
   className?: string;
+  questionsCount?: number;
 }
 
 const ExamCard: React.FC<ExamCardProps> = ({
@@ -20,64 +20,66 @@ const ExamCard: React.FC<ExamCardProps> = ({
   duration,
   startTime,
   endTime,
-  // Remove 'status' from here since it's never used,
   dueDate,
   className,
+  questionsCount = 0,
 }) => {
   const navigate = useNavigate();
 
   const statusColors = {
-    scheduled: "bg-purple-100 text-purple-600 border-purple-200",
-    "in-progress": "bg-amber-100 text-amber-600 border-amber-200",
-    completed: "bg-emerald-100 text-emerald-600 border-emerald-200",
-    available: "bg-blue-100 text-blue-600 border-blue-200",
-    upcoming: "bg-purple-100 text-purple-600 border-purple-200",
-    unavailable: "bg-gray-100 text-gray-600 border-gray-200"
+    available: "bg-emerald-50 text-emerald-600 border-emerald-100",
+    scheduled: "bg-blue-50 text-blue-600 border-blue-100",
+    past: "bg-slate-50 text-slate-600 border-slate-100"
   };
 
-  // Determine actual status based on date
+  // Determine exam status based on start time and end time
   const determineStatus = () => {
     const now = new Date();
-    const examDate = new Date(dueDate);
+    const startDateTime = new Date(`${dueDate}T${startTime}`);
+    const endDateTime = new Date(`${dueDate}T${endTime}`);
 
-    // Check if dates are same (only comparing year, month, day)
-    const isSameDay = (d1: Date, d2: Date) =>
-      d1.getFullYear() === d2.getFullYear() &&
-      d1.getMonth() === d2.getMonth() &&
-      d1.getDate() === d2.getDate();
+    // If current time is after end time, exam is past
+    if (now > endDateTime) {
+      return "past";
+    }
 
-    if (examDate < now) {
-      return "unavailable";
-    } else if (isSameDay(examDate, now)) {
-      // Check if current time is within exam hours
-      const [startHour, startMinute] = startTime.split(':').map(Number);
-      const [endHour, endMinute] = endTime.split(':').map(Number);
+    // If current time is before start time, exam is scheduled
+    if (now < startDateTime) {
+      return "scheduled";
+    }
 
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
+    // If current time is between start and end time, exam is available
+    return "available";
+  };
 
-      const currentTimeValue = currentHour * 60 + currentMinute;
-      const startTimeValue = startHour * 60 + startMinute;
-      const endTimeValue = endHour * 60 + endMinute;
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
 
-      if (currentTimeValue >= startTimeValue && currentTimeValue <= endTimeValue) {
-        return "available";
-      } else if (currentTimeValue < startTimeValue) {
-        return "upcoming"; // Same day but not started yet
-      } else {
-        return "unavailable"; // Same day but already ended
-      }
+  const formatDuration = (duration: string) => {
+    // Extract hours and minutes from duration string
+    const hours = duration.toLowerCase().includes('hour') ? 
+      parseInt(duration.match(/(\d+)\s*hours?/)?.[1] || '0') : 0;
+    const minutes = duration.toLowerCase().includes('minute') ? 
+      parseInt(duration.match(/(\d+)\s*minutes?/)?.[1] || '0') : 0;
+
+    if (hours > 0 && minutes > 0) {
+      return `${hours}H ${minutes}M`;
+    } else if (hours > 0) {
+      return `${hours}H`;
     } else {
-      return "upcoming"; // Future date
+      return `${minutes}M`;
     }
   };
 
   const currentStatus = determineStatus();
-  const statusDisplay = currentStatus;
-
 
   const handleCardClick = () => {
-    // Determine the correct path based on which module we're in (lecturer or student)
     const isLecturerPath = window.location.pathname.includes('/user/l/');
     const basePath = isLecturerPath ? '/user/l/exams/details/' : '/user/s/exams/details/';
     navigate(`${basePath}${id}`);
@@ -86,48 +88,42 @@ const ExamCard: React.FC<ExamCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className="bg-white rounded-lg shadow-sm border border-slate-200 p-5 hover:shadow-md transition-all duration-200 cursor-pointer relative card-animate"
+      className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-all duration-200 cursor-pointer"
     >
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex-1 min-w-0 mr-3">
+          <h3 className="text-lg font-semibold text-slate-800 mb-1 truncate">{title}</h3>
+          {className && (
+            <p className="text-sm text-slate-600 truncate">{className}</p>
+          )}
         </div>
         <span
-          className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[currentStatus]}`}
+          className={`px-3 py-1 rounded-full text-xs font-medium border whitespace-nowrap ${statusColors[currentStatus]}`}
         >
-          {statusDisplay}
+          {currentStatus === "available" ? "Available Now" :
+           currentStatus === "scheduled" ? "Scheduled" :
+           "Past"}
         </span>
       </div>
 
-      {className && (
-        <div className="mb-3">
-          <span className="text-sm text-slate-500 font-medium">Class:</span>
-          <span className="ml-2 text-sm text-slate-700">{className}</span>
-        </div>
-      )}
-
-      <div className="grid grid-cols-2 gap-3 mb-3">
-        <div className="flex flex-col">
-          <span className="text-xs text-slate-500 font-medium">Date</span>
-          <span className="text-sm text-slate-700">{dueDate}</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-xs text-slate-500 font-medium">Duration</span>
-          <div className="flex items-center gap-1">
-            <MdOutlineAccessTime className="text-slate-400" />
-            <span className="text-sm text-slate-700">{duration}</span>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+            <FiCalendar className="text-blue-500 w-4 h-4" />
           </div>
+          <p className="text-sm text-slate-700 whitespace-nowrap">{formatDate(dueDate)}</p>
         </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div className="flex flex-col">
-          <span className="text-xs text-slate-500 font-medium">Start</span>
-          <span className="text-sm text-slate-700">{startTime}</span>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
+            <FiClock className="text-purple-500 w-4 h-4" />
+          </div>
+          <p className="text-sm text-slate-700 truncate">{formatDuration(duration)}</p>
         </div>
-        <div className="flex flex-col">
-          <span className="text-xs text-slate-500 font-medium">End</span>
-          <span className="text-sm text-slate-700">{endTime}</span>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">
+            <FiHelpCircle className="text-emerald-500 w-4 h-4" />
+          </div>
+          <p className="text-sm text-slate-700 truncate">{questionsCount} Q's</p>
         </div>
       </div>
     </div>

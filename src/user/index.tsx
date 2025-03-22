@@ -1,14 +1,12 @@
-// pages/Dashboard.tsx
-import DashboardLayout from "./layout";
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-function Dashboard() {
+const User: React.FC = () => {
   return (
-    <DashboardLayout>
-      {/* Your page content goes here */}
-      <h1>Welcome to Test</h1>
-      <p>This is your dashboard content</p>
-    </DashboardLayout>
+    <div className="min-h-screen bg-gray-50">
+      <Outlet />
+    </div>
   );
-}
+};
 
-export default Dashboard;
+export default User; 

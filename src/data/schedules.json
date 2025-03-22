@@ -1,0 +1,34 @@
+{
+  "schedules": [
+    {
+      "id": 1,
+      "type": "class",
+      "title": "Introduction to Programming",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "date": "2024-03-25",
+      "location": "Room 101",
+      "classId": 1
+    },
+    {
+      "id": 2,
+      "type": "examination",
+      "title": "Midterm Examination",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "date": "2024-03-26",
+      "location": "Exam Hall A",
+      "classId": 1
+    },
+    {
+      "id": 3,
+      "type": "test",
+      "title": "Quiz 1",
+      "startTime": "10:00",
+      "endTime": "11:00",
+      "date": "2024-03-27",
+      "location": "Room 102",
+      "classId": 2
+    }
+  ]
+} 

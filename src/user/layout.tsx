@@ -1,23 +1,32 @@
-import React from "react";
-import SideBar from "./l/Sidebar";
+import React from 'react';
 import Breadcrumb from "../components/Breadcrumb";
 
-interface DashboardLayoutProps {
+interface LayoutProps {
   children: React.ReactNode;
+  title: string;
+  showAddHeadbarButton?: boolean;
+  buttonTitle?: string;
+  onAddHeadbarButton?: () => void;
 }
 
-function DashboardLayout({ children }: DashboardLayoutProps) {
+const Layout: React.FC<LayoutProps> = ({
+  children,
+  title,
+  showAddHeadbarButton = false,
+  buttonTitle = "",
+  onAddHeadbarButton,
+}) => {
   return (
-    <div className="lg:flex lg:flex-row">
-      <SideBar />
-      <div className="flex-1 h-screen bg-slate-100 flex flex-col">
-        <Breadcrumb />
-        <div className="flex-1 p-6 overflow-auto">
-          {children}
-        </div>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <Breadcrumb
+        title={title}
+        showAddButton={showAddHeadbarButton}
+        buttonTitle={buttonTitle}
+        onAddButton={onAddHeadbarButton}
+      />
+      <main className="p-6">{children}</main>
     </div>
   );
-}
+};
 
-export default DashboardLayout;
+export default Layout; 

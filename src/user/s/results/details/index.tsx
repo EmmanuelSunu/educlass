@@ -8,7 +8,7 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 import DashboardLayout from "../../layout";
-import { examsData } from "../../data/exams";
+import { exams, Exam } from "../../../../data";
 
 type Question = {
   question: string;
@@ -60,7 +60,7 @@ function StudentResultDetails() {
 
   useEffect(() => {
     // Find the exam by ID
-    const exam = examsData.find((e) => e.id === Number(examId));
+    const exam = exams.find((e) => e.id === Number(examId));
     if (!exam) {
       navigate("/user/s/results");
       return;

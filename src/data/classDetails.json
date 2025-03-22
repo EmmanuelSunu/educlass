@@ -1,0 +1,16 @@
+{
+  "1": {
+    "duration": "3 months",
+    "level": "400",
+    "semester": "Second",
+    "lecturer": "Dr. James Wilson",
+    "description": "Advanced Software Engineering concepts and practices"
+  },
+  "2": {
+    "duration": "3 months",
+    "level": "300",
+    "semester": "First",
+    "lecturer": "Prof. Sarah Brown",
+    "description": "Introduction to Database Management Systems"
+  }
+} 

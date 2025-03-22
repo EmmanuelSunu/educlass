@@ -1,5 +1,4 @@
-
-import examsJson from "../../l/exams/data/exams.json";
+import { exams } from "../../../data";
 
 // Export the exams data directly from the JSON file
-export const examsData = examsJson;
+export default exams;

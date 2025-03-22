@@ -1,4 +1,3 @@
-
 /* Custom Calendar Styles */
 .fc-theme-standard .fc-scrollgrid {
   border-color: #e5e7eb;
@@ -62,6 +61,7 @@
 .fc-timegrid-axis {
   height: 44px !important;
 }
+
 /* Mobile-friendly calendar styles */
 @media (max-width: 768px) {
   .fc .fc-toolbar {
@@ -103,4 +103,4 @@
 .fc-event {
   touch-action: manipulation;
   cursor: pointer !important; 
-}
+} 

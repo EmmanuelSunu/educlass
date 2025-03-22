@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../layout";
 import ClassCard from "../../../components/classCard";
-import classData from "./data/class.json";
+import { classes, Class } from "../../../data";
 
 interface Class {
   id: string;

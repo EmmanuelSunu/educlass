@@ -1,85 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import DashboardLayout from "../../layout";
-import examsData from "../../../l/exams/data/exams.json";
-import { Exam } from "../../../l/exams/types";
-
-// Helper function to check if two dates are the same day
-function isSameDate(date1: Date, date2: Date): boolean {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
-}
+import DashboardLayout from "../../layout/index";
+import { exams, type Exam } from "../../../../data";
+import { FiCalendar, FiClock, FiHelpCircle, FiBookOpen, FiInfo } from "react-icons/fi";
+import { getExamStatus, getStatusInfo, type ExamStatus } from "../../../../utils/examStatus";
 
 function ExamDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [examDetails, setExamDetails] = useState<Exam | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isAvailable, setIsAvailable] = useState(false);
-  const [hasTakenExam, setHasTakenExam] = useState(false);
-  const [isPastExam, setIsPastExam] = useState(false);
-  const [isFutureExam, setIsFutureExam] = useState(false);
+  const [examStatus, setExamStatus] = useState<ExamStatus>("past");
 
   useEffect(() => {
-    // Type assertion for the imported JSON data
-    const typedExamsData = examsData as Exam[];
-
-    console.log("Looking for exam with ID:", id);
-    const exam = typedExamsData.find((exam) => exam.id === Number(id));
-    console.log("Found exam:", exam);
+    const exam = exams.find((exam) => exam.id === Number(id));
 
     if (exam) {
       setExamDetails(exam);
-      setLoading(false);
-
-      // Check exam date against current date
-      const now = new Date();
-      const examDate = new Date(exam.dueDate);
-
-      console.log("Exam date check:", {
-        examDate: exam.dueDate,
-        currentDate: now.toISOString().split("T")[0],
-      });
-
-      // Check if exam is in the past, present, or future
-      if (examDate < now && !isSameDate(examDate, now)) {
-        console.log("Exam is in the past");
-        setIsPastExam(true);
-        // For demo purposes, randomly decide if student participated
-        // Use a stable way to determine participation based on exam ID to avoid confusion
-        setHasTakenExam(exam.id % 2 === 0); // Even IDs have taken the exam
-      } else if (examDate > now && !isSameDate(examDate, now)) {
-        console.log("Exam is in the future");
-        setIsFutureExam(true);
-      } else {
-        console.log("Exam is today");
-        // If dates match, check if current time is within exam time window
-        const [startHour, startMinute] = exam.startTime.split(":").map(Number);
-        const [endHour, endMinute] = exam.endTime.split(":").map(Number);
-
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
-
-        const currentTimeValue = currentHour * 60 + currentMinute;
-        const startTimeValue = startHour * 60 + startMinute;
-        const endTimeValue = endHour * 60 + endMinute;
-
-        const isTimeAvailable =
-          currentTimeValue >= startTimeValue &&
-          currentTimeValue <= endTimeValue;
-
-        console.log("Time availability check:", {
-          currentTime: `${currentHour}:${currentMinute}`,
-          startTime: exam.startTime,
-          endTime: exam.endTime,
-          isAvailable: isTimeAvailable,
-        });
-
-        setIsAvailable(isTimeAvailable);
-      }
+      const status = getExamStatus(exam, true);
+      setExamStatus(status);
       setLoading(false);
     } else {
       setLoading(false);
@@ -88,11 +27,7 @@ function ExamDetailsPage() {
 
   if (loading) {
     return (
-      <DashboardLayout
-        title="Loading Exam Details..."
-        showAddHeadbarButton={false}
-        buttonTitle=""
-      >
+      <DashboardLayout title="Loading Exam Details..." showAddHeadbarButton={false} buttonTitle="">
         <div className="flex justify-center items-center py-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
@@ -102,19 +37,15 @@ function ExamDetailsPage() {
 
   if (!examDetails) {
     return (
-      <DashboardLayout
-        title="Exam Not Found"
-        showAddHeadbarButton={false}
-        buttonTitle=""
-      >
-        <div className="bg-white rounded-lg shadow p-6">
+      <DashboardLayout title="Exam Not Found" showAddHeadbarButton={false} buttonTitle="">
+        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
           <p className="text-center text-slate-700">
             The exam you're looking for could not be found.
           </p>
           <div className="flex justify-center mt-4">
             <button
               onClick={() => navigate("/user/s/exams")}
-              className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded"
+              className="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
             >
               Back to Exams
             </button>
@@ -132,150 +63,133 @@ function ExamDetailsPage() {
     navigate(`/user/s/exams/results/${examDetails.id}`);
   };
 
+  const statusInfo = getStatusInfo(examStatus);
+
   return (
     <DashboardLayout
-      title={`Exam: ${examDetails.title}`}
+      title={examDetails.title}
       showAddHeadbarButton={false}
       buttonTitle=""
     >
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-800">
-              {examDetails.title}
-            </h2>
-            <p className="text-slate-600">{examDetails.className}</p>
-          </div>
-          <div className="mt-4 md:mt-0">
-            {isPastExam ? (
-              // Past exam - show results or "did not participate" message
-              hasTakenExam ? (
+      <div className="max-w-4xl mx-auto">
+        {/* Header Card */}
+        <div className="bg-white rounded-xl shadow-md border border-slate-200 p-6 mb-6">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-2xl font-bold text-slate-800">{examDetails.title}</h1>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
+                  {statusInfo.label}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-600">
+                <FiBookOpen className="text-slate-400" />
+                <span>{examDetails.className}</span>
+              </div>
+            </div>
+            <div>
+              {examStatus === "past" ? (
                 <button
                   onClick={handleViewResults}
-                  className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded"
+                  className="bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2"
                 >
                   View Results
                 </button>
-              ) : (
-                <div className="bg-amber-100 text-amber-800 px-4 py-2 rounded font-medium">
-                  Did not participate
-                </div>
-              )
-            ) : isFutureExam ? (
-              // Future exam - show when it will be available
-              <div className="bg-purple-100 text-purple-600 px-4 py-2 rounded font-medium">
-                Available on{" "}
-                {new Date(examDetails.dueDate).toLocaleDateString()}
-              </div>
-            ) : (
-              // Current day exam - enable or disable based on time window
-              <button
-                onClick={handleTakeExam}
-                disabled={!isAvailable}
-                className={`${
-                  isAvailable
-                    ? "bg-primary hover:bg-primary-dark text-white"
-                    : "bg-gray-300 cursor-not-allowed text-gray-600"
-                } font-medium py-2 px-4 rounded`}
-              >
-                {isAvailable ? "Take Exam" : "Not Available Yet"}
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-            <h3 className="font-semibold text-slate-800 mb-2">Exam Details</h3>
-            <ul className="space-y-2">
-              <li className="flex justify-between">
-                <span className="text-slate-600">Type:</span>
-                <span className="font-medium text-slate-800 capitalize">
-                  {examDetails.type}
-                </span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-slate-600">Duration:</span>
-                <span className="font-medium text-slate-800">
-                  {examDetails.duration}
-                </span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-slate-600">Date:</span>
-                <span className="font-medium text-slate-800">
-                  {new Date(examDetails.dueDate).toLocaleDateString()}
-                </span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-slate-600">Time Window:</span>
-                <span className="font-medium text-slate-800">
-                  {examDetails.startTime} - {examDetails.endTime}
-                </span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-slate-600">Questions:</span>
-                <span className="font-medium text-slate-800">
-                  {examDetails.questions ? examDetails.questions.length : 0}
-                </span>
-              </li>
-            </ul>
-          </div>
-          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-            <h3 className="font-semibold text-slate-800 mb-2">Status</h3>
-            <ul className="space-y-2">
-              <li className="flex justify-between">
-                <span className="text-slate-600">Status:</span>
-                <span
-                  className={`font-medium capitalize ${
-                    isPastExam
-                      ? "text-gray-600"
-                      : isFutureExam
-                        ? "text-purple-600"
-                        : isAvailable
-                          ? "text-blue-600"
-                          : "text-amber-600"
-                  }`}
+              ) : examStatus === "available" && (
+                <button
+                  onClick={handleTakeExam}
+                  className="bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2"
                 >
-                  {isPastExam
-                    ? "Unavailable"
-                    : isFutureExam
-                      ? "Upcoming"
-                      : isAvailable
-                        ? "Available"
-                        : "Available"}
-                </span>
-              </li>
-              {isPastExam && (
-                <li className="flex justify-between">
-                  <span className="text-slate-600">Participation:</span>
-                  <span
-                    className={`font-medium ${hasTakenExam ? "text-green-600" : "text-red-600"}`}
-                  >
-                    {hasTakenExam ? "Completed" : "Did Not Participate"}
-                  </span>
-                </li>
+                  Take Exam
+                </button>
               )}
-              {isFutureExam && (
-                <li className="flex justify-between">
-                  <span className="text-slate-600">Days until exam:</span>
-                  <span className="font-medium text-slate-800">
-                    {Math.ceil(
-                      (new Date(examDetails.dueDate).getTime() -
-                        new Date().getTime()) /
-                        (1000 * 60 * 60 * 24),
-                    )}
-                  </span>
-                </li>
-              )}
-            </ul>
+            </div>
+          </div>
+
+          {/* Info Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                <FiCalendar className="text-blue-500 text-lg" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">Due Date</p>
+                <p className="text-slate-800">{new Date(examDetails.dueDate).toLocaleDateString()}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                <FiClock className="text-purple-500 text-lg" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">Duration</p>
+                <p className="text-slate-800">{examDetails.duration}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                <FiHelpCircle className="text-emerald-500 text-lg" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">Questions</p>
+                <p className="text-slate-800">{examDetails.questions ? examDetails.questions.length : 0} Questions</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-slate-200 pt-4 mt-6">
-          <h3 className="font-semibold text-slate-800 mb-3">Description</h3>
-          <div className="text-slate-700 whitespace-pre-wrap">
-            {examDetails.description || "No description provided."}
+        {/* Description & Instructions Card */}
+        <div className="bg-white rounded-xl shadow-md border border-slate-200 p-6 mb-6">
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <FiBookOpen className="text-primary" />
+              Description
+            </h2>
+            <p className="text-slate-600 whitespace-pre-wrap">{examDetails.description}</p>
           </div>
+
+          {examStatus === "available" && (
+            <div className="border-t border-slate-200 pt-6">
+              <div className="flex items-center gap-2 mb-4">
+                <FiInfo className="text-primary text-lg" />
+                <h2 className="text-lg font-semibold text-slate-800">Exam Instructions</h2>
+              </div>
+              <div className="bg-blue-50/50 border border-blue-100 rounded-lg p-6">
+                <ul className="space-y-3 text-slate-700">
+                  <li className="flex items-start gap-3">
+                    <div className="min-w-[8px] h-[8px] mt-[6px] rounded-full bg-blue-500" />
+                    <span>This exam contains {examDetails.questions.length} questions worth a total of {examDetails.questions.reduce((sum, q) => sum + (q.points || 0), 0)} points.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="min-w-[8px] h-[8px] mt-[6px] rounded-full bg-blue-500" />
+                    <span>You have {examDetails.duration} to complete this exam.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="min-w-[8px] h-[8px] mt-[6px] rounded-full bg-blue-500" />
+                    <span>Once you start the exam, the timer cannot be paused.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="min-w-[8px] h-[8px] mt-[6px] rounded-full bg-blue-500" />
+                    <span>Your answers are automatically saved as you progress.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="min-w-[8px] h-[8px] mt-[6px] rounded-full bg-blue-500" />
+                    <span>You cannot return to change your answers once submitted.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="min-w-[8px] h-[8px] mt-[6px] rounded-full bg-blue-500" />
+                    <span>The exam will automatically submit when the time expires.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="min-w-[8px] h-[8px] mt-[6px] rounded-full bg-blue-500" />
+                    <span>Ensure you have a stable internet connection before starting.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>

@@ -1,4 +1,4 @@
-import { useState } from "react"; // Corrected import
+import { useState } from "react";
 import DashboardLayout from "../layout";
 import {
   FiCalendar,
@@ -6,113 +6,103 @@ import {
   FiUser,
   FiBookOpen,
   FiClock,
+  FiBook,
+  FiAward
 } from "react-icons/fi";
-import examsData from "../../l/exams/data/exams.json";
+import { exams, classDetails, studentClassIds, Exam } from "../../../data";
 import { Dialog } from "@headlessui/react";
 
-// Mock data for student classes
-const studentClassIds = [1, 2, 3, 5]; // Classes the student is enrolled in
+interface CourseItem {
+  id: number;
+  name: string;
+  lecturer?: string;
+  totalExams?: number;
+}
 
-// Mock additional class details
-const classDetails = {
-  1: {
-    duration: "16 weeks",
-    level: "200",
-    semester: "First Semester",
-    lecturer: "Dr. James Smith",
-    description:
-      "An introduction to programming concepts, algorithms, and problem-solving techniques.",
-  },
-  2: {
-    duration: "14 weeks",
-    level: "300",
-    semester: "Second Semester",
-    lecturer: "Prof. Sarah Johnson",
-    description:
-      "Advanced web development techniques using modern frameworks and tools.",
-  },
-  3: {
-    duration: "12 weeks",
-    level: "400",
-    semester: "First Semester",
-    lecturer: "Dr. Michael Chen",
-    description:
-      "Comprehensive study of data structures and their applications in software engineering.",
-  },
-  5: {
-    duration: "16 weeks",
-    level: "300",
-    semester: "First Semester",
-    lecturer: "Dr. Emily Wilson",
-    description:
-      "Introduction to machine learning algorithms and implementation techniques.",
-  },
-};
-
-function StudentClasses() {
+function StudentCourses() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedClass, setSelectedClass] = useState<any>(null);
+  const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
 
-  // Get unique classes from exams data
-  const classes = [
+  // Get unique courses from exams that the student is enrolled in
+  const courses = [
     ...new Set(
-      examsData
-        .filter((exam) => studentClassIds.includes(exam.classId))
-        .map((exam) => ({
+      exams
+        .filter((exam: Exam) => studentClassIds.includes(exam.classId))
+        .map((exam: Exam) => ({
           id: exam.classId,
           name: exam.className,
-        })),
+          lecturer: classDetails[exam.classId as keyof typeof classDetails]?.lecturer,
+          totalExams: exams.filter(e => e.classId === exam.classId).length
+        }))
     ),
   ];
 
-  const handleViewClassDetails = (classItem: any) => {
-    setSelectedClass({
-      ...classItem,
-      ...classDetails[classItem.id as keyof typeof classDetails],
-    });
+  const handleViewCourseDetails = (course: CourseItem) => {
+    setSelectedCourse(course.id);
     setIsModalOpen(true);
   };
 
   return (
-    <DashboardLayout title="My Classes" buttonTitle="Close">
-      <div className="container mx-auto">
-        <h1 className="text-2xl font-bold mb-6">My Classes</h1>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 card-grid">
-          {classes.map((classItem: any) => (
+    <DashboardLayout 
+      title="My Courses" 
+      buttonTitle=""
+      showAddHeadbarButton={false}
+    >
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Course Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.map((course: CourseItem) => (
             <div
-              key={classItem.id}
-              className="bg-white rounded-lg shadow p-6 transition-all hover:shadow-md"
+              key={course.id}
+              onClick={() => handleViewCourseDetails(course)}
+              className="group bg-white rounded-xl shadow-sm border border-slate-200 hover:border-primary/30 hover:shadow-md transition-all cursor-pointer overflow-hidden"
             >
-              <div className="flex items-center mb-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
-                  <FiUsers size={20} />
+              {/* Course Header */}
+              <div className="p-6 border-b border-slate-100">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <FiBook size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-slate-900 group-hover:text-primary transition-colors line-clamp-1">
+                      {course.name}
+                    </h3>
+                    <p className="text-sm text-slate-600 flex items-center gap-2">
+                      <FiUser className="text-slate-400" />
+                      {course.lecturer || "No lecturer assigned"}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold">{classItem.name}</h3>
               </div>
 
-              <div className="flex items-center text-sm text-slate-500 mb-4">
-                <FiCalendar className="mr-2" />
-                <span>
-                  Level{" "}
-                  {classDetails[classItem.id as keyof typeof classDetails]
-                    ?.level || "N/A"}
+              {/* Course Stats */}
+              <div className="px-6 py-4 bg-slate-50 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FiAward className="text-primary" />
+                  <span className="text-sm font-medium text-slate-700">
+                    {course.totalExams} {course.totalExams === 1 ? 'Exam' : 'Exams'}
+                  </span>
+                </div>
+                <span className="text-sm text-primary font-medium group-hover:underline">
+                  View Details
                 </span>
-              </div>
-
-              <div className="mt-4">
-                <button
-                  className="w-full px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition"
-                  onClick={() => handleViewClassDetails(classItem)}
-                >
-                  View Class Details
-                </button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Class Details Modal */}
+        {/* Empty State */}
+        {courses.length === 0 && (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiBook className="w-8 h-8 text-slate-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">No Courses Found</h3>
+            <p className="text-slate-600">You are not enrolled in any courses yet.</p>
+          </div>
+        )}
+
+        {/* Course Details Modal */}
         <Dialog
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
@@ -123,45 +113,58 @@ function StudentClasses() {
 
           {/* Modal container */}
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Dialog.Panel className="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto p-6">
-              <Dialog.Title className="text-xl font-bold text-gray-900 mb-4">
-                {selectedClass?.name}
+            <Dialog.Panel className="bg-white rounded-xl shadow-xl max-w-lg w-full mx-auto p-6">
+              <Dialog.Title className="text-2xl font-bold text-slate-900 mb-6">
+                {courses.find(c => c.id === selectedCourse)?.name}
               </Dialog.Title>
 
-              <div className="space-y-4">
-                <div className="flex items-center">
-                  <FiBookOpen className="text-primary mr-3" />
-                  <span className="font-semibold mr-2">Level:</span>
-                  <span>{selectedClass?.level}</span>
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-slate-50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FiCalendar className="text-primary" />
+                      <span className="text-sm font-medium text-slate-600">Semester</span>
+                    </div>
+                    <p className="text-lg font-semibold text-slate-900">
+                      {selectedCourse !== null && classDetails[selectedCourse as keyof typeof classDetails]?.semester}
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FiClock className="text-primary" />
+                      <span className="text-sm font-medium text-slate-600">Duration</span>
+                    </div>
+                    <p className="text-lg font-semibold text-slate-900">
+                      {selectedCourse !== null && classDetails[selectedCourse as keyof typeof classDetails]?.duration}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="flex items-center">
-                  <FiCalendar className="text-primary mr-3" />
-                  <span className="font-semibold mr-2">Semester:</span>
-                  <span>{selectedClass?.semester}</span>
-                </div>
-
-                <div className="flex items-center">
-                  <FiClock className="text-primary mr-3" />
-                  <span className="font-semibold mr-2">Duration:</span>
-                  <span>{selectedClass?.duration}</span>
-                </div>
-
-                <div className="flex items-center">
-                  <FiUser className="text-primary mr-3" />
-                  <span className="font-semibold mr-2">Lecturer:</span>
-                  <span>{selectedClass?.lecturer}</span>
+                <div className="bg-slate-50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <FiUser className="text-primary" />
+                    <span className="text-sm font-medium text-slate-600">Lecturer</span>
+                  </div>
+                  <p className="text-lg font-semibold text-slate-900">
+                    {selectedCourse !== null && classDetails[selectedCourse as keyof typeof classDetails]?.lecturer}
+                  </p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold mb-2">Description:</h4>
-                  <p className="text-gray-600">{selectedClass?.description}</p>
+                  <div className="flex items-center gap-2 mb-3">
+                    <FiBookOpen className="text-primary" />
+                    <h4 className="text-sm font-medium text-slate-600">Course Description</h4>
+                  </div>
+                  <p className="text-slate-700 bg-slate-50 rounded-lg p-4">
+                    {selectedCourse !== null && classDetails[selectedCourse as keyof typeof classDetails]?.description}
+                  </p>
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end">
+              <div className="mt-8 flex justify-end">
                 <button
-                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition"
+                  className="px-6 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
                   onClick={() => setIsModalOpen(false)}
                 >
                   Close
@@ -175,4 +178,4 @@ function StudentClasses() {
   );
 }
 
-export default StudentClasses;
+export default StudentCourses;
