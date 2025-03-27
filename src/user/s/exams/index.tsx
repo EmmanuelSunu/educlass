@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DashboardLayout from "../layout/index";
-import { exams, type Exam, studentClassIds } from "../../../data";
+import DashboardLayout from "../layout";
+import { type Exam } from "../../../data/exams/types";
+import { getExamsByStudentClassIds } from "../../../data/exams/service";
 import ExamCard from "../../../components/examCard";
 
 function StudentExams() {
@@ -10,11 +11,9 @@ function StudentExams() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Filter exams to only show those from classes the student is enrolled in
-    const studentExams = exams.filter((exam) =>
-      studentClassIds.includes(exam.classId)
-    );
-
+    // TODO: Replace with actual student class IDs from user context
+    const studentClassIds = [1, 2];
+    const studentExams = getExamsByStudentClassIds(studentClassIds);
     setAvailableExams(studentExams);
     setLoading(false);
   }, []);

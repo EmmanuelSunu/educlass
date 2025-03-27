@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layout/index";
-import { exams, type Exam } from "../../../../data";
+import { type Exam } from "../../../../data/exams/types";
+import { getExamById } from "../../../../data/exams/service";
 import { FiCalendar, FiClock, FiHelpCircle, FiBookOpen, FiInfo } from "react-icons/fi";
 import { getExamStatus, getStatusInfo, type ExamStatus } from "../../../../utils/examStatus";
 
@@ -13,15 +14,16 @@ function ExamDetailsPage() {
   const [examStatus, setExamStatus] = useState<ExamStatus>("past");
 
   useEffect(() => {
-    const exam = exams.find((exam) => exam.id === Number(id));
-
-    if (exam) {
-      setExamDetails(exam);
-      const status = getExamStatus(exam, true);
-      setExamStatus(status);
-      setLoading(false);
-    } else {
-      setLoading(false);
+    if (id) {
+      const exam = getExamById(Number(id));
+      if (exam) {
+        setExamDetails(exam);
+        const status = getExamStatus(exam, true);
+        setExamStatus(status);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
     }
   }, [id]);
 
@@ -134,7 +136,7 @@ function ExamDetailsPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-500">Questions</p>
-                <p className="text-slate-800">{examDetails.questions ? examDetails.questions.length : 0} Questions</p>
+                <p className="text-slate-800">{examDetails.questions.length} Questions</p>
               </div>
             </div>
           </div>
@@ -160,7 +162,7 @@ function ExamDetailsPage() {
                 <ul className="space-y-3 text-slate-700">
                   <li className="flex items-start gap-3">
                     <div className="min-w-[8px] h-[8px] mt-[6px] rounded-full bg-blue-500" />
-                    <span>This exam contains {examDetails.questions.length} questions worth a total of {examDetails.questions.reduce((sum, q) => sum + (q.points || 0), 0)} points.</span>
+                    <span>This exam contains {examDetails.questions.length} questions worth a total of {examDetails.questions.reduce((sum, q) => sum + q.points, 0)} points.</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="min-w-[8px] h-[8px] mt-[6px] rounded-full bg-blue-500" />

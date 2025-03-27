@@ -1,0 +1,125 @@
+{
+  "exams": [
+    {
+      "id": 1,
+      "title": "Software Engineering Final Exam",
+      "type": "exam",
+      "description": "Comprehensive final exam covering all topics from the semester",
+      "classId": 1,
+      "className": "Software Engineering",
+      "dueDate": "2025-03-27",
+      "startTime": "09:00",
+      "endTime": "23:00",
+      "durationHours": 2,
+      "durationMinutes": 0,
+      "duration": "2 hours",
+      "questions": [
+        {
+          "id": "1",
+          "type": "essay",
+          "points": 20,
+          "questionText": "Explain the key principles of Agile software development.",
+          "questionAnswer": "Agile software development is based on four key principles: 1) Individuals and interactions over processes and tools, 2) Working software over comprehensive documentation, 3) Customer collaboration over contract negotiation, and 4) Responding to change over following a plan.",
+          "rubricCriteria": [
+            {
+              "name": "Content Relevance",
+              "value": 20,
+              "description": "How well the answer addresses the question and covers key concepts"
+            },
+            {
+              "name": "Structure and Organization",
+              "value": 20,
+              "description": "Logical flow and organization of the response"
+            },
+            {
+              "name": "Language and Style",
+              "value": 20,
+              "description": "Clarity of expression and appropriate technical language"
+            },
+            {
+              "name": "Critical Thinking and Analysis",
+              "value": 20,
+              "description": "Depth of analysis and evaluation of concepts"
+            },
+            {
+              "name": "Originality and Paraphrasing",
+              "value": 20,
+              "description": "Original expression and proper paraphrasing of concepts"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "type": "multi-choice",
+          "points": 10,
+          "questionText": "Which of the following is NOT a core principle of SOLID?",
+          "questionAnswer": "Single Responsibility Principle",
+          "options": [
+            "Single Responsibility Principle",
+            "Open/Closed Principle",
+            "Liskov Substitution Principle",
+            "Interface Segregation Principle",
+            "Dependency Inversion Principle"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Database Management Assignment 3",
+      "type": "assignment",
+      "description": "Implementation of Database Normalization",
+      "classId": 2,
+      "className": "Database Management",
+      "dueDate": "2025-04-10",
+      "startTime": "00:00",
+      "endTime": "23:59",
+      "durationHours": 24,
+      "durationMinutes": 0,
+      "duration": "24 hours",
+      "questions": [
+        {
+          "id": "1",
+          "type": "essay",
+          "points": 25,
+          "questionText": "Explain the process of database normalization and its importance.",
+          "questionAnswer": "Database normalization is the process of organizing data to reduce redundancy and improve data integrity. It involves breaking down tables into smaller, more manageable pieces while maintaining relationships between them. The process typically follows normal forms (1NF, 2NF, 3NF) to achieve optimal structure.",
+          "rubricCriteria": [
+            {
+              "name": "Content Relevance",
+              "value": 20,
+              "description": "How well the answer addresses the question and covers key concepts"
+            },
+            {
+              "name": "Structure and Organization",
+              "value": 20,
+              "description": "Logical flow and organization of the response"
+            },
+            {
+              "name": "Language and Style",
+              "value": 20,
+              "description": "Clarity of expression and appropriate technical language"
+            },
+            {
+              "name": "Critical Thinking and Analysis",
+              "value": 20,
+              "description": "Depth of analysis and evaluation of concepts"
+            },
+            {
+              "name": "Originality and Paraphrasing",
+              "value": 20,
+              "description": "Original expression and proper paraphrasing of concepts"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "type": "fill-ins",
+          "points": 15,
+          "questionText": "The first normal form (1NF) requires that all values in a table are _____.",
+          "questionAnswer": "atomic"
+        }
+      ]
+    }
+  ]
+} 

@@ -1,88 +1,26 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import DashboardLayout from "../../layout";
-import { exams, type Exam } from "../../../../data";
+import DashboardLayout from "../../layout/index";
+import { type Exam } from "../../../../data/exams/types";
+import { getExamById } from "../../../../data/exams/service";
+import { getSubmissionsForExam, updateSubmission, type StudentSubmission } from "../../../../data/exams/submissions";
 import { FiCheck, FiX } from "react-icons/fi";
-
-interface StudentSubmission {
-  id: number;
-  studentId: number;
-  studentName: string;
-  examId: number;
-  submittedAt: string;
-  answers: Answer[];
-  totalScore: number;
-  status: "pending" | "graded";
-}
-
-interface Answer {
-  questionId: string;
-  answer: string;
-  score: number;
-  feedback: string;
-}
 
 const GradeExam = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [exam, setExam] = useState<Exam | null>(null);
-  const [submissions, setSubmissions] = useState<StudentSubmission[]>([
-    // Mock data - replace with actual API call
-    {
-      id: 1,
-      studentId: 1,
-      studentName: "John Doe",
-      examId: 1,
-      submittedAt: "2024-03-20T10:30:00",
-      answers: [
-        {
-          questionId: "q1",
-          answer: "Lorem ipsum dolor sit amet",
-          score: 0,
-          feedback: "",
-        },
-        {
-          questionId: "q2",
-          answer: "Option B",
-          score: 0,
-          feedback: "",
-        },
-      ],
-      totalScore: 0,
-      status: "pending",
-    },
-    {
-      id: 2,
-      studentId: 2,
-      studentName: "Jane Smith",
-      examId: 1,
-      submittedAt: "2024-03-20T11:15:00",
-      answers: [
-        {
-          questionId: "q1",
-          answer: "Consectetur adipiscing elit",
-          score: 0,
-          feedback: "",
-        },
-        {
-          questionId: "q2",
-          answer: "Option A",
-          score: 0,
-          feedback: "",
-        },
-      ],
-      totalScore: 0,
-      status: "pending",
-    },
-  ]);
+  const [submissions, setSubmissions] = useState<StudentSubmission[]>([]);
   const [selectedSubmission, setSelectedSubmission] = useState<StudentSubmission | null>(null);
 
   useEffect(() => {
     if (id) {
-      const foundExam = exams.find((e) => e.id === Number(id));
+      const foundExam = getExamById(Number(id));
       if (foundExam) {
         setExam(foundExam);
+        const examSubmissions = getSubmissionsForExam(Number(id));
+        setSubmissions(examSubmissions);
       } else {
         navigate("/user/l/exams");
       }
@@ -128,11 +66,15 @@ const GradeExam = () => {
   const handleSaveGrades = () => {
     if (!selectedSubmission) return;
 
+    const updatedSubmission = {
+      ...selectedSubmission,
+      status: "graded" as const,
+    };
+
+    updateSubmission(updatedSubmission);
     setSubmissions((prev) =>
       prev.map((s) =>
-        s.id === selectedSubmission.id
-          ? { ...selectedSubmission, status: "graded" }
-          : s
+        s.id === selectedSubmission.id ? updatedSubmission : s
       )
     );
 

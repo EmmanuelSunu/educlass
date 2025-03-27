@@ -1,98 +1,113 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
-import { exams, type Exam } from "../../../data";
+import { type Exam } from "../../../data/exams/types";
+import { getExams } from "../../../data/exams/service";
 import ExamCard from "../../../components/examCard";
 
-const Exams = () => {
+interface DashboardLayoutProps {
+  title: string;
+  buttonTitle?: string;
+  showAddHeadbarButton?: boolean;
+  onAddHeadbarButton?: () => void;
+  children: React.ReactNode;
+}
+
+const ExamList = () => {
   const navigate = useNavigate();
+  const [filter, setFilter] = useState<"all" | "exam" | "assignment">("all");
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [examsList, setExamsList] = useState<Exam[]>([]);
-  const itemsPerPage = 6;
+  const [exams, setExams] = useState<Exam[]>([]);
 
   useEffect(() => {
-    setExamsList(exams);
-    setLoading(false);
+    const loadExams = async () => {
+      const examData = getExams();
+      setExams(examData);
+      setLoading(false);
+    };
+    loadExams();
   }, []);
 
-  const handleAddExam = () => {
-    navigate("/user/l/exams/create");
-  };
+  const filteredExams = exams.filter(exam => 
+    filter === "all" ? true : exam.type === filter
+  );
 
-  // Calculate pagination
-  const totalPages = Math.ceil(examsList.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentExams = examsList.slice(startIndex, endIndex);
+  if (loading) {
+    return (
+      <DashboardLayout 
+        title="Exams" 
+        buttonTitle="Create Exam"
+        showAddHeadbarButton={true}
+      >
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout
       title="Exams"
+      buttonTitle="Create Exam"
       showAddHeadbarButton={true}
-      onAddHeadbarButton={handleAddExam}
-      buttonTitle="Add Exam"
+      onAddHeadbarButton={() => navigate("/user/l/exams/create")}
     >
-      {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-      ) : examsList.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-8 text-center">
-          <h3 className="text-lg font-medium text-slate-800 mb-2">
-            No Exams Created
-          </h3>
-          <p className="text-slate-600 mb-6">
-            Get started by creating your first exam.
-          </p>
+      {/* Filter */}
+      <div className="mb-6">
+        <div className="flex space-x-4">
           <button
-            onClick={handleAddExam}
-            className="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-6 rounded-md transition-colors"
+            className={`px-4 py-2 rounded-md ${
+              filter === "all"
+                ? "bg-primary text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+            onClick={() => setFilter("all")}
           >
-            Create Exam
+            All
+          </button>
+          <button
+            className={`px-4 py-2 rounded-md ${
+              filter === "exam"
+                ? "bg-primary text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+            onClick={() => setFilter("exam")}
+          >
+            Exams
+          </button>
+          <button
+            className={`px-4 py-2 rounded-md ${
+              filter === "assignment"
+                ? "bg-primary text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+            onClick={() => setFilter("assignment")}
+          >
+            Assignments
           </button>
         </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentExams.map((exam) => (
-              <ExamCard
-                key={exam.id}
-                id={exam.id}
-                title={exam.title}
-                type="exam"
-                duration={exam.duration}
-                startTime={exam.startTime}
-                endTime={exam.endTime}
-                dueDate={exam.dueDate}
-                className={exam.className}
-                questionsCount={exam.questions.length}
-              />
-            ))}
-          </div>
+      </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-6 gap-2">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === page
-                      ? "bg-primary text-white"
-                      : "bg-white text-slate-600 hover:bg-slate-50"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-            </div>
-          )}
-        </>
-      )}
+      {/* Exam Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {filteredExams.map((exam) => (
+          <ExamCard
+            key={exam.id}
+            id={exam.id}
+            title={exam.title}
+            type="exam"
+            duration={exam.duration}
+            startTime={exam.startTime}
+            endTime={exam.endTime}
+            dueDate={exam.dueDate}
+            className={exam.className}
+            questionsCount={exam.questions.length}
+          />
+        ))}
+      </div>
     </DashboardLayout>
   );
 };
 
-export default Exams; 
+export default ExamList; 

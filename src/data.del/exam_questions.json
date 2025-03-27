@@ -1,0 +1,61 @@
+{
+  "exam_questions": [
+    {
+      "id": 1,
+      "examId": 1,
+      "type": "multi-choice",
+      "questionText": "What is the time complexity of binary search?",
+      "points": 10,
+      "options": [
+        "O(1)",
+        "O(log n)",
+        "O(n)",
+        "O(n²)"
+      ],
+      "correctAnswer": "O(log n)"
+    },
+    {
+      "id": 2,
+      "examId": 1,
+      "type": "essay",
+      "questionText": "Explain the concept of object-oriented programming and its four main principles.",
+      "points": 20,
+      "modelAnswer": "Object-oriented programming (OOP) is a programming paradigm based on the concept of 'objects' that contain data and code. The four main principles are:\n1. Encapsulation\n2. Inheritance\n3. Polymorphism\n4. Abstraction",
+      "rubricCriteria": [
+        {
+          "name": "Content Relevance",
+          "value": 20,
+          "description": "How well the answer addresses the question"
+        },
+        {
+          "name": "Structure and Organization",
+          "value": 20,
+          "description": "Logical flow and organization of the essay"
+        },
+        {
+          "name": "Language and Style",
+          "value": 20,
+          "description": "Use of language, vocabulary, and tone"
+        },
+        {
+          "name": "Critical Thinking and Analysis",
+          "value": 20,
+          "description": "Demonstration of critical thinking and analysis"
+        },
+        {
+          "name": "Originality and Paraphrasing",
+          "value": 20,
+          "description": "Ability to paraphrase and present ideas"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "examId": 2,
+      "type": "fill-ins",
+      "questionText": "A binary search tree is a data structure where each node has at most _____ children.",
+      "points": 5,
+      "correctAnswer": "2"
+    }
+  ]
+} 

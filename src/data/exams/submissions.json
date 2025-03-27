@@ -1,0 +1,25 @@
+{
+  "submissions": [
+    {
+      "id": 1,
+      "examId": 1,
+      "studentId": 1,
+      "submittedAt": "2025-03-27T10:30:00Z",
+      "completionTime": "1 hour 30 minutes",
+      "answers": [
+        {
+          "questionId": "1",
+          "answer": "Agile software development is based on four key principles: 1) Individuals and interactions over processes and tools, 2) Working software over comprehensive documentation, 3) Customer collaboration over contract negotiation, and 4) Responding to change over following a plan."
+        },
+        {
+          "questionId": "2",
+          "answer": "Single Responsibility Principle",
+          "isCorrect": true,
+          "score": 10
+        }
+      ],
+      "totalScore": 10,
+      "grade": "A"
+    }
+  ]
+} 

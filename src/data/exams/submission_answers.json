@@ -1,0 +1,44 @@
+{
+  "submissionAnswers": [
+    {
+      "id": "sa1",
+      "submissionId": "sub1",
+      "questionId": "q1",
+      "answer": "Inheritance is a fundamental concept in OOP that allows a class to inherit properties and methods from another class. For example, a 'Car' class can inherit from a 'Vehicle' class, gaining basic properties like 'color' and 'speed'. Benefits include code reuse and the ability to create specialized versions of existing classes. However, drawbacks include tight coupling between classes and potential violation of encapsulation principles.",
+      "score": 18,
+      "feedback": "Good explanation with clear examples. Could have elaborated more on the drawbacks.",
+      "createdAt": "2024-03-20T10:45:00Z",
+      "updatedAt": "2024-03-20T10:45:00Z"
+    },
+    {
+      "id": "sa2",
+      "submissionId": "sub1",
+      "questionId": "q2",
+      "selectedOptionId": "opt4",
+      "score": 10,
+      "feedback": "Correct answer",
+      "createdAt": "2024-03-20T10:45:00Z",
+      "updatedAt": "2024-03-20T10:45:00Z"
+    },
+    {
+      "id": "sa3",
+      "submissionId": "sub1",
+      "questionId": "q3",
+      "answer": "class",
+      "score": 5,
+      "feedback": "Correct answer",
+      "createdAt": "2024-03-20T10:45:00Z",
+      "updatedAt": "2024-03-20T10:45:00Z"
+    },
+    {
+      "id": "sa4",
+      "submissionId": "sub2",
+      "questionId": "q4",
+      "answer": "class Node { constructor(value) { this.value = value; this.left = null; this.right = null; } } class BST { constructor() { this.root = null; } insert(value) { if (!this.root) { this.root = new Node(value); return; } let current = this.root; while (true) { if (value < current.value) { if (!current.left) { current.left = new Node(value); break; } current = current.left; } else { if (!current.right) { current.right = new Node(value); break; } current = current.right; } } } }",
+      "score": 35,
+      "feedback": "Implementation is incomplete. Missing delete and search operations. Time complexity analysis not provided.",
+      "createdAt": "2024-03-19T16:30:00Z",
+      "updatedAt": "2024-03-19T16:30:00Z"
+    }
+  ]
+} 

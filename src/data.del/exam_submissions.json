@@ -1,0 +1,26 @@
+{
+  "exam_submissions": [
+    {
+      "id": 1,
+      "examId": 1,
+      "studentId": 1,
+      "submissionDate": "2024-04-15T10:45:00Z",
+      "startTime": "2024-04-15T09:00:00Z",
+      "endTime": "2024-04-15T10:45:00Z",
+      "status": "submitted",
+      "totalScore": 85,
+      "timeTaken": "1 hour 45 minutes"
+    },
+    {
+      "id": 2,
+      "examId": 2,
+      "studentId": 1,
+      "submissionDate": "2024-04-10T15:30:00Z",
+      "startTime": "2024-04-10T14:00:00Z",
+      "endTime": "2024-04-10T15:30:00Z",
+      "status": "submitted",
+      "totalScore": 45,
+      "timeTaken": "1 hour 30 minutes"
+    }
+  ]
+} 

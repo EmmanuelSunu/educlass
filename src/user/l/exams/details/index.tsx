@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import DashboardLayout from "../../layout";
-import { exams, type Exam } from "../../../../data";
+import DashboardLayout from "../../layout/index";
+import { type Exam } from "../../../../data/exams/types";
+import { getExamById } from "../../../../data/exams/service";
 import { FiCalendar, FiClock, FiUsers, FiEdit3, FiTrash2 } from "react-icons/fi";
 import { getExamStatus, getStatusInfo } from "../../../../utils/examStatus";
 
@@ -12,13 +13,15 @@ const ExamDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const foundExam = exams.find((e) => e.id === Number(id));
-    setExam(foundExam || null);
-    setLoading(false);
+    if (id) {
+      const foundExam = getExamById(Number(id));
+      setExam(foundExam || null);
+      setLoading(false);
+    }
   }, [id]);
 
   const handleEdit = () => {
-    navigate(`/user/l/exams/edit/${id}`);
+    navigate(`/user/l/exams/create/${id}`);
   };
 
   const handleDelete = () => {

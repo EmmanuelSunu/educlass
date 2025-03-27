@@ -1,125 +1,184 @@
 import React, { useState, useEffect } from "react";
 import { RiAddLine, RiDeleteBinLine } from "react-icons/ri";
-
-interface ExamDetails {
-  id: number;
-  title: string;
-  type: "exam" | "test" | "assignment";
-  duration: string;
-  durationHours: number;
-  durationMinutes: number;
-  startTime: string;
-  endTime: string;
-  status: "scheduled" | "in-progress" | "completed";
-  dueDate: string;
-  description: string;
-  questions: Array<{
-    id: string;
-    type: "multi-choice" | "essay" | "fill-ins";
-    questionText: string;
-    options?: string[];
-    questionAnswer: string;
-    points?: number;
-  }>;
-  classId?: number;
-  className?: string;
-}
-
-interface Class {
-  id: number;
-  name: string;
-}
+import type { Exam, Question, RubricCriteria } from "../data/exams/types";
+import { courseService } from "../data/course/service";
+import type { Course } from "../data/course/types";
+import {
+  calculateDuration,
+  formatTimeString,
+  isValidTimeFormat
+} from "../utils/exam";
 
 interface ExamFormProps {
-  examDetails: ExamDetails;
-  onExamChange: (examDetails: ExamDetails) => void;
-  onSave: () => void;
-  onCancel: () => void;
+  examDetails?: Partial<Exam>;
+  onExamChange: (details: Partial<Exam>) => void;
+  onQuestionsChange: (questions: Question[]) => void;
+  onRubricCriteriaChange: (criteria: RubricCriteria[]) => void;
 }
 
-const mockClasses: Class[] = [
-  { id: 1, name: "Mathematics 101" },
-  { id: 2, name: "Physics 201" },
-  { id: 3, name: "Computer Science 301" },
-  { id: 4, name: "Biology 101" },
-  { id: 5, name: "Chemistry 201" },
+const defaultRubricCriteria: RubricCriteria[] = [
+  {
+    name: "Content Relevance",
+    value: 20,
+    description: "How well the answer addresses the question and covers key concepts",
+  },
+  {
+    name: "Structure and Organization",
+    value: 20,
+    description: "Logical flow and organization of the response",
+  },
+  {
+    name: "Language and Style",
+    value: 20,
+    description: "Clarity of expression and appropriate technical language",
+  },
+  {
+    name: "Critical Thinking and Analysis",
+    value: 20,
+    description: "Depth of analysis and evaluation of concepts",
+  },
+  {
+    name: "Originality and Paraphrasing",
+    value: 20,
+    description: "Original expression and proper paraphrasing of concepts",
+  },
 ];
 
-const ExamForm: React.FC<ExamFormProps> = ({
+export default function ExamForm({
   examDetails,
   onExamChange,
-  onSave,
-  onCancel,
-}) => {
-  const [activeTab, setActiveTab] = useState("details");
+  onQuestionsChange,
+  onRubricCriteriaChange,
+}: ExamFormProps) {
+  const [formData, setFormData] = useState<Partial<Exam>>(
+    examDetails || {
+      title: "",
+      type: "exam",
+      description: "",
+      classId: 1,
+      className: "",
+      dueDate: new Date().toISOString().split("T")[0],
+      startTime: "09:00",
+      endTime: "11:00",
+      durationHours: 2,
+      durationMinutes: 0,
+      duration: "2 hours",
+      questions: [],
+    }
+  );
+
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [timeError, setTimeError] = useState({
+    startTime: false,
+    endTime: false,
+  });
 
   useEffect(() => {
-    if (!examDetails.durationHours && !examDetails.durationMinutes) {
-      const durationRegex = /(\d+)\s*hour[s]?(?:\s*and\s*(\d+)\s*minute[s]?)?/i;
-      const match = examDetails.duration.match(durationRegex);
-
-      if (match) {
-        const hours = parseInt(match[1]) || 0;
-        const minutes = match[2] ? parseInt(match[2]) : 0;
-
-        onExamChange({
-          ...examDetails,
-          durationHours: hours,
-          durationMinutes: minutes,
-        });
-      } else {
-        onExamChange({
-          ...examDetails,
-          durationHours: 1,
-          durationMinutes: 0,
-        });
+    const loadCourses = async () => {
+      try {
+        const courseData = await courseService.getCourses();
+        setCourses(courseData);
+      } catch (error) {
+        console.error("Error loading courses:", error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+    loadCourses();
   }, []);
 
-  const handleInputChange = (name: string, value: string | number) => {
-    onExamChange({
-      ...examDetails,
-      [name]: value,
-    });
+  useEffect(() => {
+    if (examDetails) {
+      setFormData(examDetails);
+    }
+  }, [examDetails]);
+
+  useEffect(() => {
+    // Recalculate duration string whenever hours or minutes change
+    const durationString = calculateDuration(
+      formData.durationHours || 0,
+      formData.durationMinutes || 0
+    );
+    setFormData((prev: Partial<Exam>) => ({ ...prev, duration: durationString }));
+  }, [formData.durationHours, formData.durationMinutes]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    let newValue: string | number = value;
+
+    // Handle time inputs
+    if (name === "startTime" || name === "endTime") {
+      if (!isValidTimeFormat(value)) {
+        setTimeError((prev: { startTime: boolean; endTime: boolean }) => ({ ...prev, [name]: true }));
+        return;
+      }
+      setTimeError((prev: { startTime: boolean; endTime: boolean }) => ({ ...prev, [name]: false }));
+      newValue = formatTimeString(value);
+    }
+    // Handle numeric inputs
+    else if (name === "durationHours" || name === "durationMinutes") {
+      newValue = parseInt(value) || 0;
+      if (name === "durationMinutes" && (newValue as number) >= 60) {
+        newValue = 59;
+      }
+    }
+
+    setFormData((prev: Partial<Exam>) => ({ ...prev, [name]: newValue }));
+    onExamChange({ ...formData, [name]: newValue });
+  };
+
+  const handleDurationChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "hours" | "minutes"
+  ) => {
+    const value = parseInt(e.target.value) || 0;
+    const name = type === "hours" ? "durationHours" : "durationMinutes";
+    
+    if (type === "minutes" && value >= 60) {
+      setFormData((prev: Partial<Exam>) => ({ ...prev, [name]: 59 }));
+      onExamChange({ ...formData, [name]: 59 });
+    } else {
+      setFormData((prev: Partial<Exam>) => ({ ...prev, [name]: value }));
+      onExamChange({ ...formData, [name]: value });
+    }
   };
 
   const handleAddQuestion = () => {
-    // Fix: Explicitly specify the type as a valid literal type
-    const newQuestion = {
+    const newQuestion: Question = {
       id: String(
-        examDetails.questions.length > 0
-          ? Math.max(...examDetails.questions.map((q) => Number(q.id))) + 1
+        (formData.questions?.length || 0) > 0
+          ? Math.max(...(formData.questions || []).map((q: Question) => Number(q.id))) + 1
           : 1,
       ),
-      type: "essay" as const, // Use "as const" to specify this is a literal type
+      type: "essay",
       questionText: "",
-      questionAnswer: "",
-      options: [] as string[], // Properly type the options array
       points: 0,
+      questionAnswer: "",
+      rubricCriteria: [...defaultRubricCriteria],
     };
 
-    onExamChange({
-      ...examDetails,
-      questions: [...examDetails.questions, newQuestion],
-    });
+    onQuestionsChange([...(formData.questions || []), newQuestion]);
   };
 
   const handleAddOption = (index: number) => {
-    const updatedQuestions = [...examDetails.questions];
+    const updatedQuestions = [...(formData.questions || [])];
     updatedQuestions[index] = {
       ...updatedQuestions[index],
-      options: [...(updatedQuestions[index].options || []), ""],
+      options: [...(updatedQuestions[index].options || []), `Option ${(updatedQuestions[index].options?.length || 0) + 1}`],
     };
-    onExamChange({ ...examDetails, questions: updatedQuestions });
+    onQuestionsChange(updatedQuestions);
   };
 
   const handleRemoveOption = (questionIndex: number, optionIndex: number) => {
-    const updatedQuestions = [...examDetails.questions];
+    const updatedQuestions = [...(formData.questions || [])];
     updatedQuestions[questionIndex].options = updatedQuestions[
       questionIndex
     ].options?.filter((_, i) => i !== optionIndex);
-    onExamChange({ ...examDetails, questions: updatedQuestions });
+    onQuestionsChange(updatedQuestions);
   };
 
   const handleOptionChange = (
@@ -127,449 +186,416 @@ const ExamForm: React.FC<ExamFormProps> = ({
     optionIndex: number,
     value: string,
   ) => {
-    const updatedQuestions = [...examDetails.questions];
+    const updatedQuestions = [...(formData.questions || [])];
     if (updatedQuestions[questionIndex].options) {
       updatedQuestions[questionIndex].options[optionIndex] = value;
     }
-    onExamChange({ ...examDetails, questions: updatedQuestions });
+    onQuestionsChange(updatedQuestions);
   };
 
   const handleQuestionChange = (
-    index: number,
-    field: "questionText" | "questionAnswer" | "type" | "points",
+    questionIndex: number,
+    field: keyof Question,
     value: string | number,
   ) => {
-    const updatedQuestions = [...examDetails.questions];
+    const updatedQuestions = [...(formData.questions || [])];
 
     if (field === "type") {
-      // Ensure the type is treated as a valid question type
-      const questionType = value as "multi-choice" | "essay" | "fill-ins";
-      updatedQuestions[index] = {
-        ...updatedQuestions[index],
-        type: questionType,
+      // Reset type-specific fields when changing question type
+      updatedQuestions[questionIndex] = {
+        ...updatedQuestions[questionIndex],
+        type: value as Question["type"],
+        options: value === "multi-choice" ? ["Option 1"] : undefined,
+        questionAnswer: value === "essay" ? "" : "",
+        rubricCriteria: value === "essay" ? [...defaultRubricCriteria] : undefined,
       };
     } else {
-      updatedQuestions[index] = {
-        ...updatedQuestions[index],
+      updatedQuestions[questionIndex] = {
+        ...updatedQuestions[questionIndex],
         [field]: value,
       };
     }
 
-    onExamChange({
-      ...examDetails,
-      questions: updatedQuestions,
-    });
+    onQuestionsChange(updatedQuestions);
   };
 
   const handleRemoveQuestion = (id: string) => {
-    onExamChange({
-      ...examDetails,
-      questions: examDetails.questions.filter((q) => q.id !== id),
-    });
+    onQuestionsChange(formData.questions?.filter((q: Question) => q.id !== id) || []);
+  };
+
+  const handleRubricCriteriaChange = (questionIndex: number, criteriaIndex: number, value: number) => {
+    const updatedQuestions = [...(formData.questions || [])];
+    const question = updatedQuestions[questionIndex];
+    
+    if (question.rubricCriteria) {
+      question.rubricCriteria[criteriaIndex] = {
+        ...question.rubricCriteria[criteriaIndex],
+        value,
+      };
+      
+      onRubricCriteriaChange(question.rubricCriteria);
+    }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="mb-6 border-b">
-        <div className="flex space-x-4">
-          <button
-            className={`py-2 px-4 font-medium ${
-              activeTab === "details"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500 hover:text-gray-700"
+    <div className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Title</label>
+        <input
+          type="text"
+          name="title"
+          value={formData.title}
+          onChange={handleInputChange}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Type</label>
+        <select
+          name="type"
+          value={formData.type}
+          onChange={handleInputChange}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+        >
+          <option value="exam">Exam</option>
+          <option value="test">Test</option>
+          <option value="assignment">Assignment</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <textarea
+          name="description"
+          value={formData.description}
+          onChange={handleInputChange}
+          rows={3}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Class</label>
+        <select
+          name="className"
+          value={formData.className}
+          onChange={handleInputChange}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+          required
+          disabled={loading}
+        >
+          <option value="">Select a class</option>
+          {courses.map((course) => (
+            <option key={course.id} value={course.name}>
+              {course.code} - {course.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Due Date</label>
+        <input
+          type="date"
+          name="dueDate"
+          value={formData.dueDate}
+          onChange={handleInputChange}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+          required
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Start Time</label>
+          <input
+            type="time"
+            name="startTime"
+            value={formData.startTime}
+            onChange={handleInputChange}
+            className={`mt-1 block w-full rounded-md shadow-sm focus:ring-primary sm:text-sm ${
+              timeError.startTime
+                ? "border-red-300 focus:border-red-500"
+                : "border-gray-300 focus:border-primary"
             }`}
-            onClick={() => setActiveTab("details")}
-          >
-            Exam Details
-          </button>
-          <button
-            className={`py-2 px-4 font-medium ${
-              activeTab === "questions"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500 hover:text-gray-700"
+            required
+          />
+          {timeError.startTime && (
+            <p className="mt-1 text-sm text-red-600">Invalid time format</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">End Time</label>
+          <input
+            type="time"
+            name="endTime"
+            value={formData.endTime}
+            onChange={handleInputChange}
+            className={`mt-1 block w-full rounded-md shadow-sm focus:ring-primary sm:text-sm ${
+              timeError.endTime
+                ? "border-red-300 focus:border-red-500"
+                : "border-gray-300 focus:border-primary"
             }`}
-            onClick={() => setActiveTab("questions")}
-          >
-            Questions
-          </button>
+            required
+          />
+          {timeError.endTime && (
+            <p className="mt-1 text-sm text-red-600">Invalid time format</p>
+          )}
         </div>
       </div>
 
-      {activeTab === "details" && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="mb-4">
-              <label className="text-span text-dark font-medium block pb-2">
-                Title
-              </label>
-              <input
-                type="text"
-                name="title"
-                value={examDetails.title}
-                onChange={(e) => handleInputChange("title", e.target.value)}
-                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-                placeholder="Enter exam title"
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="text-span text-dark font-medium block pb-2">
-                Type
-              </label>
-              <select
-                name="type"
-                value={examDetails.type}
-                onChange={(e) => handleInputChange("type", e.target.value)}
-                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-              >
-                <option value="exam">Exam</option>
-                <option value="test">Test</option>
-                <option value="assignment">Assignment</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="mb-4">
-              <label className="text-span text-dark font-medium block pb-2">
-                Class
-              </label>
-              <select
-                name="classId"
-                value={examDetails.classId || ""}
-                onChange={(e) => {
-                  const classId = parseInt(e.target.value, 10);
-                  const selectedClass = mockClasses.find(
-                    (c) => c.id === classId,
-                  );
-                  handleInputChange("classId", classId);
-                  handleInputChange("className", selectedClass?.name || "");
-                }}
-                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-              >
-                <option value="">Select a class</option>
-                {mockClasses.map((cls) => (
-                  <option key={cls.id} value={cls.id}>
-                    {cls.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="text-span text-dark font-medium block pb-2">
-                Due Date
-              </label>
-              <input
-                type="date"
-                name="dueDate"
-                value={examDetails.dueDate}
-                onChange={(e) => handleInputChange("dueDate", e.target.value)}
-                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="mb-4">
-              <label className="text-span text-dark font-medium block pb-2">
-                Start Time
-              </label>
-              <input
-                type="time"
-                name="startTime"
-                value={examDetails.startTime}
-                onChange={(e) => handleInputChange("startTime", e.target.value)}
-                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="text-span text-dark font-medium block pb-2">
-                End Time
-              </label>
-              <input
-                type="time"
-                name="endTime"
-                value={examDetails.endTime}
-                onChange={(e) => handleInputChange("endTime", e.target.value)}
-                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-              />
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label className="text-span text-dark font-medium block pb-2">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={examDetails.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              rows={4}
-              className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-              placeholder="Enter exam description"
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Duration</label>
+        <div className="mt-1 flex space-x-4">
+          <div className="flex-1">
+            <input
+              type="number"
+              name="durationHours"
+              value={formData.durationHours}
+              onChange={(e) => handleDurationChange(e, "hours")}
+              min="0"
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              required
             />
+            <span className="text-sm text-gray-500">Hours</span>
+          </div>
+          <div className="flex-1">
+            <input
+              type="number"
+              name="durationMinutes"
+              value={formData.durationMinutes}
+              onChange={(e) => handleDurationChange(e, "minutes")}
+              min="0"
+              max="59"
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              required
+            />
+            <span className="text-sm text-gray-500">Minutes</span>
           </div>
         </div>
-      )}
+        <p className="mt-1 text-sm text-gray-500">
+          Total Duration: {formData.duration}
+        </p>
+      </div>
 
-      {activeTab === "questions" && (
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">Questions</h3>
-            <button
-              type="button"
-              onClick={handleAddQuestion}
-              className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-            >
-              <RiAddLine className="mr-2 h-4 w-4" />
-              Add Question
-            </button>
+      <div className="mt-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium text-gray-900">Questions</h3>
+          <button
+            type="button"
+            onClick={handleAddQuestion}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          >
+            Add Question
+          </button>
+        </div>
+
+        {(formData.questions?.length || 0) === 0 ? (
+          <div className="text-center py-10 text-gray-500">
+            No questions added yet. Click "Add Question" to start.
           </div>
+        ) : (
+          <div className="space-y-6">
+            {formData.questions?.map((question, index) => (
+              <div
+                key={question.id}
+                className="bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <h4 className="text-lg font-medium text-gray-900">
+                    Question {index + 1}
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveQuestion(question.id)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    Remove
+                  </button>
+                </div>
 
-          {examDetails.questions.length === 0 ? (
-            <div className="text-center py-10 text-gray-500">
-              No questions added yet. Click "Add Question" to start.
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {examDetails.questions.map((question, index) => (
-                <div
-                  key={question.id}
-                  className="p-4 border border-gray-200 rounded-lg"
-                >
-                  <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center gap-4">
-                      <h4 className="text-md font-medium text-gray-900">
-                        Question {index + 1}
-                      </h4>
-                      <div className="flex items-center">
-                        <label className="mr-2 text-sm text-gray-600">Points:</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={question.points || 0}
-                          onChange={(e) =>
-                            handleQuestionChange(index, "points", parseInt(e.target.value, 10) || 0)
-                          }
-                          className="w-20 px-2 py-1 border rounded"
-                        />
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveQuestion(question.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <RiDeleteBinLine className="h-5 w-5" />
-                    </button>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Question Text
+                    </label>
+                    <textarea
+                      value={question.questionText}
+                      onChange={(e) =>
+                        handleQuestionChange(index, "questionText", e.target.value)
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      rows={3}
+                    />
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="mb-4">
-                      <label className="text-span text-dark font-medium block pb-2">
-                        Question Type
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Type
                       </label>
                       <select
                         value={question.type}
-                        onChange={(e) => {
-                          handleQuestionChange(
-                            index,
-                            "type",
-                            e.target.value as
-                              | "multi-choice"
-                              | "fill-ins"
-                              | "essay",
-                          );
-                        }}
-                        className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
+                        onChange={(e) =>
+                          handleQuestionChange(index, "type", e.target.value)
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       >
-                        <option value="multi-choice">Multiple Choice</option>
-                        <option value="fill-ins">Fill in the Blank</option>
                         <option value="essay">Essay</option>
+                        <option value="multi-choice">Multiple Choice</option>
+                        <option value="fill-ins">Fill in the Blanks</option>
                       </select>
                     </div>
 
-                    <div className="mb-4">
-                      <label className="text-span text-dark font-medium block pb-2">
-                        Question Text
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Points
                       </label>
-                      <textarea
-                        value={question.questionText}
+                      <input
+                        type="number"
+                        value={question.points}
                         onChange={(e) =>
                           handleQuestionChange(
                             index,
-                            "questionText",
-                            e.target.value,
+                            "points",
+                            parseInt(e.target.value) || 0
                           )
                         }
-                        rows={3}
-                        className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-                        placeholder="Enter your question here"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        min="0"
                       />
                     </div>
-
-                    {question.type === "multi-choice" && (
-                      <div className="mb-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <label className="text-span text-dark font-medium">
-                            Answer Options
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => handleAddOption(index)}
-                            className="text-primary hover:text-primary-dark text-sm font-medium flex items-center"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 mr-1"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            Add Option
-                          </button>
-                        </div>
-
-                        {question.options &&
-                          question.options.map((option, optIndex) => (
-                            <div
-                              key={optIndex}
-                              className="flex items-center mb-2"
-                            >
-                              <input
-                                type="radio"
-                                name={`question-${question.id}-answer`}
-                                checked={question.questionAnswer === option}
-                                onChange={() =>
-                                  handleQuestionChange(
-                                    index,
-                                    "questionAnswer",
-                                    option,
-                                  )
-                                }
-                                className="mr-2"
-                              />
-                              <input
-                                type="text"
-                                value={option}
-                                onChange={(e) =>
-                                  handleOptionChange(
-                                    index,
-                                    optIndex,
-                                    e.target.value,
-                                  )
-                                }
-                                className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md flex-1 leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-                              />
-                              {question.options &&
-                                question.options.length > 2 && (
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleRemoveOption(index, optIndex)
-                                    }
-                                    className="ml-2 text-red-500 hover:text-red-700"
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      className="h-5 w-5"
-                                      viewBox="0 0 20 20"
-                                      fill="currentColor"
-                                    >
-                                      <path
-                                        fillRule="evenodd"
-                                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                        clipRule="evenodd"
-                                      />
-                                    </svg>
-                                  </button>
-                                )}
-                            </div>
-                          ))}
-                      </div>
-                    )}
-
-                    {question.type === "fill-ins" && (
-                      <div className="mb-4">
-                        <label className="text-span text-dark font-medium block pb-2">
-                          Correct Answer
-                        </label>
-                        <input
-                          type="text"
-                          value={question.questionAnswer}
-                          onChange={(e) =>
-                            handleQuestionChange(
-                              index,
-                              "questionAnswer",
-                              e.target.value,
-                            )
-                          }
-                          className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full leading-5 h-10 transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-                          placeholder="Enter the correct answer"
-                        />
-                      </div>
-                    )}
-
-                    {question.type === "essay" && (
-                      <div className="mb-4">
-                        <label className="text-span text-dark font-medium block pb-2">
-                          Model Answer (for grading reference)
-                        </label>
-                        <textarea
-                          value={question.questionAnswer}
-                          onChange={(e) =>
-                            handleQuestionChange(
-                              index,
-                              "questionAnswer",
-                              e.target.value,
-                            )
-                          }
-                          className="placeholder:text-slate-400 placeholder:text-sm p-2 text-p text-dark border-2 rounded-md w-full transition duration-150 ease-out hover:border-primary hover:ease-in hover:drop-shadow-md outline-none focus:border-primary focus:transition-all"
-                          placeholder="Enter a model answer for grading reference"
-                          rows={4}
-                        />
-                      </div>
-                    )}
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-          {examDetails.questions.length > 0 && (
-            <div className="mt-6 pt-4 border-t">
-              <p className="text-right text-gray-700">
-                Total Points: {examDetails.questions.reduce((sum, q) => sum + (q.points || 0), 0)}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
 
-      <div className="mt-8 flex justify-end space-x-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          onClick={onSave}
-          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-        >
-          Save Exam
-        </button>
+                  {question.type === "essay" && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Model Answer
+                      </label>
+                      <textarea
+                        value={question.questionAnswer}
+                        onChange={(e) =>
+                          handleQuestionChange(index, "questionAnswer", e.target.value)
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        rows={4}
+                      />
+                    </div>
+                  )}
+
+                  {question.type === "multi-choice" && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Options
+                      </label>
+                      <div className="space-y-2">
+                        {question.options?.map((option, optionIndex) => (
+                          <div key={optionIndex} className="flex items-center space-x-2">
+                            <input
+                              type="text"
+                              value={option}
+                              onChange={(e) =>
+                                handleOptionChange(index, optionIndex, e.target.value)
+                              }
+                              className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                              placeholder={`Option ${optionIndex + 1}`}
+                            />
+                            <input
+                              type="radio"
+                              name={`correct-${question.id}`}
+                              checked={question.questionAnswer === option}
+                              onChange={() =>
+                                handleQuestionChange(
+                                  index,
+                                  "questionAnswer",
+                                  option
+                                )
+                              }
+                              className="h-4 w-4 text-primary focus:ring-primary border-gray-300"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveOption(index, optionIndex)}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => handleAddOption(index)}
+                          className="text-primary hover:text-primary-dark"
+                        >
+                          Add Option
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {question.type === "fill-ins" && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Correct Answer
+                      </label>
+                      <input
+                        type="text"
+                        value={question.questionAnswer}
+                        onChange={(e) =>
+                          handleQuestionChange(index, "questionAnswer", e.target.value)
+                        }
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      />
+                    </div>
+                  )}
+
+                  {question.type === "essay" && question.rubricCriteria && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Rubric Criteria
+                      </label>
+                      <div className="space-y-2">
+                        {question.rubricCriteria.map((criteria, criteriaIndex) => (
+                          <div key={criteriaIndex} className="flex items-center space-x-2">
+                            <span className="flex-1 text-sm text-gray-700">
+                              {criteria.name}
+                            </span>
+                            <input
+                              type="number"
+                              value={criteria.value}
+                              onChange={(e) =>
+                                handleRubricCriteriaChange(
+                                  index,
+                                  criteriaIndex,
+                                  parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-20 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                              min="0"
+                              max="100"
+                            />
+                            <span className="text-sm text-gray-500">%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {(formData.questions?.length || 0) > 0 && (
+          <div className="mt-6 pt-4 border-t">
+            <p className="text-right text-gray-700">
+              Total Points: {(formData.questions || []).reduce((sum, q) => sum + (q.points || 0), 0)}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default ExamForm;
+}

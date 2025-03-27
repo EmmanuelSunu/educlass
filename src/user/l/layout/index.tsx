@@ -31,10 +31,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <ButtonProps onClick={onAddHeadbarButton}>{buttonTitle}</ButtonProps>
           )}
         </header>
-        <div className="flex-1 p-6 overflow-auto">
-          <Breadcrumb />
+        <Breadcrumb />
+        <main className="flex-1 p-6 overflow-auto">
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );

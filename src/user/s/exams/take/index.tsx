@@ -2,8 +2,15 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layout/index";
 import { FiClock } from "react-icons/fi";
-import { exams, Question, Exam } from "../../../../data";
+import { type Question, type Exam } from "../../../../data/exams/types";
+import { getExamById } from "../../../../data/exams/service";
 import { getExamStatus } from "../../../../utils/examStatus";
+import { 
+  calculateRemainingTime, 
+  isExamAvailable, 
+  compareAnswers,
+  formatExamTime 
+} from "../../../../utils/exam";
 
 function formatTime(seconds: number): string {
   const hours = Math.floor(seconds / 3600);
@@ -15,92 +22,89 @@ function formatTime(seconds: number): string {
 function TakeExamPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [exam, setExam] = useState<Exam | null>(null);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [timeLeft, setTimeLeft] = useState<number | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [remainingTime, setRemainingTime] = useState<number>(0);
+  const [submitted, setSubmitted] = useState(false);
   const [showTimeUpModal, setShowTimeUpModal] = useState(false);
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const typedExamsData = exams as Exam[];
-    const foundExam = typedExamsData.find(exam => exam.id === Number(id));
+    if (id) {
+      const examData = getExamById(Number(id));
+      if (examData) {
+        setExam(examData);
+        
+        // Check if exam is available
+        if (!isExamAvailable(new Date(examData.dueDate), examData.startTime, examData.endTime)) {
+          navigate("/user/s/exams");
+          return;
+        }
 
-    if (foundExam) {
-      const processedExam = {
-        ...foundExam,
-        questions: foundExam.questions.map((question, index) => ({
-          ...question,
-          id: question.id ?? `q${index + 1}`, 
-          points: question.points ?? 5 
-        }))
-      };
-
-      setExam(processedExam);
-      const totalMinutes = (processedExam.durationHours * 60) + processedExam.durationMinutes;
-      setTimeLeft(totalMinutes * 60); 
-    } else {
-      console.error("Exam not found with ID:", id);
-      setTimeout(() => {
-        setTimeLeft(null);
-      }, 1000);
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
+        // Initialize remaining time
+        const remaining = calculateRemainingTime(new Date(examData.dueDate), examData.endTime);
+        setRemainingTime(remaining);
       }
-    };
-  }, [id]);
+    }
+    setLoading(false);
+  }, [id, navigate]);
 
   useEffect(() => {
-    if (timeLeft === null) return;
+    if (!exam || submitted) return;
 
-    if (timeLeft <= 0) {
-      clearInterval(timerRef.current!);
-      handleTimeUp();
-      return;
-    }
-
-    timerRef.current = window.setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev === null || prev <= 0) {
-          clearInterval(timerRef.current!);
-          handleTimeUp();
+    const timer = setInterval(() => {
+      setRemainingTime((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          handleSubmit();
           return 0;
         }
         return prev - 1;
       });
-    }, 1000);
+    }, 60000); // Update every minute
 
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, [timeLeft]);
+    return () => clearInterval(timer);
+  }, [exam, submitted]);
 
-  const handleAnswerChange = (questionId: string, answer: string) => {
-    setAnswers(prev => ({
+  const handleAnswerChange = (questionId: string, value: string) => {
+    setAnswers((prev) => ({
       ...prev,
-      [questionId]: answer
+      [questionId]: value,
     }));
   };
 
   const handleSubmit = async () => {
     if (!exam) return;
-    
-    setIsSubmitting(true);
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Navigate to results page
-      navigate(`/user/s/results/${exam.id}`);
-    } catch (error) {
-      console.error('Error submitting exam:', error);
-      setIsSubmitting(false);
-    }
+
+    // Process answers
+    const processedAnswers = exam.questions.map((question) => {
+      const userAnswer = answers[question.id] || "";
+      let isCorrect = false;
+
+      switch (question.type) {
+        case "multi-choice":
+          isCorrect = userAnswer === question.questionAnswer;
+          break;
+        case "fill-ins":
+          isCorrect = compareAnswers(userAnswer, question.questionAnswer);
+          break;
+        case "essay":
+          // Essay answers need manual grading
+          isCorrect = false;
+          break;
+      }
+
+      return {
+        questionId: question.id,
+        userAnswer,
+        isCorrect,
+      };
+    });
+
+    setSubmitted(true);
+    // Here you would typically send the answers to your backend
+    navigate("/user/s/results");
   };
 
   const handleTimeUp = async () => {
@@ -111,22 +115,21 @@ function TakeExamPage() {
     }, 3000);
   };
 
+  if (loading) {
+    return (
+      <DashboardLayout title="Loading...">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   if (!exam) {
     return (
-      <DashboardLayout
-        title="Exam Not Found"
-        showAddHeadbarButton={false}
-        buttonTitle=""
-      >
-        <div className="flex flex-col items-center justify-center h-96">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Exam Not Found</h2>
-          <p className="text-gray-600 mb-6">The exam you're looking for could not be found.</p>
-          <button
-            onClick={() => navigate('/user/s/exams')}
-            className="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md"
-          >
-            Return to Exams
-          </button>
+      <DashboardLayout title="Exam Not Found">
+        <div className="text-center py-8">
+          <p className="text-gray-500">The exam you're looking for doesn't exist.</p>
         </div>
       </DashboardLayout>
     );
@@ -201,6 +204,17 @@ function TakeExamPage() {
           />
         );
 
+      case "fill-ins":
+        return (
+          <input
+            type="text"
+            value={answers[question.id] || ""}
+            onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+            placeholder="Type your answer here..."
+          />
+        );
+
       default:
         return <p className="text-red-500">Unsupported question type</p>;
     }
@@ -253,11 +267,11 @@ function TakeExamPage() {
 
             {/* Right side - Timer */}
             <div className={`px-4 py-2 rounded-lg font-mono text-lg font-medium ${
-              timeLeft && timeLeft <= 300 
+              remainingTime && remainingTime <= 300 
                 ? 'bg-red-50 text-red-600 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.2)]' 
                 : 'bg-slate-50 text-slate-700 shadow-[0_0_10px_rgba(100,116,139,0.1)]'
             }`}>
-              {timeLeft !== null ? formatTime(timeLeft) : '--:--:--'}
+              {remainingTime !== null ? formatTime(remainingTime) : '--:--:--'}
             </div>
           </div>
         </div>
@@ -303,20 +317,16 @@ function TakeExamPage() {
             </div>
             <button
               onClick={handleSubmit}
-              disabled={isSubmitting}
+              disabled={submitted}
               className="bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-8 rounded-lg shadow-sm transition duration-150 ease-in-out flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? (
+              {submitted ? (
                 <>
-                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
                   <span>Submitting...</span>
                 </>
               ) : (
                 <>
                   <span>Submit Exam</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
                 </>
               )}
             </button>

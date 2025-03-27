@@ -1,3 +1,5 @@
+import { RubricCriteria } from '../../../data/exams/types';
+
 export interface Exam {
   id: number;
   title: string;
@@ -36,4 +38,5 @@ export interface Question {
   questionText: string;
   questionAnswer: string;
   options?: string[]; // Make this optional to accommodate different question types
+  rubricCriteria?: RubricCriteria[]; // Only for essay type questions
 }

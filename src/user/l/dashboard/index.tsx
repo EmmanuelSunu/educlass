@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "../layout";
-import { exams } from "../../../data";
+import { type Exam } from "../../../data/exams/types";
 import { FiUsers, FiClipboard, FiCalendar, FiClock } from "react-icons/fi";
 import { getExamStatus } from "../../../utils/examStatus";
+import { getExams } from "../../../data/exams/service";
 
 const Dashboard = () => {
+  const [exams, setExams] = useState<Exam[]>([]);
   const [stats, setStats] = useState({
     totalExams: 0,
     activeExams: 0,
@@ -14,9 +16,18 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
+    // Fetch exams
+    const fetchExams = async () => {
+      const fetchedExams = await getExams();
+      setExams(fetchedExams);
+    };
+    fetchExams();
+  }, []);
+
+  useEffect(() => {
     // Calculate exam statistics
     const examStats = exams.reduce(
-      (acc, exam) => {
+      (acc: typeof stats, exam: Exam) => {
         acc.totalExams++;
         const status = getExamStatus(exam, exam.id === 1);
         if (status === "available") acc.activeExams++;
@@ -33,31 +44,31 @@ const Dashboard = () => {
     );
 
     setStats(examStats);
-  }, []);
+  }, [exams]);
 
   const statCards = [
     {
       title: "Total Exams",
       value: stats.totalExams,
-      icon: <FiClipboard className="w-6 h-6" />,
+      icon: <FiClipboard className="w-6 h-6 text-blue-500" />,
       color: "bg-blue-500",
     },
     {
       title: "Active Exams",
       value: stats.activeExams,
-      icon: <FiClock className="w-6 h-6" />,
+      icon: <FiClock className="w-6 h-6 text-green-500" />,
       color: "bg-green-500",
     },
     {
       title: "Upcoming Exams",
       value: stats.upcomingExams,
-      icon: <FiCalendar className="w-6 h-6" />,
+      icon: <FiCalendar className="w-6 h-6 text-purple-500" />,
       color: "bg-purple-500",
     },
     {
       title: "Completed Exams",
       value: stats.completedExams,
-      icon: <FiUsers className="w-6 h-6" />,
+      icon: <FiUsers className="w-6 h-6 text-orange-500" />,
       color: "bg-orange-500",
     },
   ];
@@ -83,7 +94,7 @@ const Dashboard = () => {
                 </h3>
               </div>
               <div
-                className={`${stat.color} text-white p-3 rounded-lg bg-opacity-10`}
+                className={`${stat.color} text-white p-3 rounded-full bg-opacity-10`}
               >
                 {stat.icon}
               </div>

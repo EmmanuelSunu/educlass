@@ -1,66 +1,86 @@
-export interface Question {
-  id: string;
-  type: "essay" | "multi-choice" | "fill-ins";
-  points: number;
-  questionText: string;
-  questionAnswer: string;
-  options?: string[];
-}
-
 export interface Exam {
   id: number;
   title: string;
-  type: "exam" | "test" | "assignment";
-  duration: string;
-  durationHours: number;
-  durationMinutes: number;
-  startTime: string;
-  endTime: string;
-  status: "scheduled" | "completed" | "in-progress";
-  dueDate: string;
+  type: "exam" | "assignment";
   description: string;
   classId: number;
   className: string;
+  dueDate: string; // ISO date format
+  startTime: string; // HH:mm format
+  endTime: string; // HH:mm format
+  durationHours: number;
+  durationMinutes: number;
+  duration: string; // Formatted duration string
+  status: "upcoming" | "ongoing" | "completed";
+  totalPoints: number;
   questions: Question[];
+  createdAt: string; // ISO datetime
+  updatedAt: string; // ISO datetime
 }
 
-export interface Student {
+export interface Question {
   id: string;
-  name: string;
+  examId: number;
+  type: "essay" | "multi-choice" | "fill-ins";
+  questionText: string;
+  points: number;
+  // For essay questions
+  modelAnswer?: string;
+  rubricCriteria?: RubricCriteria[];
+  // For multi-choice questions
+  options?: {
+    id: string;
+    text: string;
+  }[];
+  correctAnswerId?: string; // ID of the correct option for multi-choice
+  // For fill-in questions
+  correctAnswer?: string;
+  createdAt: string; // ISO datetime
+  updatedAt: string; // ISO datetime
 }
 
-export interface Class {
+export interface RubricCriteria {
   id: string;
-  level: string;
-  program: string;
-  students: Student[];
-}
-
-export interface ClassDetails {
+  questionId: string;
   name: string;
-  duration: string;
-  level: string;
-  semester: string;
-  lecturer: string;
+  value: number;
   description: string;
+  createdAt: string; // ISO datetime
+  updatedAt: string; // ISO datetime
 }
 
-export interface Schedule {
-  id: number;
-  type: "class" | "examination" | "test" | "meeting";
-  title: string;
-  startTime: string;
-  endTime: string;
-  date: string;
-  location: string;
-  classId: number;
-}
-
-export interface StudentData {
+export interface Submission {
   id: string;
-  name: string;
-  email: string;
-  program: string;
-  year: string;
-  classIds: number[];
+  examId: number;
+  studentId: string;
+  startTime: string; // ISO datetime
+  endTime: string; // ISO datetime
+  status: "submitted";
+  totalScore: number;
+  createdAt: string; // ISO datetime
+  updatedAt: string; // ISO datetime
+}
+
+export interface SubmissionAnswer {
+  id: string;
+  submissionId: string;
+  questionId: string;
+  // For essay and fill-in questions
+  answer?: string;
+  // For multi-choice questions
+  selectedOptionId?: string;
+  score: number;
+  feedback?: string;
+  createdAt: string; // ISO datetime
+  updatedAt: string; // ISO datetime
+}
+
+export interface RubricScore {
+  id: string;
+  submissionAnswerId: string;
+  rubricCriteriaId: string;
+  score: number;
+  feedback?: string;
+  createdAt: string; // ISO datetime
+  updatedAt: string; // ISO datetime
 } 

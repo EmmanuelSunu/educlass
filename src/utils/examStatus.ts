@@ -1,4 +1,4 @@
-import { type Exam } from "../data";
+import { type Exam } from "../data/exams/types";
 
 export type ExamStatus = "available" | "scheduled" | "past";
 
