@@ -83,4 +83,68 @@ export interface RubricScore {
   feedback?: string;
   createdAt: string; // ISO datetime
   updatedAt: string; // ISO datetime
+}
+
+// Admin Types
+export interface Program {
+  id: string;
+  name: string;
+  description: string;
+  duration: string;
+  createdAt: string;
+  updatedAt: string;
+  courses: Course[];
+}
+
+export interface Course {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  programId: string;
+  lecturerId: string;
+  credits: number;
+  duration: string;
+  status: 'active' | 'inactive';
+  level: '100' | '200' | '300' | '400';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Lecturer {
+  id: string;
+  name: string;
+  email: string;
+  department: string;
+  status: 'active' | 'inactive';
+  courses: string[]; // Course IDs
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Student {
+  id: string;
+  name: string;
+  email: string;
+  programId: string;
+  enrollmentYear: number;
+  status: 'active' | 'inactive' | 'graduated';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AnalyticsData {
+  totalStudents: number;
+  totalLecturers: number;
+  totalCourses: number;
+  totalPrograms: number;
+  studentEnrollmentTrend: {
+    year: number;
+    count: number;
+  }[];
+  courseEnrollmentStats: {
+    courseId: string;
+    courseName: string;
+    enrolledStudents: number;
+  }[];
 } 

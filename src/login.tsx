@@ -3,14 +3,46 @@ import { useNavigate } from "react-router-dom";
 import Logo from "./assets/images/logo.svg";
 import InputField from "./components/InputField";
 import ButtonProps from "./components/ButtonProps";
-import LECTURER_URLS from "./user/l/url";
-import STUDENT_URLS from "./user/s/url";
-import { IoIosArrowRoundForward, IoIosArrowRoundBack } from "react-icons/io";
+import { useAuth } from "./data/auth/context";
+import { IoIosArrowRoundForward } from "react-icons/io";
 
 function Login() {
-  const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [userType, setUserType] = useState<"lecturer" | "student">("lecturer");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      await login(formData.email, formData.password);
+      
+      // Redirect based on user role
+      if (formData.email.includes("admin")) {
+        navigate("/admin");
+      } else if (formData.email.includes("lecturer")) {
+        navigate("/user/l/dashboard");
+      } else {
+        navigate("/user/s/dashboard");
+      }
+    } catch (err) {
+      setError("Invalid credentials");
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    setError("");
+  };
 
   return (
     <div className="flex flex-col bg-grey-200 animate-fadeIn">
@@ -31,215 +63,75 @@ function Login() {
             style={{ animationDelay: "0.2s" }}
           />{" "}
           {/* Added animation */}
-          {isForgotPassword ? (
-            <>
-              {/* Forgot Password Form */}
-              <div className="pb-4 animate-fadeIn">
-                {" "}
-                {/* Added animation */}
-                <h5 className="text-h5 text-dark animate-slideInUp">
-                  Forgot Password
-                </h5>
-                <span className="text-sm text-gray-500 animate-slideInUp">
-                  Reset your password by entering your email
-                </span>
-              </div>
-              <form
-                id="forgotPasswordForm"
-                action=""
-                method="POST"
-                className="flex flex-col gap-4 animate-fadeIn"
-                style={{ animationDelay: "0.4s" }}
-              >
-                <div
-                  className="animate-fadeIn"
-                  style={{ animationDelay: "0.5s" }}
-                >
-                  {" "}
-                  {/* Added animation */}
-                  <label
-                    htmlFor="email"
-                    className="text-span text-dark font-medium animate-slideInUp"
-                  >
-                    Email
-                  </label>
-                  <InputField
-                    type="email"
-                    id="email"
-                    placeholder="Enter your Email"
-                    isRequired={true}
-                    className="animate-slideInUp"
-                    style={{ animationDelay: "0.6s" }} // Pass the style prop
-                  />
-                </div>
-                <div
-                  className="flex flex-row-reverse justify-between animate-fadeIn"
-                  style={{ animationDelay: "0.7s" }}
-                >
-                  {" "}
-                  {/* Added animation */}
-                  <ButtonProps
-                    type="submit"
-                    variant="primary"
-                    size="large"
-                    className="flex items-center animate-slideInUp"
-                    style={{ animationDelay: "0.8s" }}
-                  >
-                    Reset Password
-                    <IoIosArrowRoundForward className="size-6" />
-                  </ButtonProps>
-                  <ButtonProps
-                    type="button"
-                    variant="secondary"
-                    size="large"
-                    className="flex items-center animate-slideInUp"
-                    style={{ animationDelay: "0.9s" }}
-                    onClick={() => setIsForgotPassword(false)}
-                  >
-                    <IoIosArrowRoundBack className="size-6" />
-                    Login
-                  </ButtonProps>
-                </div>
-              </form>
-            </>
-          ) : (
-            <>
-              {/* Login Form */}
-              <div className="pb-4 animate-fadeIn">
-                {" "}
-                {/* Added animation */}
-                <h5 className="text-h5 text-dark animate-slideInUp">Sign In</h5>
-                <span className="text-sm text-gray-500 animate-slideInUp">
-                  Access EduClass using your details
-                </span>
-              </div>
-              <div className="mb-4 animate-fadeIn">
-                {" "}
-                {/* Added animation */}
-                <label className="text-span text-dark font-medium mb-2 block animate-slideInUp">
-                  I am a:
-                </label>
-                <div
-                  className="flex items-center justify-between bg-slate-100 rounded-full p-1 w-64 mt-2 animate-fadeIn"
-                  style={{ animationDelay: "0.3s" }}
-                >
-                  {" "}
-                  {/* Added animation */}
-                  <button
-                    type="button"
-                    onClick={() => setUserType("lecturer")}
-                    className={`py-2 px-6 rounded-full text-sm font-medium transition-all duration-200 ${
-                      userType === "lecturer"
-                        ? "bg-primary text-white shadow-sm"
-                        : "text-slate-600 hover:bg-slate-200"
-                    } animate-slideInUp`}
-                    style={{ animationDelay: "0.4s" }}
-                  >
-                    Lecturer
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setUserType("student")}
-                    className={`py-2 px-6 rounded-full text-sm font-medium transition-all duration-200 ${
-                      userType === "student"
-                        ? "bg-primary text-white shadow-sm"
-                        : "text-slate-600 hover:bg-slate-200"
-                    } animate-slideInUp`}
-                    style={{ animationDelay: "0.5s" }}
-                  >
-                    Student
-                  </button>
-                </div>
-              </div>
-              <form
-                id="loginForm"
-                action=""
-                method="POST"
-                className="flex flex-col gap-4 animate-fadeIn"
+          {/* Login Form */}
+          <div className="pb-4 animate-fadeIn">
+            {" "}
+            {/* Added animation */}
+            <h5 className="text-h5 text-dark animate-slideInUp">Sign In</h5>
+            <span className="text-sm text-gray-500 animate-slideInUp">
+              Access EduClass using your details
+            </span>
+          </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 animate-fadeIn" style={{ animationDelay: "0.4s" }}>
+            <div className="animate-fadeIn" style={{ animationDelay: "0.5s" }}>
+              <label htmlFor="email" className="text-span text-dark font-medium animate-slideInUp">
+                Email
+              </label>
+              <InputField
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your Email"
+                isRequired={true}
+                className="animate-slideInUp"
                 style={{ animationDelay: "0.6s" }}
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  // Redirect based on user type
-                  if (userType === "lecturer") {
-                    navigate(LECTURER_URLS.DASHBOARD);
-                  } else {
-                    navigate(STUDENT_URLS.DASHBOARD);
-                  }
-                }}
+              />
+            </div>
+            <div className="animate-fadeIn" style={{ animationDelay: "0.6s" }}>
+              <label htmlFor="password" className="text-span text-dark font-medium animate-slideInUp">
+                Password
+              </label>
+              <InputField
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your Password"
+                isRequired={true}
+                className="animate-slideInUp"
+                style={{ animationDelay: "0.7s" }}
+              />
+            </div>
+            {error && (
+              <div className="text-red-500 text-sm animate-fadeIn" style={{ animationDelay: "0.8s" }}>
+                {error}
+              </div>
+            )}
+            <div className="flex flex-row-reverse justify-between animate-fadeIn" style={{ animationDelay: "0.7s" }}>
+              <ButtonProps
+                type="submit"
+                variant="primary"
+                size="large"
+                className="flex items-center animate-slideInUp"
+                style={{ animationDelay: "0.8s" }}
               >
-                <div
-                  className="animate-fadeIn"
-                  style={{ animationDelay: "0.7s" }}
-                >
-                  {" "}
-                  {/* Added animation */}
-                  <div className="flex justify-start pb-2 animate-slideInUp">
-                    {" "}
-                    {/* Added animation */}
-                    <label
-                      htmlFor="email"
-                      className="text-span text-dark font-medium animate-slideInUp"
-                    >
-                      Email
-                    </label>
-                  </div>
-                  <InputField
-                    type="email"
-                    id="email"
-                    placeholder="Enter your Email"
-                    isRequired={true}
-                    className="animate-slideInUp"
-                    style={{ animationDelay: "0.8s" }}
-                  />
-                </div>
-                <div
-                  className="animate-fadeIn"
-                  style={{ animationDelay: "0.9s" }}
-                >
-                  {" "}
-                  {/* Added animation */}
-                  <div className="flex justify-between pb-2 animate-slideInUp">
-                    {" "}
-                    {/* Added animation */}
-                    <label
-                      htmlFor="password"
-                      className="text-span text-dark font-medium animate-slideInUp"
-                    >
-                      Password
-                    </label>
-                    <button
-                      className="text-span text-primary font-medium animate-slideInUp"
-                      style={{ animationDelay: "1s" }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsForgotPassword(true);
-                      }}
-                    >
-                      Forgot Password?
-                    </button>
-                  </div>
-                  <InputField
-                    type="password"
-                    id="password"
-                    placeholder="Enter your Password"
-                    isRequired={true}
-                    className="animate-slideInUp"
-                    style={{ animationDelay: "1.1s" }}
-                  />
-                </div>
-                <ButtonProps
-                  type="submit"
-                  variant="primary"
-                  size="large"
-                  className="flex items-center w-full animate-slideInUp"
-                  style={{ animationDelay: "1.2s" }}
-                >
-                  Login
-                  <IoIosArrowRoundForward className="size-6" />
-                </ButtonProps>
-              </form>
-            </>
-          )}
+                Sign In
+                <IoIosArrowRoundForward className="size-6" />
+              </ButtonProps>
+            </div>
+          </form>
+          {/* Dummy Users Info */}
+          <div className="mt-8 p-4 bg-gray-50 rounded-lg text-sm text-gray-600 animate-fadeIn" style={{ animationDelay: "0.9s" }}>
+            <p className="font-medium mb-2">Dummy Users for Testing:</p>
+            <ul className="space-y-1">
+              <li>Admin: admin@educlass.com / password123</li>
+              <li>Lecturer: lecturer@educlass.com / password123</li>
+              <li>Student: student@educlass.com / password123</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

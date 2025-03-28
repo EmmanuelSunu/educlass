@@ -14,6 +14,13 @@ export default defineConfig({
       '.replit.dev',
       'localhost'
     ],
+    open: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
   },
   resolve: {
     alias: {
@@ -30,4 +37,5 @@ export default defineConfig({
       include: [/node_modules/],
     },
   },
+  logLevel: 'error',
 })

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useCallback } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import { type AuthState, type AuthContextType, type User } from './types';
 
 // Initial state
@@ -18,7 +18,8 @@ type AuthAction =
   | { type: 'LOGIN_SUCCESS'; payload: User }
   | { type: 'LOGIN_FAILURE'; payload: string }
   | { type: 'LOGOUT' }
-  | { type: 'CLEAR_ERROR' };
+  | { type: 'CLEAR_ERROR' }
+  | { type: 'SET_LOADING'; payload: boolean };
 
 // Reducer
 function authReducer(state: AuthState, action: AuthAction): AuthState {
@@ -50,12 +51,18 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         ...state,
         isAuthenticated: false,
         user: null,
-        error: null
+        error: null,
+        isLoading: false
       };
     case 'CLEAR_ERROR':
       return {
         ...state,
         error: null
+      };
+    case 'SET_LOADING':
+      return {
+        ...state,
+        isLoading: action.payload
       };
     default:
       return state;
@@ -66,34 +73,81 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Mock login function - replace with actual API call
+  // Check for stored auth data on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+        }
+      } catch (error) {
+        console.error('Error checking auth:', error);
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false });
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  // Mock login function with dummy users
   const login = useCallback(async (email: string, password: string) => {
     try {
       dispatch({ type: 'LOGIN_START' });
 
-      // TODO: Replace with actual API call
-      const mockUser: User = {
-        id: 1,
-        name: 'John Doe',
-        email: email,
-        role: email.includes('lecturer') ? 'lecturer' : 'student',
-        program: email.includes('student') ? 'Computer Science' : undefined,
-        year: email.includes('student') ? '2024' : undefined
-      };
-
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      dispatch({ type: 'LOGIN_SUCCESS', payload: mockUser });
+      // Check for dummy users
+      if (password !== 'password123') {
+        throw new Error('Invalid credentials');
+      }
+
+      let user: User;
+
+      if (email === 'admin@educlass.com') {
+        user = {
+          id: 1,
+          name: 'Admin User',
+          email: email,
+          role: 'admin'
+        };
+      } else if (email === 'lecturer@educlass.com') {
+        user = {
+          id: 2,
+          name: 'John Lecturer',
+          email: email,
+          role: 'lecturer'
+        };
+      } else if (email === 'student@educlass.com') {
+        user = {
+          id: 3,
+          name: 'Jane Student',
+          email: email,
+          role: 'student',
+          program: 'Computer Science',
+          year: '2024'
+        };
+      } else {
+        throw new Error('Invalid credentials');
+      }
+
+      // Store user in localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+      dispatch({ type: 'LOGIN_SUCCESS', payload: user });
     } catch (error) {
       dispatch({ type: 'LOGIN_FAILURE', payload: 'Invalid credentials' });
+      throw error;
     }
   }, []);
 
-  // Mock logout function - replace with actual API call
+  // Mock logout function
   const logout = useCallback(async () => {
-    // TODO: Replace with actual API call
+    dispatch({ type: 'SET_LOADING', payload: true });
     await new Promise(resolve => setTimeout(resolve, 500));
+    localStorage.removeItem('user');
     dispatch({ type: 'LOGOUT' });
   }, []);
 

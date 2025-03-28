@@ -4,24 +4,33 @@ import React from "react";
 interface InputFieldProps {
   type?: string;
   id?: string;
+  name?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   className?: string;
   isRequired?: boolean;
-  style?: React.CSSProperties; // Add this line
+  style?: React.CSSProperties;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
-  type = "text", // Default to text input
+  type = "text",
   id = "",
+  name = "",
+  value = "",
+  onChange,
   placeholder = "",
   className = "",
   isRequired = false,
-  style, // Destructure the style prop
+  style,
 }) => {
   return (
     <input
       type={type}
       id={id}
+      name={name}
+      value={value}
+      onChange={onChange}
       placeholder={placeholder}
       required={isRequired}
       className={`
@@ -35,7 +44,7 @@ const InputField: React.FC<InputFieldProps> = ({
         focus:invalid:border-pink-500 focus:invalid:ring-pink-500 
         ${className}
       `}
-      style={style} // Pass the style prop to the input element
+      style={style}
     />
   );
 };
