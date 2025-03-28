@@ -61,6 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         <div className="p-4 flex flex-col h-full overflow-y-auto">
           <div className="pb-4 w-full">
             <img src={Logo} alt="Logo" className="w-28" />
+            <p className="text-sm text-slate-500 mt-1">Lecturer Portal</p>
           </div>
           <div className="flex flex-col h-full justify-between">
             <nav className="flex flex-col mt-4 space-y-1">
