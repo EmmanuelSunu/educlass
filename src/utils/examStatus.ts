@@ -18,9 +18,18 @@ export function formatDate(date: Date | string): string {
 
 export const getExamStatus = (exam: Exam, isEnrolled: boolean): ExamStatus => {
   const now = new Date();
+  
+  // Create exam date objects with proper timezone handling
   const examDate = new Date(exam.dueDate);
-  const startTime = new Date(`${exam.dueDate}T${exam.startTime}`);
-  const endTime = new Date(`${exam.dueDate}T${exam.endTime}`);
+  examDate.setHours(0, 0, 0, 0); // Reset time to start of day
+  
+  const startTime = new Date(exam.dueDate);
+  const [startHour, startMinute] = exam.startTime.split(':').map(Number);
+  startTime.setHours(startHour, startMinute, 0, 0);
+  
+  const endTime = new Date(exam.dueDate);
+  const [endHour, endMinute] = exam.endTime.split(':').map(Number);
+  endTime.setHours(endHour, endMinute, 0, 0);
 
   // If the exam is past its end time
   if (now > endTime) {

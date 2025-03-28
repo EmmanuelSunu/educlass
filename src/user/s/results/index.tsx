@@ -11,14 +11,6 @@ interface ExamResult extends Exam {
   submission: ExamSubmission;
 }
 
-// TODO: REMOVE BEFORE PRODUCTION
-// This is for testing purposes only. When implementing the actual API:
-// 1. Remove this constant
-// 2. Restore authentication checks below
-// 3. Add proper error handling for unauthorized access
-// 4. Update the API endpoints to use proper authentication tokens
-const TEST_STUDENT_ID = 1;
-
 function StudentResults() {
   const [results, setResults] = useState<ExamResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,13 +21,7 @@ function StudentResults() {
   useEffect(() => {
     const loadResults = async () => {
       try {
-        // TODO: RESTORE AUTHENTICATION CHECKS WHEN IMPLEMENTING API
-        // When implementing the actual API:
-        // 1. Remove the test student ID logic
-        // 2. Uncomment and update the authentication checks below
-        // 3. Add proper error handling for unauthorized access
-        // 4. Add proper token handling in API calls
-        /*
+        // Restore authentication checks
         if (!isAuthenticated || !user) {
           navigate('/login');
           return;
@@ -45,17 +31,10 @@ function StudentResults() {
           navigate('/user/l/dashboard');
           return;
         }
-        */
 
-        // For testing purposes - use test student ID if not authenticated
-        const studentId = isAuthenticated && user ? user.id : TEST_STUDENT_ID;
+        // Use the actual student ID from the authenticated user
+        const studentId = user.id;
         
-        // TODO: UPDATE API ENDPOINTS WHEN IMPLEMENTING ACTUAL API
-        // When implementing the actual API:
-        // 1. Update these service calls to use proper API endpoints
-        // 2. Add proper error handling for API failures
-        // 3. Add proper loading states for each API call
-        // 4. Add proper retry logic for failed requests
         const allExams = await getExams();
         const submissions = await getExamSubmissionsByStudentId(studentId);
         
@@ -73,12 +52,6 @@ function StudentResults() {
         setError(null);
       } catch (error) {
         console.error("Failed to load results:", error);
-        // TODO: IMPROVE ERROR HANDLING WHEN IMPLEMENTING API
-        // When implementing the actual API:
-        // 1. Add specific error messages for different types of failures
-        // 2. Add retry logic for transient failures
-        // 3. Add proper error logging
-        // 4. Add proper error reporting to monitoring service
         setError("Failed to load your results. Please try again later.");
       } finally {
         setLoading(false);
@@ -86,7 +59,7 @@ function StudentResults() {
     };
 
     loadResults();
-  }, [user, isAuthenticated]);
+  }, [user, isAuthenticated, navigate]);
 
   const handleResultClick = (id: number) => {
     navigate(`/user/s/results/${id}`);

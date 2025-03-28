@@ -20,6 +20,27 @@
       ],
       "totalScore": 10,
       "grade": "A"
+    },
+    {
+      "id": 2,
+      "examId": 1,
+      "studentId": 3,
+      "submittedAt": "2025-03-27T11:15:00Z",
+      "completionTime": "1 hour 45 minutes",
+      "answers": [
+        {
+          "questionId": "1",
+          "answer": "Agile software development emphasizes iterative development, customer collaboration, and responding to change. It values working software over documentation and promotes adaptive planning."
+        },
+        {
+          "questionId": "2",
+          "answer": "Single Responsibility Principle",
+          "isCorrect": true,
+          "score": 10
+        }
+      ],
+      "totalScore": 10,
+      "grade": "A"
     }
   ]
 } 

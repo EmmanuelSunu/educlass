@@ -1,0 +1,44 @@
+How to Make Exams Available for Testing
+=====================================
+
+1. Edit the exam dates in src/data/exams/exams.json:
+   - Set dueDate to today's date (e.g., "2024-03-28")
+   - Set startTime to a time before current time (e.g., "09:00")
+   - Set endTime to a time after current time (e.g., "23:00")
+
+Example exam configuration:
+{
+  "id": 1,
+  "title": "Test Exam",
+  "type": "exam",
+  "description": "Test exam for development",
+  "classId": 1,
+  "className": "Test Class",
+  "dueDate": "2024-03-28",  // Today's date
+  "startTime": "09:00",     // Before current time
+  "endTime": "23:00",       // After current time
+  "durationHours": 2,
+  "durationMinutes": 0,
+  "duration": "2 hours"
+}
+
+2. Make sure the student is enrolled:
+   - The student should be in the class (classId should match)
+   - The isEnrolled parameter should be true when calling getExamStatus()
+
+3. Testing Different States:
+   - Available: Set current time between startTime and endTime
+   - Scheduled: Set current time before startTime
+   - Past: Set current time after endTime
+
+4. Quick Testing Tips:
+   - Use browser dev tools to modify the current date/time
+   - Or temporarily modify the getExamStatus function to use a specific test time
+   - Make sure to test all three states (available, scheduled, past)
+
+5. Common Issues:
+   - Timezone differences can affect exam availability
+   - Make sure the exam date matches the current date
+   - Check that the student is properly enrolled in the class
+
+Remember to revert any testing changes before committing to production! 

@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../Sidebar";
 import Breadcrumb from "../../../components/Breadcrumb";
-import ButtonProps from "../../../components/ButtonProps";
+// import ButtonProps from "../../../components/ButtonProps";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -30,7 +30,7 @@ function DashboardLayout({
             )}
           </div>
         </div>
-        <Breadcrumb />
+        <Breadcrumb title={title} />
         <main className="flex-1 p-6 overflow-auto pb-12 lg:pb-0">
           {children}
         </main>
