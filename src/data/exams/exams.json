@@ -9,7 +9,7 @@
       "className": "Software Engineering",
       "dueDate": "2025-03-28",
       "startTime": "09:00",
-      "endTime": "23:00",
+      "endTime": "23:59",
       "durationHours": 2,
       "durationMinutes": 0,
       "duration": "2 hours",
