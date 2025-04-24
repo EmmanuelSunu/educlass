@@ -229,6 +229,34 @@ const CreateExam = () => {
     );
   };
 
+  const handleAddOption = (questionId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      questions: prev.questions?.map((q) =>
+        q.id === questionId
+          ? {
+              ...q,
+              options: [...(q.options || []), `Option ${(q.options?.length || 0) + 1}`],
+            }
+          : q
+      ),
+    }));
+  };
+
+  const handleDeleteOption = (questionId: string, optionIndex: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      questions: prev.questions?.map((q) =>
+        q.id === questionId
+          ? {
+              ...q,
+              options: q.options?.filter((_, idx) => idx !== optionIndex),
+            }
+          : q
+      ),
+    }));
+  };
+
   if (loading) {
     return (
       <DashboardLayout
@@ -523,9 +551,19 @@ const CreateExam = () => {
 
                           {question.type === "multi-choice" && (
                             <div className="space-y-3">
-                              <label className="block text-sm font-medium text-slate-700">
-                                Options
-                              </label>
+                              <div className="flex justify-between items-center">
+                                <label className="block text-sm font-medium text-slate-700">
+                                  Options
+                                </label>
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddOption(question.id)}
+                                  className="flex items-center space-x-1 px-2 py-1 text-sm text-primary hover:text-primary/80"
+                                >
+                                  <FiPlus className="w-3 h-3" />
+                                  <span>Add Option</span>
+                                </button>
+                              </div>
                               {question.options?.map((option, optionIndex) => (
                                 <div key={optionIndex} className="flex items-center space-x-2">
                                   <input
@@ -553,6 +591,15 @@ const CreateExam = () => {
                                     placeholder={`Option ${optionIndex + 1}`}
                                     className="flex-1 px-3 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                                   />
+                                  {question.options && question.options.length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteOption(question.id, optionIndex)}
+                                      className="text-red-500 hover:text-red-600"
+                                    >
+                                      <FiTrash2 className="w-4 h-4" />
+                                    </button>
+                                  )}
                                 </div>
                               ))}
                             </div>

@@ -57,7 +57,7 @@ export const getEnrollmentTrend = (years: number = 4) => {
 
 export const getCourseEnrollmentStats = () => {
   const courses = getCourses();
-  const students = getStudents();
+  // const students = getStudents();
   
   return courses.map(course => ({
     courseId: course.id,

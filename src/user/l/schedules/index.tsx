@@ -100,9 +100,6 @@ const Schedules = () => {
       showAddHeadbarButton={false}
     >
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-4">
-          Schedule Management
-        </h1>
 
         <div className="flex justify-between items-center">
           {/* Group 1 - View toggles (left side) */}

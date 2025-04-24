@@ -5,7 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import rrulePlugin from "@fullcalendar/rrule";
 import { Schedule } from "../user/l/schedules/types";
-import { FiCalendar, FiClock, FiMapPin, FiUser } from "react-icons/fi";
+import { FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import ScheduleEventModal from "./ScheduleEventModal";
 import "./calendar-styles.css";
 
@@ -108,10 +108,10 @@ const convertToCalendarEvents = (schedules: Schedule[]): CalendarEvent[] => {
 
 const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   schedules,
-  onEventClick,
+  // onEventClick,
   onDateSelect,
-  onDelete,
-  onUpdateSchedule,
+  // onDelete,
+  // onUpdateSchedule,
 }) => {
   const [selectedView, setSelectedView] = useState<'dayGridMonth' | 'timeGridWeek' | 'timeGridDay'>('dayGridMonth');
   const [selectedEvent, setSelectedEvent] = useState<Schedule | null>(null);

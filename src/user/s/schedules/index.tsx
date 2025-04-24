@@ -6,8 +6,6 @@ import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";
 import { RiCalendarLine, RiListCheck2 } from "react-icons/ri";
 import { Schedule } from "../../l/schedules/types";
-import { type Exam } from "../../../data/exams/types";
-import { type Course } from "../../../data/course/types";
 import { getExams } from "../../../data/exams/service";
 import { courseService } from "../../../data/course/service";
 import { useAuth } from "../../../data/auth/context";

@@ -67,40 +67,42 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-5 space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Title
-        </label>
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-          required
-        />
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Title
+          </label>
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Type
+          </label>
+          <select
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md"
+            required
+          >
+            <option value="class">Class</option>
+            <option value="examination">Examination</option>
+            <option value="studyGroup">Study Group</option>
+            <option value="consultation">Consultation</option>
+          </select>
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Type
-        </label>
-        <select
-          name="type"
-          value={formData.type}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-          required
-        >
-          <option value="class">Class</option>
-          <option value="examination">Examination</option>
-          <option value="studyGroup">Study Group</option>
-          <option value="consultation">Consultation</option>
-        </select>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-3">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Date
@@ -115,33 +117,32 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({
           />
         </div>
 
-        <div className="flex gap-2">
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Start Time
-            </label>
-            <input
-              type="time"
-              name="startTime"
-              value={formData.startTime}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              End Time
-            </label>
-            <input
-              type="time"
-              name="endTime"
-              value={formData.endTime}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Start Time
+          </label>
+          <input
+            type="time"
+            name="startTime"
+            value={formData.startTime}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            End Time
+          </label>
+          <input
+            type="time"
+            name="endTime"
+            value={formData.endTime}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md"
+            required
+          />
         </div>
       </div>
 
@@ -168,7 +169,7 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({
           value={formData.description}
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-md"
-          rows={3}
+          rows={2}
         />
       </div>
 
@@ -190,7 +191,7 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({
       </div>
 
       {formData.isRecurring && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Frequency
@@ -222,7 +223,7 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({
         </div>
       )}
 
-      <div className="flex justify-end space-x-2 pt-4">
+      <div className="flex justify-end space-x-2 pt-2">
         <ButtonProps variant="secondary" onClick={onCancel}>
           Cancel
         </ButtonProps>

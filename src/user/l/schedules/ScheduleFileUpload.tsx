@@ -135,152 +135,126 @@ const ScheduleFileUpload: React.FC<ScheduleFileUploadProps> = ({ onImport }) => 
   };
 
   return (
-    <div className="p-4">
-      <div className="flex flex-col items-center">
-        {!file ? (
-          <div className="w-full flex flex-col items-center">
-            <div className="mb-8 flex flex-col items-center">
-              <div className="bg-blue-50 rounded-full p-8 mb-4">
-                <RiUploadCloud2Line className="text-primary w-16 h-16" />
-              </div>
-              <h3 className="text-xl font-medium text-gray-700">Upload Schedule Data</h3>
-              <p className="text-sm text-gray-500 mt-2 text-center max-w-md">
-                Upload a CSV or Excel file with your schedule data
-              </p>
+    <div className="space-y-4">
+      {!file ? (
+        <div className="flex flex-col items-center">
+          <div className="mb-4 flex flex-col items-center">
+            <div className="bg-blue-50 rounded-full p-4 mb-3">
+              <RiUploadCloud2Line className="text-primary w-10 h-10" />
             </div>
-
-            <label 
-              className="flex flex-col items-center justify-center w-64 h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors mb-6"
-            >
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <p className="text-sm font-medium text-primary mb-1">Click to upload</p>
-                <p className="text-xs text-gray-500">or drag and drop</p>
-                <p className="text-xs text-gray-400 mt-2">CSV, XLS, XLSX</p>
-              </div>
-              <input 
-                id="file-upload" 
-                type="file"
-                accept=".csv,.xlsx,.xls"
-                className="hidden"
-                onChange={handleFileSelect}
-                disabled={isUploading}
-              />
-            </label>
+            <h3 className="text-lg font-medium text-gray-700">Upload Schedule Data</h3>
+            <p className="text-sm text-gray-500 mt-1">
+              Upload a CSV or Excel file with your schedule data
+            </p>
           </div>
-        ) : (
-          <div className="w-full">
-            <div className="flex items-center justify-center mb-6">
-              <div className="bg-gray-50 rounded-full p-6 mb-2">
-                {getFileIcon() || <RiUploadCloud2Line className="text-primary w-10 h-10" />}
-              </div>
+
+          <label 
+            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors mb-4"
+          >
+            <div className="flex flex-col items-center justify-center py-3">
+              <p className="text-sm font-medium text-primary mb-1">Click to upload</p>
+              <p className="text-xs text-gray-500">or drag and drop</p>
+              <p className="text-xs text-gray-400 mt-1">CSV, XLS, XLSX</p>
             </div>
-
-            <div className="flex items-center justify-center mb-4">
-              <div className="bg-blue-50 text-blue-800 text-sm py-2 px-4 rounded-full flex items-center">
-                {file.name}
-                <button 
-                  className="ml-2 text-blue-600 hover:text-blue-800" 
-                  onClick={resetState}
-                  aria-label="Remove file"
-                >
-                  ×
-                </button>
-              </div>
+            <input 
+              id="file-upload" 
+              type="file"
+              accept=".csv,.xlsx,.xls"
+              className="hidden"
+              onChange={handleFileSelect}
+              disabled={isUploading}
+            />
+          </label>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <div className="flex items-center justify-center">
+            <div className="bg-gray-50 rounded-full p-4">
+              {getFileIcon() || <RiUploadCloud2Line className="text-primary w-8 h-8" />}
             </div>
-
-            {isUploading && (
-              <div className="text-center text-sm text-gray-600 mb-4">
-                <div className="w-full h-1 bg-gray-200 rounded-full mb-2">
-                  <div className="h-1 bg-primary rounded-full animate-pulse" style={{ width: '60%' }}></div>
-                </div>
-                Verifying file data...
-              </div>
-            )}
-
-            {error && (
-              <div className="p-3 bg-red-50 text-red-600 rounded-md text-sm mb-4">
-                <p className="font-medium">Error</p>
-                <p>{error}</p>
-                <button 
-                  className="mt-2 text-sm text-red-700 hover:underline" 
-                  onClick={resetState}
-                >
-                  Try a different file
-                </button>
-              </div>
-            )}
-
-            {isVerified && parsedData.length > 0 && (
-              <div className="mb-6">
-                <div className="p-3 bg-green-50 text-green-600 rounded-md text-sm flex items-center mb-4">
-                  <RiCheckLine className="mr-2 flex-shrink-0" />
-                  <span>Found {parsedData.length} schedule items ready to import</span>
-                </div>
-
-                <div className="flex justify-center">
-                  <ButtonProps
-                    variant="primary"
-                    onClick={handleImport}
-                    className="gap-2"
-                  >
-                    <RiCheckLine />
-                    Import {parsedData.length} Schedule Items
-                  </ButtonProps>
-                </div>
-              </div>
-            )}
           </div>
-        )}
 
-        <div className="mt-8 border-t border-gray-200 pt-6 w-full">
-          <h4 className="font-medium text-gray-700 mb-2">Required File Format</h4>
-          <div className="text-xs text-gray-600 space-y-4">
-            <p>Your CSV or Excel file must include these required columns:</p>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <span className="font-medium">title</span>
-                <p className="text-gray-500">Event title</p>
+          <div className="flex items-center justify-center">
+            <div className="bg-blue-50 text-blue-800 text-sm py-1.5 px-3 rounded-full flex items-center">
+              {file.name}
+              <button 
+                className="ml-2 text-blue-600 hover:text-blue-800" 
+                onClick={resetState}
+                aria-label="Remove file"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+
+          {isUploading && (
+            <div className="text-center text-sm text-gray-600">
+              <div className="w-full h-1 bg-gray-200 rounded-full mb-1">
+                <div className="h-1 bg-primary rounded-full animate-pulse" style={{ width: '60%' }}></div>
               </div>
-              <div>
-                <span className="font-medium">type</span>
-                <p className="text-gray-500">Event type (class, exam, etc.)</p>
+              Verifying file data...
+            </div>
+          )}
+
+          {error && (
+            <div className="p-2.5 bg-red-50 text-red-600 rounded-md text-sm">
+              <p className="font-medium">Error</p>
+              <p>{error}</p>
+              <button 
+                className="mt-1 text-sm text-red-700 hover:underline" 
+                onClick={resetState}
+              >
+                Try a different file
+              </button>
+            </div>
+          )}
+
+          {isVerified && parsedData.length > 0 && (
+            <div>
+              <div className="p-2.5 bg-green-50 text-green-600 rounded-md text-sm flex items-center mb-3">
+                <RiCheckLine className="mr-2 flex-shrink-0" />
+                <span>Found {parsedData.length} schedule items ready to import</span>
               </div>
-              <div>
-                <span className="font-medium">date</span>
-                <p className="text-gray-500">YYYY-MM-DD format</p>
-              </div>
-              <div>
-                <span className="font-medium">startTime</span>
-                <p className="text-gray-500">HH:MM format</p>
-              </div>
-              <div>
-                <span className="font-medium">endTime</span>
-                <p className="text-gray-500">HH:MM format</p>
-              </div>
-              <div>
-                <span className="font-medium">location</span>
-                <p className="text-gray-500">Event location</p>
+
+              <div className="flex justify-center">
+                <ButtonProps
+                  variant="primary"
+                  onClick={handleImport}
+                  className="gap-2"
+                >
+                  <RiCheckLine />
+                  Import {parsedData.length} Schedule Items
+                </ButtonProps>
               </div>
             </div>
+          )}
+        </div>
+      )}
 
-            <p className="mt-2">Optional columns include:</p>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <span className="font-medium">isRecurring</span>
-                <p className="text-gray-500">true/false</p>
-              </div>
-              <div>
-                <span className="font-medium">frequency</span>
-                <p className="text-gray-500">daily, weekly, monthly</p>
-              </div>
-              <div>
-                <span className="font-medium">endDate</span>
-                <p className="text-gray-500">For recurring events</p>
-              </div>
-              <div>
-                <span className="font-medium">description</span>
-                <p className="text-gray-500">Event details</p>
-              </div>
+      <div className="border-t border-gray-200 pt-3">
+        <h4 className="text-sm font-medium text-gray-700 mb-2">Required File Format</h4>
+        <div className="text-xs text-gray-600 space-y-2">
+          <p>Your CSV or Excel file must include these required columns:</p>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+            <div>
+              <span className="font-medium">title</span>
+              <p className="text-gray-500">Event title</p>
+            </div>
+            <div>
+              <span className="font-medium">type</span>
+              <p className="text-gray-500">Event type (class, exam, etc.)</p>
+            </div>
+            <div>
+              <span className="font-medium">date</span>
+              <p className="text-gray-500">YYYY-MM-DD format</p>
+            </div>
+            <div>
+              <span className="font-medium">startTime & endTime</span>
+              <p className="text-gray-500">HH:MM format</p>
+            </div>
+            <div>
+              <span className="font-medium">location</span>
+              <p className="text-gray-500">Event location</p>
             </div>
           </div>
         </div>

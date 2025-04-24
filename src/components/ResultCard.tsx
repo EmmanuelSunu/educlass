@@ -47,7 +47,6 @@ export default function ResultCard({
   score,
   totalPoints,
   completionTime,
-  submittedDate,
   grade,
   onClick
 }: ResultCardProps) {

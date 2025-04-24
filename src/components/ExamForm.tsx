@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { RiAddLine, RiDeleteBinLine } from "react-icons/ri";
 import type { Exam, Question, RubricCriteria } from "../data/exams/types";
 import { courseService } from "../data/course/service";
 import type { Course } from "../data/course/types";

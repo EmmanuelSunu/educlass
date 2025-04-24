@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0',
-    port: 5173,
+    port: 3500,
     strictPort: true,
     allowedHosts: [
       'aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev',
