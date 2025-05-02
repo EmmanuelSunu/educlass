@@ -31,7 +31,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <ButtonProps onClick={onAddHeadbarButton}>{buttonTitle}</ButtonProps>
           )}
         </header>
-        <Breadcrumb />
+        <Breadcrumb title={title} />
         <main className="flex-1 p-6 overflow-auto">
           {children}
         </main>

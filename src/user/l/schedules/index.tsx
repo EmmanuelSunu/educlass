@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "../layout";
 import ScheduleCalendar from "../../../components/ScheduleCalendar";
 import ScheduleTable from "../../../components/ScheduleTable";
@@ -9,88 +9,84 @@ import {
   RiUploadCloud2Line,
   RiAddLine,
 } from "react-icons/ri";
-import { Schedule } from "./types";
+import { Schedule } from "../../../data/schedule/types";
+import { scheduleService } from "../../../data/schedule/service";
 import ScheduleFileUpload from "./ScheduleFileUpload";
 import Modal from "../../../components/Modal";
 import AddScheduleForm from "./AddScheduleForm";
 
-// Mock data for demonstration
-const mockSchedules: Schedule[] = [
-  {
-    id: "1",
-    title: "Operating Systems Class",
-    type: "class",
-    date: "2024-12-24",
-    startTime: "09:00",
-    endTime: "10:30",
-    location: "Room 101",
-    isRecurring: true,
-    recurrence: {
-      frequency: "weekly",
-      endDate: "2025-03-24",
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "Database Final Exam",
-    type: "examination",
-    date: "2024-12-26",
-    startTime: "14:00",
-    endTime: "16:00",
-    location: "Main Hall",
-    isRecurring: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
-
 const Schedules = () => {
   const [viewMode, setViewMode] = useState<"calendar" | "table">("calendar");
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [schedules, setSchedules] = useState<Schedule[]>(mockSchedules);
-  const [showAddModal, setShowAddModal] = useState(false); // State for Add Schedule Modal
-  const [importSuccess, setImportSuccess] = useState(false); // State for import success indicator
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [importSuccess, setImportSuccess] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
-  // For ScheduleTable, onEdit expects a Schedule object.
-  const handleEditTable = (schedule: Schedule) => {
-    console.log(`Edit schedule with ID: ${schedule.id}`);
-  };
-
-  const handleDelete = (id: string) => {
-    setSchedules(schedules.filter((schedule) => schedule.id !== id));
-  };
-
-  const handleAddSchedule = (newSchedule: Schedule) => {
-    // Generate a unique ID for the new schedule
-    const newScheduleWithId = {
-      ...newSchedule,
-      id: `schedule-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      try {
+        const fetchedSchedules = await scheduleService.getSchedules();
+        setSchedules(fetchedSchedules);
+      } catch (error) {
+        console.error("Error fetching schedules:", error);
+      }
     };
+    fetchSchedules();
+  }, []);
 
-    setSchedules([...schedules, newScheduleWithId]);
-    setShowAddModal(false);
-    setImportSuccess(true); // Show success message after adding
-
-    // Hide success message after 3 seconds
-    setTimeout(() => {
-      setImportSuccess(false);
-    }, 3000);
+  const handleEditTable = async (schedule: Schedule) => {
+    try {
+      const updatedSchedule = await scheduleService.updateSchedule(schedule.id, schedule);
+      if (updatedSchedule) {
+        setSchedules(schedules.map(s => s.id === schedule.id ? updatedSchedule : s));
+      }
+    } catch (error) {
+      console.error("Error updating schedule:", error);
+    }
   };
 
-  const handleImportSchedules = (newSchedules: Schedule[]) => {
-    setSchedules([...schedules, ...newSchedules]);
-    setShowUploadModal(false);
-    setShowSuccessPopup(true);
+  const handleDelete = async (id: string) => {
+    try {
+      const success = await scheduleService.deleteSchedule(id);
+      if (success) {
+        setSchedules(schedules.filter(schedule => schedule.id !== id));
+      }
+    } catch (error) {
+      console.error("Error deleting schedule:", error);
+    }
+  };
 
-    // Auto-hide success message after 3 seconds
-    setTimeout(() => {
-      setShowSuccessPopup(false);
-    }, 3000);
+  const handleAddSchedule = async (newSchedule: Schedule) => {
+    try {
+      const createdSchedule = await scheduleService.createSchedule(newSchedule);
+      setSchedules([...schedules, createdSchedule]);
+      setShowAddModal(false);
+      setImportSuccess(true);
+
+      setTimeout(() => {
+        setImportSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error creating schedule:", error);
+    }
+  };
+
+  const handleImportSchedules = async (newSchedules: Schedule[]) => {
+    try {
+      const createdSchedules = await Promise.all(
+        newSchedules.map(schedule => scheduleService.createSchedule(schedule))
+      );
+      setSchedules([...schedules, ...createdSchedules]);
+      setShowUploadModal(false);
+      setShowSuccessPopup(true);
+
+      setTimeout(() => {
+        setShowSuccessPopup(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Error importing schedules:", error);
+    }
   };
 
   return (
@@ -100,7 +96,6 @@ const Schedules = () => {
       showAddHeadbarButton={false}
     >
       <div className="mb-6">
-
         <div className="flex justify-between items-center">
           {/* Group 1 - View toggles (left side) */}
           <div className="flex space-x-2">
@@ -145,18 +140,15 @@ const Schedules = () => {
       </div>
 
       {viewMode === "calendar" ? (
-        // Removed unsupported onEdit prop for ScheduleCalendar
         <ScheduleCalendar 
           schedules={schedules} 
           onDelete={handleDelete}
           onEventClick={(schedule) => {
-            /* Handle event click - e.g., open edit modal */
             console.log("Event clicked:", schedule);
-            setShowAddModal(true); // Use existing state variable
+            setShowAddModal(true);
           }}
           onDateSelect={() => {
-            /* Handle date selection - e.g., open create modal with pre-filled dates */
-            setShowAddModal(true); // Use existing state variable
+            setShowAddModal(true);
           }}
         />
       ) : (

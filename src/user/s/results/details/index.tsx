@@ -9,6 +9,8 @@ import {
 } from "react-icons/fi";
 import DashboardLayout from "../../layout";
 import { formatExamTime } from "../../../../utils/exam";
+import { getExamById, getExamSubmission } from "../../../../data/exams/service";
+import { useAuth } from "../../../../data/auth/context";
 
 interface RubricScore {
   name: string;
@@ -33,7 +35,7 @@ interface Question {
 interface ExamResult {
   id: string;
   title: string;
-  type: "exam" | "assignment";
+  type: "exam" | "assignment" | "test";
   startTime: string;
   endTime: string;
   dueDate: Date;
@@ -47,46 +49,75 @@ function StudentResultDetails() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [examResult, setExamResult] = useState<ExamResult | null>(null);
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    // Fetch exam results
-    // This is a mock implementation - replace with actual API call
-    setTimeout(() => {
-      setExamResult({
-        id: examId || "",
-        title: "Sample Exam",
-        type: "exam",
-        startTime: "09:00",
-        endTime: "11:00",
-        dueDate: new Date(),
-        totalPoints: 100,
-        score: 85,
-        questions: [
-          {
-            id: "1",
-            type: "essay",
-            questionText: "Explain the concept of inheritance in OOP.",
-            yourAnswer: "Inheritance is a mechanism that allows a class to inherit properties and methods from another class...",
-            correctAnswer: "",
-            points: 20,
-            score: 18,
-            feedback: "Good explanation, but could have included more examples.",
-            rubricScores: [
-              {
-                name: "Content Relevance",
-                value: 20,
-                description: "How well the answer addresses the question",
-                score: 18
-              },
-              // ... other rubric scores
-            ]
-          }
-          // ... other questions
-        ]
-      });
-      setLoading(false);
-    }, 1000);
-  }, [examId]);
+    const loadResults = async () => {
+      try {
+        if (!isAuthenticated || !user) {
+          navigate('/login');
+          return;
+        }
+
+        if (user.role !== 'student') {
+          navigate('/user/l/dashboard');
+          return;
+        }
+
+        const studentId = user.id;
+        const examIdNumber = parseInt(examId || "", 10);
+        console.log("Loading results for exam:", examIdNumber, "student:", studentId);
+
+        const exam = await getExamById(examIdNumber);
+        console.log("Exam data:", exam);
+        const submission = await getExamSubmission(examIdNumber, studentId);
+        console.log("Submission data:", submission);
+
+        if (!exam || !submission) {
+          console.log("Missing data:", { exam, submission });
+          setExamResult(null);
+          setLoading(false);
+          return;
+        }
+
+        // Combine exam and submission data
+        const examResultData: ExamResult = {
+          id: exam.id.toString(),
+          title: exam.title,
+          type: exam.type,
+          startTime: exam.startTime,
+          endTime: exam.endTime,
+          dueDate: new Date(exam.dueDate),
+          totalPoints: exam.questions.reduce((sum, q) => sum + q.points, 0),
+          score: submission.totalScore || 0,
+          questions: exam.questions.map(question => {
+            const questionSubmission = submission.answers.find(a => a.questionId === question.id);
+            return {
+              id: question.id,
+              type: question.type,
+              questionText: question.questionText,
+              yourAnswer: questionSubmission?.answer || "",
+              correctAnswer: question.questionAnswer || "",
+              points: question.points,
+              score: questionSubmission?.score || 0,
+              isCorrect: questionSubmission?.isCorrect,
+              feedback: questionSubmission?.feedback || "",
+              rubricScores: []
+            };
+          })
+        };
+
+        setExamResult(examResultData);
+      } catch (error) {
+        console.error("Failed to load results:", error);
+        setExamResult(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadResults();
+  }, [examId, isAuthenticated, navigate, user]);
 
   const goBack = () => {
     navigate("/user/s/results");
@@ -201,7 +232,7 @@ function StudentResultDetails() {
               <p
                 className={`text-3xl font-bold ${examResult.score >= 60 ? "text-blue-600" : "text-red-600"}`}
               >
-                {examResult.score}%
+                {Math.round((examResult.score / examResult.totalPoints) * 100)}%
               </p>
             </div>
 

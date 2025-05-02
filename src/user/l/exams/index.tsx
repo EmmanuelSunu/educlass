@@ -5,14 +5,6 @@ import { type Exam } from "../../../data/exams/types";
 import { getExams } from "../../../data/exams/service";
 import ExamCard from "../../../components/examCard";
 
-interface DashboardLayoutProps {
-  title: string;
-  buttonTitle?: string;
-  showAddHeadbarButton?: boolean;
-  onAddHeadbarButton?: () => void;
-  children: React.ReactNode;
-}
-
 const ExamList = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<"all" | "exam" | "assignment">("all");
@@ -94,15 +86,7 @@ const ExamList = () => {
         {filteredExams.map((exam) => (
           <ExamCard
             key={exam.id}
-            id={exam.id}
-            title={exam.title}
-            type="exam"
-            duration={exam.duration}
-            startTime={exam.startTime}
-            endTime={exam.endTime}
-            dueDate={exam.dueDate}
-            className={exam.className}
-            questionsCount={exam.questions.length}
+            exam={exam}
           />
         ))}
       </div>

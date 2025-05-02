@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       url: URLS.SCHEDULE,
     },
     {
-      title: "Classes",
+      title: "Courses",
       icon: <RiFileListLine className="text-xl" />,
       url: URLS.CLASSES,
     },

@@ -1,25 +1,27 @@
 export interface Schedule {
   id: string;
   title: string;
-  type: string;
+  type: "class" | "examination" | "studyGroup" | "consultation";
   date: string;
   startTime: string;
   endTime: string;
   location: string;
+  description?: string;
   isRecurring: boolean;
+  courseId?: number; // Link to course
   recurrence?: {
-    frequency: string;
+    frequency: "daily" | "weekly" | "monthly";
     endDate: string;
   };
-  description?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface ScheduleService {
-  getSchedules: () => Promise<Schedule[]>;
-  getSchedulesByCourseId: (courseId: number) => Promise<Schedule[]>;
-  createSchedule: (schedule: Schedule) => Promise<Schedule>;
-  updateSchedule: (schedule: Schedule) => Promise<Schedule>;
-  deleteSchedule: (scheduleId: string) => Promise<void>;
+  getSchedules(): Promise<Schedule[]>;
+  getSchedulesByCourseId(courseId: number): Promise<Schedule[]>;
+  getScheduleById(id: string): Promise<Schedule | undefined>;
+  createSchedule(schedule: Omit<Schedule, 'id' | 'createdAt' | 'updatedAt'>): Promise<Schedule>;
+  updateSchedule(id: string, schedule: Partial<Schedule>): Promise<Schedule | undefined>;
+  deleteSchedule(id: string): Promise<boolean>;
 } 

@@ -1,5 +1,3 @@
-import { type Exam } from "./types";
-
 export interface StudentSubmission {
   id: number;
   studentId: number;

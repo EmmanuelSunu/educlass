@@ -21,7 +21,7 @@ const Sidebar = () => {
     },
     {
       icon: <FiBook className="w-5 h-5" />,
-      label: "My Classes",
+      label: "My Courses",
       path: "/user/s/classes",
     },
     {

@@ -1,11 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import rrulePlugin from "@fullcalendar/rrule";
-import { Schedule } from "../user/l/schedules/types";
-import { FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
+import { Schedule } from "../data/schedule/types";
+import { Course } from "../data/course/types";
+import { courseService } from "../data/course/service";
+import { FiCalendar, FiClock, FiMapPin, FiBook } from "react-icons/fi";
 import ScheduleEventModal from "./ScheduleEventModal";
 import "./calendar-styles.css";
 
@@ -47,13 +49,13 @@ export const getEventColors = (type: string): { bg: string; border: string; text
         border: "#F87171",
         text: "#991B1B"
       };
-    case "test":
+    case "studyGroup":
       return {
         bg: "#FFFBEB",
         border: "#FBBF24",
         text: "#92400E"
       };
-    case "meeting":
+    case "consultation":
       return {
         bg: "#EFF6FF",
         border: "#60A5FA",
@@ -68,60 +70,83 @@ export const getEventColors = (type: string): { bg: string; border: string; text
   }
 };
 
-const convertToCalendarEvents = (schedules: Schedule[]): CalendarEvent[] => {
-  return schedules
-    .map((schedule) => {
-      try {
-        const start = new Date(`${schedule.date}T${schedule.startTime}`);
-        const end = new Date(`${schedule.date}T${schedule.endTime}`);
-        if (isNaN(start.getTime())) throw new Error("Invalid start date");
-        if (isNaN(end.getTime())) throw new Error("Invalid end date");
-
-        const colors = getEventColors(schedule.type);
-        const event: CalendarEvent = {
-          id: schedule.id,
-          title: schedule.title,
-          start: start.toISOString(),
-          end: end.toISOString(),
-          backgroundColor: colors.bg,
-          borderColor: colors.border,
-          textColor: colors.text,
-          extendedProps: { ...schedule },
-        };
-
-        if (schedule.isRecurring && schedule.recurrence) {
-          event.rrule = {
-            freq: schedule.recurrence.frequency.toUpperCase(),
-            until: schedule.recurrence.endDate,
-            dtstart: event.start,
-          };
-        }
-
-        return event;
-      } catch (error) {
-        console.error("Error converting schedule to calendar event:", error);
-        return null;
-      }
-    })
-    .filter(Boolean) as CalendarEvent[];
-};
-
 const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   schedules,
-  // onEventClick,
   onDateSelect,
-  // onDelete,
-  // onUpdateSchedule,
 }) => {
   const [selectedView, setSelectedView] = useState<'dayGridMonth' | 'timeGridWeek' | 'timeGridDay'>('dayGridMonth');
   const [selectedEvent, setSelectedEvent] = useState<Schedule | null>(null);
+  const [courses, setCourses] = useState<Record<number, Course>>({});
   const calendarRef = useRef<FullCalendar>(null);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const courseIds = schedules
+          .map(s => s.courseId)
+          .filter((id): id is number => id !== undefined);
+        
+        if (courseIds.length > 0) {
+          const fetchedCourses = await Promise.all(
+            courseIds.map(id => courseService.getCourseById(id))
+          );
+          const courseMap = fetchedCourses.reduce((acc, course) => {
+            acc[course.id] = course;
+            return acc;
+          }, {} as Record<number, Course>);
+          setCourses(courseMap);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+
+    fetchCourses();
+  }, [schedules]);
 
   const handleViewChange = (view: 'dayGridMonth' | 'timeGridWeek' | 'timeGridDay') => {
     setSelectedView(view);
     if (calendarRef.current) {
       calendarRef.current.getApi().changeView(view);
     }
+  };
+
+  const convertToCalendarEvents = (schedules: Schedule[]): CalendarEvent[] => {
+    return schedules
+      .map((schedule) => {
+        try {
+          const start = new Date(`${schedule.date}T${schedule.startTime}`);
+          const end = new Date(`${schedule.date}T${schedule.endTime}`);
+          if (isNaN(start.getTime())) throw new Error("Invalid start date");
+          if (isNaN(end.getTime())) throw new Error("Invalid end date");
+
+          const colors = getEventColors(schedule.type);
+          const event: CalendarEvent = {
+            id: schedule.id,
+            title: schedule.title,
+            start: start.toISOString(),
+            end: end.toISOString(),
+            backgroundColor: colors.bg,
+            borderColor: colors.border,
+            textColor: colors.text,
+            extendedProps: { ...schedule },
+          };
+
+          if (schedule.isRecurring && schedule.recurrence) {
+            event.rrule = {
+              freq: schedule.recurrence.frequency.toUpperCase(),
+              until: schedule.recurrence.endDate,
+              dtstart: event.start,
+            };
+          }
+
+          return event;
+        } catch (error) {
+          console.error("Error converting schedule to calendar event:", error);
+          return null;
+        }
+      })
+      .filter(Boolean) as CalendarEvent[];
   };
 
   return (
@@ -220,8 +245,8 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
             const typeLabels: Record<string, string> = {
               class: "Class",
               examination: "Exam",
-              test: "Test",
-              meeting: "Meeting"
+              studyGroup: "Study Group",
+              consultation: "Consultation"
             };
             return (
               <div className="p-2" title={eventInfo.event.title}>
@@ -238,6 +263,12 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
                     <span>{schedule.location}</span>
                   </div>
                 )}
+                {schedule.courseId && courses[schedule.courseId] && (
+                  <div className="flex items-center gap-2 text-xs opacity-80 mt-1">
+                    <FiBook />
+                    <span>{courses[schedule.courseId].code}</span>
+                  </div>
+                )}
               </div>
             );
           }}
@@ -249,38 +280,13 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
         />
       </div>
 
-      {/* Legend */}
-      <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-        <div className="flex flex-wrap gap-6">
-          {[
-            { type: "class", label: "Classes" },
-            { type: "examination", label: "Exams" },
-            { type: "test", label: "Tests" },
-            { type: "meeting", label: "Meetings" },
-          ].map(({ type, label }) => {
-            const colors = getEventColors(type);
-            return (
-              <div key={type} className="flex items-center gap-2">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ 
-                    backgroundColor: colors.bg,
-                    border: `2px solid ${colors.border}`,
-                  }}
-                />
-                <span className="text-sm font-medium" style={{ color: colors.text }}>{label}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Event Modal */}
-      <ScheduleEventModal
-        schedule={selectedEvent!}
-        isOpen={selectedEvent !== null}
-        onClose={() => setSelectedEvent(null)}
-      />
+      {selectedEvent && (
+        <ScheduleEventModal
+          schedule={selectedEvent}
+          course={selectedEvent.courseId ? courses[selectedEvent.courseId] : undefined}
+          onClose={() => setSelectedEvent(null)}
+        />
+      )}
     </div>
   );
 };

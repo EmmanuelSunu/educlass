@@ -1,28 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ButtonProps from "../../../components/ButtonProps";
-import { Schedule } from "./types"; // Ensure this import is correct
+import { Schedule } from "../../../data/schedule/types";
+import { courseService } from "../../../data/course/service";
+import { Course } from "../../../data/course/types";
 
 interface AddScheduleFormProps {
   onSubmit: (schedule: Schedule) => void;
   onCancel: () => void;
 }
 
+interface FormData {
+  title: string;
+  type: "class" | "examination" | "studyGroup" | "consultation";
+  date: string;
+  startTime: string;
+  endTime: string;
+  location: string;
+  description: string;
+  isRecurring: boolean;
+  frequency: "daily" | "weekly" | "monthly";
+  endDate: string;
+  courseId: string;
+}
+
 const AddScheduleForm: React.FC<AddScheduleFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  const [formData, setFormData] = useState({
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     type: "class",
     date: "",
     startTime: "",
     endTime: "",
     location: "",
-    description: "", // Add this line
+    description: "",
     isRecurring: false,
-    frequency: "weekly" as "daily" | "weekly" | "monthly", // Explicitly type frequency
+    frequency: "weekly",
     endDate: "",
+    courseId: ""
   });
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const fetchedCourses = await courseService.getCourses();
+        setCourses(fetchedCourses);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -42,28 +72,26 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newSchedule: Schedule = {
-      id: `schedule-${Date.now()}`,
+    const newSchedule: Omit<Schedule, 'id' | 'createdAt' | 'updatedAt'> = {
       title: formData.title,
       type: formData.type,
       date: formData.date,
       startTime: formData.startTime,
       endTime: formData.endTime,
       location: formData.location,
-      description: formData.description, // Add this line
+      description: formData.description,
       isRecurring: formData.isRecurring,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      courseId: formData.courseId ? parseInt(formData.courseId) : undefined,
     };
 
     if (formData.isRecurring) {
       newSchedule.recurrence = {
-        frequency: formData.frequency, // This is now correctly typed
+        frequency: formData.frequency,
         endDate: formData.endDate,
       };
     }
 
-    onSubmit(newSchedule);
+    onSubmit(newSchedule as Schedule);
   };
 
   return (
@@ -100,6 +128,25 @@ const AddScheduleForm: React.FC<AddScheduleFormProps> = ({
             <option value="consultation">Consultation</option>
           </select>
         </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Course
+        </label>
+        <select
+          name="courseId"
+          value={formData.courseId}
+          onChange={handleChange}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select a course (optional)</option>
+          {courses.map((course) => (
+            <option key={course.id} value={course.id}>
+              {course.code} - {course.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="grid grid-cols-3 gap-3">

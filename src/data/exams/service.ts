@@ -13,11 +13,14 @@ const mapQuestionData = (q: any): Question => {
     type: q.type as Question["type"],
     points: q.points,
     questionText: q.questionText,
-    questionAnswer: q.modelAnswer || q.correctAnswer || "",
+    questionAnswer: q.modelAnswer || q.correctAnswer || q.questionAnswer || "",
   };
 
   if (q.type === "multi-choice" && q.options) {
-    baseQuestion.options = q.options.map((opt: any) => opt.text);
+    // Handle both formats of options
+    baseQuestion.options = Array.isArray(q.options) 
+      ? q.options.map((opt: any) => typeof opt === 'string' ? opt : opt.text)
+      : [];
   }
 
   return baseQuestion;
@@ -25,9 +28,20 @@ const mapQuestionData = (q: any): Question => {
 
 // Helper function to get questions for an exam
 const getQuestionsForExam = (examId: number): Question[] => {
-  return questionsData.questions
+  // First try to get questions from questions.json
+  const questionsFromJson = questionsData.questions
     .filter(q => q.examId === examId)
     .map(mapQuestionData);
+
+  // If no questions found, try to get them from the exam data itself
+  if (questionsFromJson.length === 0) {
+    const exam = examsData.exams.find(e => e.id === examId);
+    if (exam && exam.questions) {
+      return exam.questions.map(mapQuestionData);
+    }
+  }
+
+  return questionsFromJson;
 };
 
 // Helper function to calculate grade based on percentage
@@ -146,4 +160,9 @@ export const getExamsByStudentClassIds = (studentClassIds: number[]): Exam[] => 
   return examsData.exams
     .filter(exam => studentClassIds.includes(exam.classId))
     .map(mapExamData);
+};
+
+// Get submissions for a specific exam
+export const getSubmissionsForExam = (examId: number): ExamSubmission[] => {
+  return submissions.filter(submission => submission.examId === examId);
 }; 

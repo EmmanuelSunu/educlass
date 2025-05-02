@@ -99,7 +99,7 @@ export const formatExamTime = (time: string): string => {
 };
 
 /**
- * Calculate remaining time in minutes
+ * Calculate remaining time in seconds
  */
 export const calculateRemainingTime = (
   dueDate: Date,
@@ -110,5 +110,5 @@ export const calculateRemainingTime = (
   endDateTime.setHours(endHour, endMinute, 0);
   
   const now = new Date();
-  return Math.max(0, Math.floor((endDateTime.getTime() - now.getTime()) / 60000));
+  return Math.max(0, Math.floor((endDateTime.getTime() - now.getTime()) / 1000));
 }; 

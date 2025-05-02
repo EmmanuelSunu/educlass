@@ -3,7 +3,7 @@ import * as XLSX from "xlsx";
 import Papa from "papaparse";
 import ButtonProps from "../../../components/ButtonProps";
 import { RiUploadCloud2Line, RiCheckLine, RiFileExcel2Line, RiFileList3Line } from "react-icons/ri";
-import { Schedule } from "./types";
+import { Schedule } from "../../../data/schedule/types";
 
 interface ScheduleFileUploadProps {
   onImport: (schedules: Schedule[]) => void;
@@ -57,6 +57,19 @@ const ScheduleFileUpload: React.FC<ScheduleFileUploadProps> = ({ onImport }) => 
       };
     }
 
+    // Validate type values
+    const validTypes = ['class', 'examination', 'studyGroup', 'consultation'];
+    const invalidTypes = data.filter(row => 
+      row.type && !validTypes.includes(row.type.toLowerCase())
+    );
+
+    if (invalidTypes.length) {
+      return {
+        valid: false,
+        error: `Invalid type values found. Valid types are: ${validTypes.join(', ')}`
+      };
+    }
+
     return { valid: true };
   };
 
@@ -92,7 +105,7 @@ const ScheduleFileUpload: React.FC<ScheduleFileUploadProps> = ({ onImport }) => 
       const schedules: Schedule[] = data.map((row, index) => ({
         id: `imported-${index}`,
         title: row.title,
-        type: row.type,
+        type: row.type.toLowerCase() as "class" | "examination" | "studyGroup" | "consultation",
         date: row.date,
         startTime: row.startTime,
         endTime: row.endTime,
@@ -103,6 +116,7 @@ const ScheduleFileUpload: React.FC<ScheduleFileUploadProps> = ({ onImport }) => 
           endDate: row.endDate || ''
         } : undefined,
         description: row.description || '',
+        courseId: row.courseId ? parseInt(row.courseId) : undefined,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       }));
@@ -242,19 +256,27 @@ const ScheduleFileUpload: React.FC<ScheduleFileUploadProps> = ({ onImport }) => 
             </div>
             <div>
               <span className="font-medium">type</span>
-              <p className="text-gray-500">Event type (class, exam, etc.)</p>
+              <p className="text-gray-500">Event type (class, examination, studyGroup, consultation)</p>
             </div>
             <div>
               <span className="font-medium">date</span>
               <p className="text-gray-500">YYYY-MM-DD format</p>
             </div>
             <div>
-              <span className="font-medium">startTime & endTime</span>
+              <span className="font-medium">startTime</span>
+              <p className="text-gray-500">HH:MM format</p>
+            </div>
+            <div>
+              <span className="font-medium">endTime</span>
               <p className="text-gray-500">HH:MM format</p>
             </div>
             <div>
               <span className="font-medium">location</span>
               <p className="text-gray-500">Event location</p>
+            </div>
+            <div>
+              <span className="font-medium">courseId</span>
+              <p className="text-gray-500">Optional course ID</p>
             </div>
           </div>
         </div>

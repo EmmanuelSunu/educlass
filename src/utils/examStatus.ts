@@ -16,7 +16,7 @@ export function formatDate(date: Date | string): string {
   });
 }
 
-export const getExamStatus = (exam: Exam, isEnrolled: boolean): ExamStatus => {
+export const getExamStatus = (exam: Exam): ExamStatus => {
   const now = new Date();
   
   // Create exam date objects with proper timezone handling
@@ -36,12 +36,12 @@ export const getExamStatus = (exam: Exam, isEnrolled: boolean): ExamStatus => {
     return "past";
   }
 
-  // If the exam is within its time window and student is enrolled
-  if (now >= startTime && now <= endTime && isEnrolled) {
+  // If the exam is within its time window
+  if (now >= startTime && now <= endTime) {
     return "available";
   }
 
-  // If the exam is in the future or student is not enrolled
+  // If the exam is in the future
   return "scheduled";
 };
 

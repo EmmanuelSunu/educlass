@@ -29,7 +29,7 @@ const Dashboard = () => {
     const examStats = exams.reduce(
       (acc: typeof stats, exam: Exam) => {
         acc.totalExams++;
-        const status = getExamStatus(exam, exam.id === 1);
+        const status = getExamStatus(exam);
         if (status === "available") acc.activeExams++;
         else if (status === "scheduled") acc.upcomingExams++;
         else acc.completedExams++;
@@ -135,7 +135,7 @@ const Dashboard = () => {
             </thead>
             <tbody>
               {exams.slice(0, 5).map((exam) => {
-                const status = getExamStatus(exam, exam.id === 1);
+                const status = getExamStatus(exam);
                 const statusColors = {
                   available: "bg-green-100 text-green-700",
                   scheduled: "bg-purple-100 text-purple-700",

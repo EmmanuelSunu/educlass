@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layout";
 import { type Exam } from "../../../data/exams/types";
 import { getExamsByStudentClassIds } from "../../../data/exams/service";
 import ExamCard from "../../../components/examCard";
 
 function StudentExams() {
-  const navigate = useNavigate();
   const [availableExams, setAvailableExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,15 +44,7 @@ function StudentExams() {
           {availableExams.map((exam) => (
             <ExamCard
               key={exam.id}
-              id={exam.id}
-              title={exam.title}
-              type="exam"
-              duration={exam.duration}
-              startTime={exam.startTime}
-              endTime={exam.endTime}
-              dueDate={exam.dueDate}
-              className={exam.className}
-              questionsCount={exam.questions.length}
+              exam={exam}
             />
           ))}
         </div>

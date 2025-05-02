@@ -34,7 +34,8 @@ function StudentResults() {
 
         // Use the actual student ID from the authenticated user
         const studentId = user.id;
-        
+        console.log("Student ID:", studentId);
+
         const allExams = await getExams();
         const submissions = await getExamSubmissionsByStudentId(studentId);
         

@@ -153,12 +153,13 @@ export function ScheduleProvider({ children }: { children: React.ReactNode }) {
         .map(exam => ({
           id: exam.id.toString(),
           title: exam.title,
-          type: exam.type === "exam" ? "examination" : exam.type,
+          type: exam.type === "exam" ? "examination" : "class",
           date: exam.dueDate,
           startTime: exam.startTime,
           endTime: exam.endTime,
           location: `${exam.className} Exam Hall`,
           isRecurring: false,
+          courseId: exam.classId,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }));
@@ -187,8 +188,15 @@ export function ScheduleProvider({ children }: { children: React.ReactNode }) {
   const updateSchedule = useCallback(async (schedule: Schedule) => {
     try {
       dispatch({ type: 'LOAD_SCHEDULES_START' });
-      const updatedSchedule = await scheduleService.updateSchedule(schedule);
-      dispatch({ type: 'UPDATE_SCHEDULE_SUCCESS', payload: updatedSchedule });
+      const updatedSchedule = await scheduleService.updateSchedule(schedule.id, schedule);
+      if (updatedSchedule) {
+        dispatch({ type: 'UPDATE_SCHEDULE_SUCCESS', payload: updatedSchedule });
+      } else {
+        dispatch({ 
+          type: 'LOAD_SCHEDULES_FAILURE', 
+          payload: 'Failed to update schedule' 
+        });
+      }
     } catch (error) {
       dispatch({ 
         type: 'LOAD_SCHEDULES_FAILURE', 

@@ -77,6 +77,7 @@ export interface QuestionSubmission {
   answer: string;
   isCorrect?: boolean;
   score?: number;
+  feedback?: string;
 }
 
 export interface ExamSubmission {

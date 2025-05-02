@@ -1,5 +1,7 @@
-import React from 'react';
-import { Schedule } from '../user/l/schedules/types';
+import React, { useState, useEffect } from 'react';
+import { Schedule } from '../data/schedule/types';
+import { Course } from '../data/course/types';
+import { courseService } from '../data/course/service';
 
 interface ScheduleTableProps {
   schedules: Schedule[];
@@ -8,14 +10,39 @@ interface ScheduleTableProps {
   viewOnly?: boolean;
 }
 
-
-
 const ScheduleTable: React.FC<ScheduleTableProps> = ({
   schedules,
   onEdit,
   onDelete,
   viewOnly = false,
 }) => {
+  const [courses, setCourses] = useState<Record<number, Course>>({});
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const courseIds = schedules
+          .map(s => s.courseId)
+          .filter((id): id is number => id !== undefined);
+        
+        if (courseIds.length > 0) {
+          const fetchedCourses = await Promise.all(
+            courseIds.map(id => courseService.getCourseById(id))
+          );
+          const courseMap = fetchedCourses.reduce((acc, course) => {
+            acc[course.id] = course;
+            return acc;
+          }, {} as Record<number, Course>);
+          setCourses(courseMap);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+
+    fetchCourses();
+  }, [schedules]);
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 overflow-x-auto">
       <div className="overflow-x-auto -mx-4 md:mx-0">
@@ -36,6 +63,9 @@ const ScheduleTable: React.FC<ScheduleTableProps> = ({
               </th>
               <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider hidden md:table-cell">
                 Location
+              </th>
+              <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider hidden lg:table-cell">
+                Course
               </th>
               {!viewOnly && (
                 <th className="px-3 md:px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
@@ -66,6 +96,15 @@ const ScheduleTable: React.FC<ScheduleTableProps> = ({
                 </td>
                 <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-sm text-slate-700 hidden md:table-cell">
                   {schedule.location}
+                </td>
+                <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-sm text-slate-700 hidden lg:table-cell">
+                  {schedule.courseId && courses[schedule.courseId] ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {courses[schedule.courseId].code}
+                    </span>
+                  ) : (
+                    <span className="text-slate-400">-</span>
+                  )}
                 </td>
                 {!viewOnly && (
                   <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-right text-sm font-medium">

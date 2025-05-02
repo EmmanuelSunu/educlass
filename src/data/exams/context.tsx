@@ -15,7 +15,7 @@ interface ExamState {
 
 interface ExamContextType extends ExamState {
   loadExams: () => Promise<void>;
-  loadStudentExams: (studentId: number) => Promise<void>;
+  loadStudentExams: () => Promise<void>;
   loadExamById: (examId: number) => Promise<void>;
   loadExamSubmissions: (examId: number) => Promise<void>;
   loadStudentSubmissions: (studentId: number) => Promise<void>;
@@ -120,7 +120,7 @@ export function ExamProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const loadStudentExams = useCallback(async (studentId: number) => {
+  const loadStudentExams = useCallback(async () => {
     try {
       dispatch({ type: 'LOAD_EXAMS_START' });
       const exams = await getExams();
@@ -186,7 +186,7 @@ export function ExamProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (user) {
       if (user.role === 'student') {
-        loadStudentExams(user.id);
+        loadStudentExams();
         loadStudentSubmissions(user.id);
       } else {
         loadExams();

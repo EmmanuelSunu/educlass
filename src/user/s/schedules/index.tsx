@@ -5,7 +5,7 @@ import ScheduleCalendar from "../../../components/ScheduleCalendar";
 import ScheduleTable from "../../../components/ScheduleTable";
 import ButtonProps from "../../../components/ButtonProps";
 import { RiCalendarLine, RiListCheck2 } from "react-icons/ri";
-import { Schedule } from "../../l/schedules/types";
+import { Schedule } from "../../../data/schedule/types";
 import { getExams } from "../../../data/exams/service";
 import { courseService } from "../../../data/course/service";
 import { useAuth } from "../../../data/auth/context";
@@ -17,11 +17,15 @@ const StudentSchedulePage: React.FC = () => {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
     const loadSchedules = async () => {
       try {
+        // Wait for auth check to complete
+        if (authLoading) return;
+
+        // Check authentication
         if (!user || !isAuthenticated) {
           navigate('/login');
           return;
@@ -40,7 +44,7 @@ const StudentSchedulePage: React.FC = () => {
         const examSchedules: Schedule[] = studentExams.map(exam => ({
           id: exam.id.toString(),
           title: exam.title,
-          type: exam.type === "exam" ? "examination" : exam.type,
+          type: "examination",
           date: exam.dueDate,
           startTime: exam.startTime,
           endTime: exam.endTime,
@@ -55,14 +59,14 @@ const StudentSchedulePage: React.FC = () => {
           course.events.map(event => ({
             id: `event-${event.id}`,
             title: event.title,
-            type: event.type,
+            type: "class",
             date: new Date(event.startTime).toISOString().split('T')[0],
             startTime: new Date(event.startTime).toISOString().split('T')[1].slice(0, 5),
             endTime: new Date(event.endTime).toISOString().split('T')[1].slice(0, 5),
             location: event.location,
             isRecurring: event.recurrence !== "none",
             recurrence: event.recurrence === "none" ? undefined : {
-              frequency: event.recurrence,
+              frequency: event.recurrence === "biweekly" ? "weekly" : event.recurrence as "daily" | "weekly" | "monthly",
               endDate: event.endDate || "2024-07-25", // Default to end of semester if not specified
             },
             createdAt: new Date().toISOString(),
@@ -80,19 +84,14 @@ const StudentSchedulePage: React.FC = () => {
     };
 
     loadSchedules();
-  }, [user, isAuthenticated, navigate]);
+  }, [user, isAuthenticated, navigate, authLoading]);
 
-  // Handle event click to show details
-  const handleEventClick = (schedule: Schedule) => {
-    setSelectedEvent(schedule);
+  const handleEventClick = (event: Schedule) => {
+    setSelectedEvent(event);
   };
 
-  // Close event details
-  const closeEventDetails = () => {
-    setSelectedEvent(null);
-  };
-
-  if (loading) {
+  // Show loading state while checking auth or loading schedules
+  if (authLoading || loading) {
     return (
       <DashboardLayout
         title="My Schedule"
@@ -164,11 +163,12 @@ const StudentSchedulePage: React.FC = () => {
       </div>
 
       {/* Event Details Modal */}
-      <ScheduleEventModal
-        schedule={selectedEvent!}
-        isOpen={selectedEvent !== null}
-        onClose={closeEventDetails}
-      />
+      {selectedEvent && (
+        <ScheduleEventModal
+          schedule={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+        />
+      )}
     </DashboardLayout>
   );
 };

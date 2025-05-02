@@ -18,7 +18,7 @@ function ExamDetailsPage() {
       const exam = getExamById(Number(id));
       if (exam) {
         setExamDetails(exam);
-        const status = getExamStatus(exam, true);
+        const status = getExamStatus(exam);
         setExamStatus(status);
         setLoading(false);
       } else {
@@ -62,7 +62,7 @@ function ExamDetailsPage() {
   };
 
   const handleViewResults = () => {
-    navigate(`/user/s/exams/results/${examDetails.id}`);
+    navigate(`/user/s/results/${examDetails.id}`);
   };
 
   const statusInfo = getStatusInfo(examStatus);

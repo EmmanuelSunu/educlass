@@ -68,7 +68,7 @@ const ExamDetails = () => {
     );
   }
 
-  const status = getExamStatus(exam, exam.id === 1);
+  const status = getExamStatus(exam);
   const statusInfo = getStatusInfo(status);
 
   return (

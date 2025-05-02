@@ -1,27 +1,26 @@
 import React from 'react';
-import { Schedule } from '../user/l/schedules/types';
-import { FiClock, FiMapPin, FiCalendar, FiTag } from 'react-icons/fi';
+import { Schedule } from '../data/schedule/types';
+import { Course } from '../data/course/types';
+import { FiClock, FiMapPin, FiCalendar, FiTag, FiBook } from 'react-icons/fi';
 import { getEventColors } from './ScheduleCalendar';
 
 interface ScheduleEventModalProps {
   schedule: Schedule;
+  course?: Course;
   onClose: () => void;
-  isOpen: boolean;
 }
 
 const ScheduleEventModal: React.FC<ScheduleEventModalProps> = ({
   schedule,
-  onClose,
-  isOpen
+  course,
+  onClose
 }) => {
-  if (!isOpen) return null;
-
   const colors = getEventColors(schedule.type);
   const typeLabels: Record<string, string> = {
     class: "Class",
     examination: "Exam",
-    test: "Test",
-    meeting: "Meeting"
+    studyGroup: "Study Group",
+    consultation: "Consultation"
   };
 
   return (
@@ -61,6 +60,20 @@ const ScheduleEventModal: React.FC<ScheduleEventModalProps> = ({
             <div className="flex items-center gap-3">
               <FiMapPin className="text-gray-500" />
               <span>{schedule.location}</span>
+            </div>
+          )}
+
+          {course && (
+            <div className="flex items-center gap-3">
+              <FiBook className="text-gray-500" />
+              <span>{course.code} - {course.name}</span>
+            </div>
+          )}
+
+          {schedule.description && (
+            <div className="mt-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Description</h4>
+              <p className="text-sm text-gray-600">{schedule.description}</p>
             </div>
           )}
         </div>

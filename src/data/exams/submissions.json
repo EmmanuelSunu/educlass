@@ -3,7 +3,7 @@
     {
       "id": 1,
       "examId": 1,
-      "studentId": 1,
+      "studentId": 3,
       "submittedAt": "2025-03-27T10:30:00Z",
       "completionTime": "1 hour 30 minutes",
       "answers": [
@@ -41,6 +41,28 @@
       ],
       "totalScore": 10,
       "grade": "A"
+    },
+    {
+      "id": 3,
+      "examId": 2,
+      "studentId": 3,
+      "submittedAt": "2024-03-25T15:30:00Z",
+      "completionTime": "2 hours",
+      "answers": [
+        {
+          "questionId": "1",
+          "answer": "Database normalization is the process of organizing data to reduce redundancy and improve data integrity. It involves breaking down tables into smaller, more manageable pieces while maintaining relationships between them. The process typically follows normal forms (1NF, 2NF, 3NF) to achieve optimal structure. This helps in reducing data anomalies and ensures data consistency.",
+          "score": 22
+        },
+        {
+          "questionId": "2",
+          "answer": "atomic",
+          "isCorrect": true,
+          "score": 15
+        }
+      ],
+      "totalScore": 37,
+      "grade": "B+"
     }
   ]
 } 
