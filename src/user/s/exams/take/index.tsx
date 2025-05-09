@@ -265,21 +265,26 @@ const ExamTake: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 bg-white shadow z-20">
-        <div className="max-w-5xl mx-auto flex items-center justify-between px-6 py-4">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
+          {/* Exit Exam Button - Modified for mobile */}
           <button
             onClick={() => navigate('/user/s/exams')}
-            className="flex items-center gap-2 text-slate-600 hover:text-red-600 font-medium transition-colors group"
+            className="flex items-center gap-2 text-slate-600 hover:text-red-600 font-medium transition-colors group order-1"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:text-red-600" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
             </svg>
-            Exit Exam
+            <span className="hidden sm:inline">Exit Exam</span> {/* Text hidden on xs screens */}
           </button>
-          <div className="flex flex-col items-center">
-            <span className="text-lg font-bold text-slate-900">{exam.title}</span>
+
+          {/* Exam Title and Course - Centered and responsive */}
+          <div className="flex flex-col items-center text-center order-3 sm:order-2 w-full sm:w-auto mt-2 sm:mt-0 flex-grow">
+            <span className="text-base sm:text-lg font-bold text-slate-900">{exam.title}</span>
             <span className="text-xs text-slate-500 font-medium">{exam.className}</span>
           </div>
-          <div className={`px-4 py-2 rounded-lg font-mono text-lg font-semibold transition-all duration-300
+
+          {/* Timer - Modified for mobile */}
+          <div className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-mono text-sm sm:text-lg font-semibold transition-all duration-300 order-2 sm:order-3
             ${timeLeft <= 60 ? 'bg-red-100 text-red-600 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'bg-slate-100 text-slate-700 shadow'}
           `}>
             {formatTime(timeLeft)}
