@@ -41,6 +41,7 @@ interface Submission {
   aiFeedback: string;
   manuallyGraded: boolean;
   lastModified: string;
+  needsStatus?: "needs_attention" | "its_fine" | "not_processed";
 }
 
 interface OverrideModal {
@@ -68,6 +69,7 @@ const GradingPage = () => {
       feedback: string;
     };
   }>({});
+  const [filterStatus, setFilterStatus] = useState<"all" | "needs_attention" | "its_fine">("all");
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -87,24 +89,56 @@ const GradingPage = () => {
 
   const handleExamSelect = (exam: Exam) => {
     setSelectedExam(exam);
-    const gradingQuestions: Question[] = exam.questions.map(q => ({
-      id: q.id,
-      text: q.questionText,
-      type: q.type,
-      points: q.points,
-      submissions: exam.submissions?.map(s => ({
-        id: s.id.toString(),
-        studentId: s.studentId.toString(),
-        answer: s.answers.find(a => a.questionId === q.id)?.answer || "",
-        score: s.answers.find(a => a.questionId === q.id)?.score || 0,
-        status: s.totalScore !== undefined ? "graded" : "pending",
-        feedback: "",
-        aiFeedback: "",
-        manuallyGraded: false,
-        lastModified: s.submittedAt
-      })) || []
-    }));
+    console.log("Selected Exam:", JSON.parse(JSON.stringify(exam)));
+
+    const gradingQuestions: Question[] = exam.questions
+      .filter(q_exam => q_exam.type === "essay")
+      .map(q_exam => {
+      console.log(`Processing Question from exam.questions: id='${q_exam.id}', text='${q_exam.questionText}'`);
+
+      const submissionsForThisQuestion: Submission[] = exam.submissions?.map(s_exam => {
+        console.log(`  Processing Student Submission: studentId='${s_exam.studentId}', submissionId='${s_exam.id}'`);
+        console.log(`    Looking for answer for questionId='${q_exam.id}' in student's answers:`, JSON.parse(JSON.stringify(s_exam.answers)));
+
+        const foundAnswerEntry = s_exam.answers.find(a_exam => a_exam.questionId === q_exam.id);
+
+        if (foundAnswerEntry) {
+          console.log(`    FOUND answer entry for questionId='${q_exam.id}':`, JSON.parse(JSON.stringify(foundAnswerEntry)));
+        } else {
+          console.log(`    NOT FOUND answer entry for questionId='${q_exam.id}'`);
+        }
+
+        let submissionStatus: "graded" | "pending" | "in_progress" = "pending";
+        if (s_exam.totalScore !== undefined) {
+          submissionStatus = "graded";
+        }
+
+        return {
+          id: s_exam.id.toString(),
+          studentId: s_exam.studentId.toString(),
+          answer: foundAnswerEntry?.answer || "",
+          score: foundAnswerEntry?.score || 0,
+          status: submissionStatus,
+          feedback: "", 
+          aiFeedback: "",
+          manuallyGraded: false,
+          lastModified: s_exam.submittedAt,
+          needsStatus: "not_processed" as const,
+        };
+      }) || [];
+
+      return {
+        id: q_exam.id,
+        text: q_exam.questionText,
+        type: q_exam.type,
+        points: q_exam.points,
+        submissions: submissionsForThisQuestion
+      };
+    });
+    
+    console.log("Processed gradingQuestions for state:", JSON.parse(JSON.stringify(gradingQuestions)));
     setQuestions(gradingQuestions);
+    setFilterStatus("all"); 
   };
 
   const handleBackToExams = () => {
@@ -147,7 +181,7 @@ const GradingPage = () => {
                 ...s,
                 score,
                 feedback,
-                status: "graded",
+                status: "graded" as const,
                 manuallyGraded: true,
                 lastModified: new Date().toISOString()
               };
@@ -174,7 +208,8 @@ const GradingPage = () => {
           aiFeedback: `AI Feedback for ${question.text.substring(0, 30)}...`,
           feedback: "",
           manuallyGraded: false,
-          lastModified: new Date().toISOString()
+          lastModified: new Date().toISOString(),
+          needsStatus: (Math.random() > 0.7 ? "needs_attention" : "its_fine") as "needs_attention" | "its_fine",
         }))
       }));
       
@@ -209,9 +244,10 @@ const GradingPage = () => {
                 ...s,
                 score: changes.score,
                 feedback: changes.feedback,
-                status: "graded",
+                status: "graded" as const,
                 manuallyGraded: true,
-                lastModified: new Date().toISOString()
+                lastModified: new Date().toISOString(),
+                needsStatus: "its_fine" as const,
               };
             }
             return s;
@@ -225,6 +261,19 @@ const GradingPage = () => {
       const { [key]: _, ...rest } = prev;
       return rest;
     });
+  };
+
+  const handlePublishScores = () => {
+    if (!selectedExam) return;
+    console.log(`Publishing scores for exam: ${selectedExam.title}`);
+    alert(`Scores for ${selectedExam.title} would be published now.`);
+  };
+
+  const filteredSubmissions = (submissions: Submission[]) => {
+    if (filterStatus === "all") {
+      return submissions;
+    }
+    return submissions.filter(s => s.needsStatus === filterStatus);
   };
 
   return (
@@ -255,6 +304,13 @@ const GradingPage = () => {
               >
                 <FiCheck className="w-4 h-4" />
                 Grade All with AI
+              </button>
+              <button
+                onClick={handlePublishScores}
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center gap-2"
+              >
+                <FiSave className="w-4 h-4" />
+                Publish Scores
               </button>
             </div>
           </div>
@@ -300,7 +356,7 @@ const GradingPage = () => {
 
           {/* Questions List */}
           <div className="space-y-6">
-            {questions.map((question) => (
+            {questions.map((question, index) => (
               <div
                 key={question.id}
                 className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden"
@@ -314,7 +370,7 @@ const GradingPage = () => {
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-slate-800">Question {question.id}</h3>
+                      <h3 className="text-lg font-semibold text-slate-800">Question {index + 1}</h3>
                       <p className="text-slate-600 mt-1">{question.text}</p>
                       <p className="text-slate-600">Points: {question.points}</p>
                     </div>
@@ -380,10 +436,30 @@ const GradingPage = () => {
                       <div>
                         <div className="flex justify-between items-center mb-4">
                           <h4 className="font-medium text-slate-800">Student Submissions</h4>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-slate-600">Filter:</span>
+                              <button 
+                                onClick={() => setFilterStatus("all")} 
+                                className={`px-3 py-1 text-sm rounded-md ${filterStatus === "all" ? "bg-primary text-white" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
+                              >
+                                All
+                              </button>
+                              <button 
+                                onClick={() => setFilterStatus("needs_attention")} 
+                                className={`px-3 py-1 text-sm rounded-md ${filterStatus === "needs_attention" ? "bg-yellow-500 text-white" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
+                              >
+                                Needs Attention
+                              </button>
+                              <button 
+                                onClick={() => setFilterStatus("its_fine")} 
+                                className={`px-3 py-1 text-sm rounded-md ${filterStatus === "its_fine" ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-700 hover:bg-slate-300"}`}
+                              >
+                                It's Fine
+                              </button>
+                            </div>
                             <button
                               onClick={() => {
-                                // Simulate AI grading for this question
                                 const updatedQuestions = questions.map(q => {
                                   if (q.id === question.id) {
                                     return {
@@ -395,7 +471,8 @@ const GradingPage = () => {
                                         aiFeedback: `AI Feedback for ${q.text.substring(0, 30)}...`,
                                         feedback: "",
                                         manuallyGraded: false,
-                                        lastModified: new Date().toISOString()
+                                        lastModified: new Date().toISOString(),
+                                        needsStatus: (Math.random() > 0.7 ? "needs_attention" : "its_fine") as "needs_attention" | "its_fine",
                                       }))
                                     };
                                   }
@@ -412,7 +489,7 @@ const GradingPage = () => {
                         </div>
 
                         <div className="space-y-4">
-                          {question.submissions.map((submission) => (
+                          {filteredSubmissions(question.submissions).map((submission) => (
                             <div key={submission.id} className="py-4 border-b border-slate-200 last:border-0">
                               <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-2">
@@ -420,9 +497,10 @@ const GradingPage = () => {
                                     Student ID: {submission.studentId}
                                   </span>
                                   {submission.status === "graded" && (
-                                    <span className="flex items-center gap-1 text-sm text-emerald-600">
+                                    <span className={`flex items-center gap-1 text-sm ${submission.needsStatus === "needs_attention" ? "text-yellow-600" : "text-emerald-600"}`}>
                                       <FiCheck className="w-4 h-4" />
                                       Graded {submission.manuallyGraded && "(Manual)"}
+                                      {submission.needsStatus === "needs_attention" && <FiAlertCircle title="Needs Attention" className="w-4 h-4" />}
                                     </span>
                                   )}
                                   {submission.status === "pending" && (
@@ -642,8 +720,8 @@ const GradingPage = () => {
                     handleSaveBulkOverride(
                       overrideModal.question!.id,
                       overrideModal.selectedSubmissions,
-                      0, // This will be replaced with actual score
-                      "" // This will be replaced with actual feedback
+                      0,
+                      ""
                     );
                   }
                   setOverrideModal({ isOpen: false, submission: null, question: null, selectedSubmissions: [] });

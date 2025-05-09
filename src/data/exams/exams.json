@@ -7,7 +7,7 @@
       "description": "Comprehensive final exam covering all topics from the semester",
       "classId": 1,
       "className": "Software Engineering",
-      "dueDate": "2025-05-02",
+      "dueDate": "2025-05-08",
       "startTime": "00:00",
       "endTime": "23:59",
       "durationHours": 0,
@@ -15,36 +15,36 @@
       "duration": "2 hours",
       "questions": [
         {
-          "id": "1",
+          "id": "q1",
           "type": "essay",
           "points": 20,
-          "questionText": "Explain the key principles of Agile software development.",
-          "questionAnswer": "Agile software development is based on four key principles: 1) Individuals and interactions over processes and tools, 2) Working software over comprehensive documentation, 3) Customer collaboration over contract negotiation, and 4) Responding to change over following a plan.",
+          "questionText": "Explain the concept of inheritance in Object-Oriented Programming. Provide examples and discuss its benefits and potential drawbacks.",
+          "questionAnswer": "Inheritance allows a class (subclass) to inherit attributes and methods from another class (superclass), promoting code reuse and establishing a hierarchy. Benefits include code reusability and polymorphism. Drawbacks can include tight coupling and the fragile base class problem.",
           "rubricCriteria": [
             {
-              "name": "Content Relevance",
+              "name": "Concept Mastery",
               "value": 20,
-              "description": "How well the answer addresses the question and covers key concepts"
+              "description": "Evaluation of the student's understanding and application of key concepts"
             },
             {
-              "name": "Structure and Organization",
+              "name": "Comprehensiveness",
               "value": 20,
-              "description": "Logical flow and organization of the response"
+              "description": "Assessment of completeness in covering all essential points from the model answer"
             },
             {
-              "name": "Language and Style",
+              "name": "Clarity and Structure",
               "value": 20,
-              "description": "Clarity of expression and appropriate technical language"
+              "description": "Analysis of organization, flow, and presentation of ideas"
             },
             {
-              "name": "Critical Thinking and Analysis",
+              "name": "Critical Thinking",
               "value": 20,
-              "description": "Depth of analysis and evaluation of concepts"
+              "description": "Evaluation of original thought and application beyond simple matching to the prompt"
             },
             {
-              "name": "Originality and Paraphrasing",
+              "name": "Precision",
               "value": 20,
-              "description": "Original expression and proper paraphrasing of concepts"
+              "description": "Assessment of technical accuracy and specificity in the response"
             }
           ]
         },
@@ -61,6 +61,51 @@
             "Interface Segregation Principle",
             "Dependency Inversion Principle"
           ]
+        }
+      ],
+      "submissions": [
+        {
+          "id": 101,
+          "examId": 1,
+          "studentId": 1,
+          "submittedAt": "2025-05-05T10:30:00Z",
+          "completionTime": "1 hour 30 minutes",
+          "answers": [
+            {
+              "questionId": "q1",
+              "answer": "Inheritance is when a child class gets properties and methods from a parent class. For example, a 'Dog' class can inherit from an 'Animal' class. Benefits are less repeated code. Drawbacks can be that changes in parent affect children too much.",
+              "score": 15
+            },
+            {
+              "questionId": "2",
+              "answer": "Open/Closed Principle",
+              "score": 0
+            }
+          ],
+          "totalScore": 15,
+          "grade": "B"
+        },
+        {
+          "id": 102,
+          "examId": 1,
+          "studentId": 2,
+          "submittedAt": "2025-05-05T11:15:00Z",
+          "completionTime": "1 hour 45 minutes",
+          "answers": [
+            {
+              "questionId": "q1",
+              "answer": "In OOP, inheritance allows a new class to be based on an existing class, inheriting its public and protected members. An example is a 'Car' class inheriting from 'Vehicle'. It promotes reusability. A potential drawback is creating a rigid hierarchy that's hard to change.",
+              "score": 19
+            },
+            {
+              "questionId": "2",
+              "answer": "Single Responsibility Principle",
+              "isCorrect": true,
+              "score": 10
+            }
+          ],
+          "totalScore": 29,
+          "grade": "A"
         }
       ]
     },
@@ -118,6 +163,30 @@
           "points": 15,
           "questionText": "The first normal form (1NF) requires that all values in a table are _____.",
           "questionAnswer": "atomic"
+        }
+      ],
+      "submissions": [
+        {
+          "id": 201,
+          "examId": 2,
+          "studentId": 3,
+          "submittedAt": "2024-03-24T10:00:00Z",
+          "completionTime": "2 hours 15 minutes",
+          "answers": [
+            {
+              "questionId": "1",
+              "answer": "Student 3's answer for Q1 (Normalization): Normalization helps to reduce data duplication and makes the database more efficient.",
+              "score": 20
+            },
+            {
+              "questionId": "2",
+              "answer": "atomic",
+              "isCorrect": true,
+              "score": 15
+            }
+          ],
+          "totalScore": 35,
+          "grade": "A"
         }
       ]
     }

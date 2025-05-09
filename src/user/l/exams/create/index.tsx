@@ -18,29 +18,29 @@ interface Question {
 
 const defaultRubricCriteria: RubricCriteria[] = [
   {
-    name: "Content Relevance",
-    value: 20,
-    description: "How well the answer addresses the question and covers key concepts",
+    name: "Concept Mastery",
+    value: 0, // Dynamically Weighted
+    description: "Evaluation of the student's understanding and application of key concepts",
   },
   {
-    name: "Structure and Organization",
-    value: 20,
-    description: "Logical flow and organization of the response",
+    name: "Comprehensiveness",
+    value: 0, // Dynamically Weighted
+    description: "Assessment of completeness in covering all essential points from the model answer",
   },
   {
-    name: "Language and Style",
-    value: 20,
-    description: "Clarity of expression and appropriate technical language",
+    name: "Clarity and Structure",
+    value: 0, // Dynamically Weighted
+    description: "Analysis of organization, flow, and presentation of ideas",
   },
   {
-    name: "Critical Thinking and Analysis",
-    value: 20,
-    description: "Depth of analysis and evaluation of concepts",
+    name: "Critical Thinking",
+    value: 0, // Dynamically Weighted
+    description: "Evaluation of original thought and application beyond simple matching to the prompt",
   },
   {
-    name: "Originality and Paraphrasing",
-    value: 20,
-    description: "Original expression and proper paraphrasing of concepts",
+    name: "Precision",
+    value: 0, // Dynamically Weighted
+    description: "Assessment of technical accuracy and specificity in the response",
   },
 ];
 

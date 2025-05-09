@@ -10,8 +10,8 @@ export default defineConfig({
     port: 3500,
     strictPort: true,
     allowedHosts: [
-      'aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev',
-      '.replit.dev',
+      // 'aa9fe1da-5102-47de-b816-788dbadc67cc-00-2sv19g3oirbd.riker.replit.dev', // Removed Replit specific host
+      // '.replit.dev', // Consider if this is still needed for other dev environments
       'localhost'
     ],
     open: true,
@@ -38,4 +38,9 @@ export default defineConfig({
     },
   },
   logLevel: 'error',
+  base: '/',
+  preview: {
+    port: 3500,
+    strictPort: true,
+  },
 })
