@@ -1,0 +1,94 @@
+{
+  "rubricScores": [
+    {
+      "id": "rs1",
+      "submissionAnswerId": "sa1",
+      "rubricCriteriaId": "rc1",
+      "score": 18,
+      "feedback": "Good coverage of key concepts with relevant examples",
+      "createdAt": "2024-03-20T10:45:00Z",
+      "updatedAt": "2024-03-20T10:45:00Z"
+    },
+    {
+      "id": "rs2",
+      "submissionAnswerId": "sa1",
+      "rubricCriteriaId": "rc2",
+      "score": 18,
+      "feedback": "Well-structured response with logical flow",
+      "createdAt": "2024-03-20T10:45:00Z",
+      "updatedAt": "2024-03-20T10:45:00Z"
+    },
+    {
+      "id": "rs3",
+      "submissionAnswerId": "sa1",
+      "rubricCriteriaId": "rc3",
+      "score": 17,
+      "feedback": "Clear technical language used appropriately",
+      "createdAt": "2024-03-20T10:45:00Z",
+      "updatedAt": "2024-03-20T10:45:00Z"
+    },
+    {
+      "id": "rs4",
+      "submissionAnswerId": "sa1",
+      "rubricCriteriaId": "rc4",
+      "score": 17,
+      "feedback": "Good analysis of benefits and drawbacks",
+      "createdAt": "2024-03-20T10:45:00Z",
+      "updatedAt": "2024-03-20T10:45:00Z"
+    },
+    {
+      "id": "rs5",
+      "submissionAnswerId": "sa1",
+      "rubricCriteriaId": "rc5",
+      "score": 15,
+      "feedback": "Some concepts could have been paraphrased better",
+      "createdAt": "2024-03-20T10:45:00Z",
+      "updatedAt": "2024-03-20T10:45:00Z"
+    },
+    {
+      "id": "rs6",
+      "submissionAnswerId": "sa4",
+      "rubricCriteriaId": "rc6",
+      "score": 15,
+      "feedback": "Basic implementation of insert operation only",
+      "createdAt": "2024-03-19T16:30:00Z",
+      "updatedAt": "2024-03-19T16:30:00Z"
+    },
+    {
+      "id": "rs7",
+      "submissionAnswerId": "sa4",
+      "rubricCriteriaId": "rc7",
+      "score": 0,
+      "feedback": "Time complexity analysis not provided",
+      "createdAt": "2024-03-19T16:30:00Z",
+      "updatedAt": "2024-03-19T16:30:00Z"
+    },
+    {
+      "id": "rs8",
+      "submissionAnswerId": "sa4",
+      "rubricCriteriaId": "rc8",
+      "score": 10,
+      "feedback": "Basic code structure but missing documentation",
+      "createdAt": "2024-03-19T16:30:00Z",
+      "updatedAt": "2024-03-19T16:30:00Z"
+    },
+    {
+      "id": "rs9",
+      "submissionAnswerId": "sa4",
+      "rubricCriteriaId": "rc9",
+      "score": 5,
+      "feedback": "No error handling implemented",
+      "createdAt": "2024-03-19T16:30:00Z",
+      "updatedAt": "2024-03-19T16:30:00Z"
+    },
+    {
+      "id": "rs10",
+      "submissionAnswerId": "sa4",
+      "rubricCriteriaId": "rc10",
+      "score": 0,
+      "feedback": "No consideration of edge cases or testing scenarios",
+      "createdAt": "2024-03-19T16:30:00Z",
+      "updatedAt": "2024-03-19T16:30:00Z"
+    }
+  ]
+} 

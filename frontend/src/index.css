@@ -1,0 +1,281 @@
+/* Import animations */
+@import url("../src/assets/animations.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utility classes for responsive behavior */
+@layer utilities {
+  .tablet-as-mobile {
+    @apply lg:flex md:block sm:block block; /* Mobile layout up to lg breakpoint */
+  }
+
+  .hide-on-mobile-and-tablet {
+    @apply lg:block md:hidden sm:hidden hidden;
+  }
+
+  .show-on-mobile-and-tablet {
+    @apply lg:hidden md:block sm:block block;
+  }
+  
+  .full-width-on-mobile {
+    @apply w-full lg:w-auto;
+  }
+  
+  /* Mobile-specific styles */
+  .mobile-content {
+    @apply px-4 py-3 w-full;
+  }
+  
+  .mobile-card {
+    @apply bg-white rounded-lg shadow p-4 mb-4;
+  }
+}
+
+
+@layer base {
+  :root {
+    --color-primary: 42 159 6; /* #2A9F06 */
+  }
+}
+
+/* Add noCopy class to prevent copying */
+.noCopy {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+/* Prevent text selection */
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Disable drag and drop */
+[unselectable="on"] {
+  -webkit-user-drag: none;
+
+/* Add bottom padding for mobile content to prevent cut-off when scrolling */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding-bottom: 80px; /* Add extra padding at the bottom for mobile */
+  }
+  
+  main {
+    padding-bottom: 80px; /* Ensure main content areas have sufficient bottom padding */
+  }
+}
+
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Prevent text selection in exam questions */
+.exam-question {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Prevent drag and drop in secure text areas */
+textarea.secure-text-field {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Styles for question types */
+.exam-question {
+  position: relative;
+  user-select: none; /* Updated for consistency */
+}
+
+.question-type-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.question-type-multi-choice {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.question-type-fill-ins {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.question-type-essay {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+}
+
+/* Prevent dragging on elements */
+textarea, input[type="text"], .secure-content {
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+  user-drag: none !important;
+  -webkit-user-select: text; /* Allow text selection */
+  user-select: text;
+}
+
+/* Disable drag behavior specifically for exam textareas */
+.exam-area textarea, .no-drag-drop {
+  -webkit-touch-callout: default !important;
+  -webkit-user-select: text !important;
+  -khtml-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  /* Add cursor styles to indicate text editing without drag capability */
+  cursor: text !important;
+}
+
+/* Use a stronger approach with pseudo-elements to capture drag events */
+.no-drag-drop::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* Allow typing */
+  z-index: 2;
+}
+
+/* Apply these styles to parent element as another layer of prevention */
+.exam-area {
+  position: relative;
+  isolation: isolate;
+}
+
+  /* Modal styles */
+.success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.success-modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 400px;
+  width: calc(100% - 32px);
+  margin: 0 16px;
+  animation: scaleIn 0.3s ease-out;
+  border-top: 4px solid #2A9F06;
+}
+
+@keyframes scaleIn {
+  0% { 
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.card-grid {
+  display: grid;
+}
+
+/* Form animations */
+input, select, textarea {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  animation: pulse 1s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(42, 159, 6, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(42, 159, 6, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(42, 159, 6, 0); }
+}
+
+/* Page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+/* Button click effect */
+button {
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(20, 20);
+    opacity: 0;
+  }
+}
+
+button:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
