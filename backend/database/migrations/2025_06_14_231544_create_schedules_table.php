@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('type');
+            $table->integer('course_id');
+            $table->string('date');
+            $table->string('start_time');
+            $table->string('end_time');
+            $table->string('location');
+            $table->string('deescription');
+            $table->boolean('is_recurring')->default('0');
+            $table->string('frequency')->nullable();
+            $table->string('end')->nullable();
             $table->timestamps();
         });
     }

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
-            $table->string('exam_id');
-            $table->string('question_id');
+            $table->integer('exam_id');
+            $table->integer('question_id');
             $table->string('answer');
             $table->timestamps();
         });
