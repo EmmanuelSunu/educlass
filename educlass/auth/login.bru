@@ -1,0 +1,22 @@
+meta {
+  name: login
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://educlass.test/api/login
+  body: json
+  auth: inherit
+}
+
+params:query {
+  : 
+}
+
+body:json {
+  {
+    "email":"earnest62@example.net",
+    "password":"password123"
+  }
+}

@@ -15,6 +15,18 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
+Route::post('/login', [UserController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [UserController::class, 'logout']);
+    Route::get('/me', function (Request $request) {
+        return $request->user();
+    });
+
+});
+
+
+
 Route::apiResource('/course', CourseController::class);
 Route::apiResource('/program', ProgramController::class);
 Route::apiResource('/exam', ExamController::class);
