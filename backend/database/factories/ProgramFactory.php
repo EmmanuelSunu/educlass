@@ -26,12 +26,14 @@ class ProgramFactory extends Factory
             'Nursing' => 'Trains students in patient care, anatomy, and clinical practice.',
             'Environmental Studies' => 'Examines ecological systems and sustainability practices.',
         ];
+
         $program = fake()->randomElement(array_keys($programs));
 
         return [
-            'name' =>  $program,
+            'name' => $program,
             'description' => $programs[$program],
-            'duration' => fake()->randomElement(['1', '2', '3', '4', '5', '6']),
+            'duration' => fake()->randomElement(['1', '2', '3', '4']),
         ];
+
     }
 }

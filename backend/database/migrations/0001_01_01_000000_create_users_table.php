@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('department')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('program_id')->nullable();
             $table->string('level')->nullable();
             $table->string('semester')->nullable();
             $table->string('role')->nullable();

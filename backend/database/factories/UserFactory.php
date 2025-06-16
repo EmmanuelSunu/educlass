@@ -23,15 +23,8 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $role = $this->faker->randomElement(['admin', 'lecturer', 'student']);
-        $semester = $this->faker->randomElement(['first', 'second']);
-        $other = '';
-        if ($role == 'lecturer' ) {
-            $other = 'STF';
-        }
-        elseif  ($role = 'student') {
-            $other = 'STU';
-        }
+        $role = fake()->randomElement(['student', 'teacher', 'admin']);
+        $other = $role === 'student' ? 'STU' : ($role === 'teacher' ? 'STF' : 'ADM');
 
         return [
             'f_name' => fake()->firstName(),
@@ -42,15 +35,15 @@ class UserFactory extends Factory
                 'Biology', 'Economics', 'History', 'Philosophy',
                 'Sociology', 'Political Science', 'Psychology', 'Engineering'
             ]),
-            'program_id' => rand(0, 4),
-            'level' => rand(0, 4),
-            'semester' => $semester,
+            'level' => rand(1, 4),
+            'semester' => rand(1, 2),
             'role' => $role,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password123'),
             'remember_token' => Str::random(10),
         ];
+
     }
 
     /**

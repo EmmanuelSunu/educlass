@@ -9,4 +9,16 @@ class Course extends Model
 {
     /** @use HasFactory<\Database\Factories\CourseFactory> */
     use HasFactory;
+
+    // Course.php
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function teachers()
+    {
+        return $this->belongsToMany(User::class, 'course_teacher', 'course_id', 'teacher_id')
+            ->where('role', 'teacher');
+    }
 }
