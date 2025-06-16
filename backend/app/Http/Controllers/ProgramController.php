@@ -13,7 +13,7 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        //
+        return program::all();
     }
 
     /**
@@ -37,7 +37,7 @@ class ProgramController extends Controller
      */
     public function show(Program $program)
     {
-        //
+        return $program;
     }
 
     /**
@@ -61,6 +61,6 @@ class ProgramController extends Controller
      */
     public function destroy(Program $program)
     {
-        //
+        return $program->delete();
     }
 }

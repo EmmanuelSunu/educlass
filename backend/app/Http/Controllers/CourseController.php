@@ -13,7 +13,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        //
+        return Course::all();
     }
 
     /**
@@ -37,7 +37,7 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        //
+        return $course;
     }
 
     /**
@@ -61,6 +61,6 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        //
+        return $course->delete();
     }
 }
