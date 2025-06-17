@@ -13,7 +13,7 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        //
+        return Question::all();
     }
 
     /**
@@ -31,7 +31,7 @@ class QuestionController extends Controller
     {
         $data = $request->validated();
         $result = Question::create($data);
-        return response()->json(['message' => 'program added successfully','data' =>  $result], 201);
+        return response()->json(['message' => 'Question added successfully','data' =>  $result], 201);
     }
 
     /**
@@ -39,7 +39,7 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
-        //
+        return $question;
     }
 
     /**
@@ -55,7 +55,9 @@ class QuestionController extends Controller
      */
     public function update(UpdateQuestionRequest $request, Question $question)
     {
-        //
+        $data = $request->validated();
+        $question->update($data);
+        return response()->json(['message' => 'Question added successfully','data' =>  $question], 201);
     }
 
     /**
@@ -63,6 +65,6 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        return $question->delete();
     }
 }

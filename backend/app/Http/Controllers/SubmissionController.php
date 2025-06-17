@@ -13,7 +13,7 @@ class SubmissionController extends Controller
      */
     public function index()
     {
-        //
+        return Submission::all();
     }
 
     /**
@@ -39,7 +39,7 @@ class SubmissionController extends Controller
      */
     public function show(Submission $submission)
     {
-        //
+        return $submission;
     }
 
     /**
@@ -55,7 +55,9 @@ class SubmissionController extends Controller
      */
     public function update(UpdateSubmissionRequest $request, Submission $submission)
     {
-        //
+        $data = $request->validated();
+        $submission->update($data);
+        return response()->json(['message' => 'Schedule added successfully','data' =>  $submission], 201);
     }
 
     /**
@@ -63,6 +65,6 @@ class SubmissionController extends Controller
      */
     public function destroy(Submission $submission)
     {
-        //
+        return $submission->delete();
     }
 }

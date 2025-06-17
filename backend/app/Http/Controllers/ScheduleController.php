@@ -13,7 +13,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        //
+        return Schedule::all();
     }
 
     /**
@@ -31,7 +31,7 @@ class ScheduleController extends Controller
     {
         $data = $request->validated();
         $result = Schedule::create($data);
-        return response()->json(['message' => 'program added successfully','data' =>  $result], 201);
+        return response()->json(['message' => 'Schedule added successfully','data' =>  $result], 201);
     }
 
     /**
@@ -39,7 +39,7 @@ class ScheduleController extends Controller
      */
     public function show(Schedule $schedule)
     {
-        //
+        return $schedule;
     }
 
     /**
@@ -55,7 +55,9 @@ class ScheduleController extends Controller
      */
     public function update(UpdateScheduleRequest $request, Schedule $schedule)
     {
-        //
+        $data = $request->validated();
+        $schedule->update($data);
+        return response()->json(['message' => 'Schedule added successfully','data' =>  $schedule], 201);
     }
 
     /**
@@ -63,6 +65,6 @@ class ScheduleController extends Controller
      */
     public function destroy(Schedule $schedule)
     {
-        //
+        return $schedule->delete();
     }
 }

@@ -1,18 +1,19 @@
 meta {
-  name: create program
+  name: update program
   type: http
-  seq: 4
+  seq: 5
 }
 
-post {
-  url: http://educlass.test/api/program
+put {
+  url: http://educlass.test/api/program/12
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "name" : "meeeeee",
+    "id": "12",
+    "name" : "meeeeee23",
     "description":"john",
     "duration":"sty-0000",
     "department":"more"

@@ -13,7 +13,7 @@ class ExamController extends Controller
      */
     public function index()
     {
-        //
+        return Exam::all();
     }
 
     /**
@@ -39,7 +39,7 @@ class ExamController extends Controller
      */
     public function show(Exam $exam)
     {
-        //
+        return  $exam;
     }
 
     /**
@@ -55,7 +55,9 @@ class ExamController extends Controller
      */
     public function update(UpdateExamRequest $request, Exam $exam)
     {
-        //
+        $data = $request->validated();
+        $exam->update($data);
+        return response()->json(['message' => 'Exam updated successfully','data' =>  $exam], 201);
     }
 
     /**
@@ -63,6 +65,6 @@ class ExamController extends Controller
      */
     public function destroy(Exam $exam)
     {
-        //
+        return $exam->delete();
     }
 }

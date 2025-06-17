@@ -63,7 +63,9 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $data = $request->validated();
+        $user->update($user);
+        return response()->json(['message' => 'Schedule added successfully','data' =>  $user], 201);
     }
 
     /**
