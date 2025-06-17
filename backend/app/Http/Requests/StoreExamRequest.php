@@ -22,7 +22,14 @@ class StoreExamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'lecturer_id' => 'required|integer',
+            'course_id'=>'required|integer',
+            'type'=>'required|string',
+            'due_date'=>'required|date',
+            'start_time'=>'required|string',
+            'end_time'=>'required|string',
+            'duration'=>'required|string',
+            'description'=> 'required|string',
         ];
     }
 }

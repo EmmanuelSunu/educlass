@@ -29,7 +29,9 @@ class SubmissionController extends Controller
      */
     public function store(StoreSubmissionRequest $request)
     {
-        //
+        $data = $request->validated();
+        $result = Submission::create($data);
+        return response()->json(['message' => 'program added successfully','data' =>  $result], 201);
     }
 
     /**

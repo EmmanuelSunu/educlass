@@ -29,7 +29,9 @@ class ExamController extends Controller
      */
     public function store(StoreExamRequest $request)
     {
-        //
+        $data = $request->validated();
+        $result = Exam::create($data);
+        return response()->json(['message' => 'program added successfully','data' =>  $result], 201);
     }
 
     /**

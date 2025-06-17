@@ -1,0 +1,20 @@
+meta {
+  name: create program
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://educlass.test/api/program
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name" : "me",
+    "description":"john",
+    "duration":"sty-0000",
+    "department":"more"
+  }
+}

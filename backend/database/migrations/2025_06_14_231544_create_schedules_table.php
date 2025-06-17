@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('start_time');
             $table->string('end_time');
             $table->string('location');
-            $table->string('deescription');
+            $table->string('description');
             $table->boolean('is_recurring')->default('0');
             $table->string('frequency')->nullable();
             $table->string('end')->nullable();

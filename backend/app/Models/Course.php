@@ -10,6 +10,17 @@ class Course extends Model
     /** @use HasFactory<\Database\Factories\CourseFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'level',
+        'code',
+        'name',
+        'description',
+        'credits',
+        'duration',
+        'status',
+        'program_id',
+    ];
+
     // Course.php
     public function program()
     {

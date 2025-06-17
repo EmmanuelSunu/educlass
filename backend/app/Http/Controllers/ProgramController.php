@@ -29,7 +29,9 @@ class ProgramController extends Controller
      */
     public function store(StoreProgramRequest $request)
     {
-        //
+        $data = $request->validated();
+        $program = Program::create($data);
+        return response()->json(['message' => 'program added successfully','data' =>  $program], 201);
     }
 
     /**

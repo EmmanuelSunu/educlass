@@ -29,7 +29,9 @@ class ScheduleController extends Controller
      */
     public function store(StoreScheduleRequest $request)
     {
-        //
+        $data = $request->validated();
+        $result = Schedule::create($data);
+        return response()->json(['message' => 'program added successfully','data' =>  $result], 201);
     }
 
     /**

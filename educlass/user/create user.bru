@@ -1,0 +1,25 @@
+meta {
+  name: create user
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://educlass.test/api/user
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "f_name" : "me",
+    "l_name":"john",
+    "other_id":"sty-0000",
+    "department":"more",
+    "level":"122",
+    "semester":"1",
+    "role":"student",
+    "email":"student@email.com",
+    "password":"password123"
+  }
+}

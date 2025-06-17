@@ -10,6 +10,12 @@ class Program extends Model
     /** @use HasFactory<\Database\Factories\ProgramFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'duration'
+    ];
+
     // Program.php
     public function courses()
     {

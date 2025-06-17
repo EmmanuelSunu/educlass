@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\StoreUserRequest;
-use App\Http\Resources\UpdateUserRequest;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\StoreUserResource;
+use App\Http\Resources\UpdateUserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -31,16 +33,10 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $request['password'] = Hash::make($request['password']);
+        $data = $request->validated();
+        $data['password'] = Hash::make($request['password']);
 
-//        $request->validate([
-//            'name' => 'required|string',
-//            'email' => 'required|email|unique:users',
-//            'password' => 'required|string|min:6',
-//            'role' => 'required|string|in:admin,student', // example roles
-//        ]);
-
-        User::create($request);
+        User::create($data);
 
         return response()->json(['message' => 'User registered successfully']);
 

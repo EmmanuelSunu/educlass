@@ -11,7 +11,7 @@ class UpdateExamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,15 @@ class UpdateExamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => 'required|integer|exists:exams,id',
+            'lecturer_id' => 'required|integer',
+            'course_id'=>'required|integer',
+            'type'=>'required|string',
+            'due_date'=>'required|date',
+            'start_time'=>'required|string',
+            'end_time'=>'required|string',
+            'duration'=>'required|string',
+            'description'=> 'required|string',
         ];
     }
 }

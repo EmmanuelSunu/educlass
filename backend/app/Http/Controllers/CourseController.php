@@ -29,7 +29,9 @@ class CourseController extends Controller
      */
     public function store(StoreCourseRequest $request)
     {
-        //
+        $data = $request->validated();
+        $course = Course::create($data);
+        return response()->json(['message' => 'program added successfully','data' =>  $course], 201);
     }
 
     /**

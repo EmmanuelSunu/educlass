@@ -11,7 +11,7 @@ class UpdateScheduleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,18 @@ class UpdateScheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => 'required|integer',
+            'title' => 'required|string',
+            'type' => 'required|string',
+            'course_id' => 'required|string',
+            'date' => 'required|string',
+            'start_time' => 'required|string',
+            'end_time' => 'required|string',
+            'location' => 'required|string',
+            'description' => 'required|string',
+            'is_recurring' => 'required|string',
+            'frequency' => 'required|string',
+            'end' => 'required|string',
         ];
     }
 }

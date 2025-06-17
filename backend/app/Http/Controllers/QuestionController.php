@@ -29,7 +29,9 @@ class QuestionController extends Controller
      */
     public function store(StoreQuestionRequest $request)
     {
-        //
+        $data = $request->validated();
+        $result = Question::create($data);
+        return response()->json(['message' => 'program added successfully','data' =>  $result], 201);
     }
 
     /**
