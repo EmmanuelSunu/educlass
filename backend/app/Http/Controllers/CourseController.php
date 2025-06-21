@@ -13,6 +13,11 @@ class CourseController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+        if ($user->role === 'teacher') {
+            return response()->json($user->taughtCourses());
+        }
+
         return Course::all();
     }
 
@@ -65,6 +70,9 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
+        if (auth()->user()->role !== 'teacher') {
+            return  ['message' => 'You are not allowed to delete this course'];
+        }
         return $course->delete();
     }
 }

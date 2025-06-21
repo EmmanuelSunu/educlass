@@ -14,6 +14,15 @@ class SubmissionController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+
+        if ($user->role === 'student') {
+            return response()->json($user->createdExams()->submissions());
+        }
+
+        if ($user->role === 'teacher') {
+            return response()->json($user->registeredPrograms());
+        }
         return Submission::all();
     }
 

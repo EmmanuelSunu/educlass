@@ -66,7 +66,7 @@ class User extends Authenticatable
     // User.php
     public function createdExams()
     {
-        return $this->hasMany(Exam::class, 'teacher_id');
+        return $this->hasMany(Exam::class, 'lecturer_id');
     }
 
     public function submissions()

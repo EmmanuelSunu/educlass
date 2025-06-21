@@ -14,7 +14,19 @@ class ExamController extends Controller
      */
     public function index()
     {
-        return Exam::all()->load('questions');;
+        $user = auth()->user();
+
+        if ($user->role === 'teacher') {
+            return response()->json($user->createdExams()->with('questions')->get());
+        }
+
+        if ($user->role === 'student') {
+            return response()->json(
+                $user->registeredPrograms()->with('courses')->get()->pluck('courses')->flatten()
+            );
+        }
+
+        return response()->json(Exam::with('questions')->get());
     }
 
     /**

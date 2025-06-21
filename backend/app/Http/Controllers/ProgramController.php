@@ -13,6 +13,11 @@ class ProgramController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+
+        if ($user->role === 'student') {
+            return response()->json($user->registeredPrograms());
+        }
         return program::all();
     }
 
