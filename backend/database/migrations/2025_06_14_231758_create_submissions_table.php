@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
-            $table->integer('exam_id');
-            $table->integer('student_id');
-            $table->integer('question_id');
-            $table->string('answer');
+            $table->foreignId('exam_id')->constrained()->onDelete('cascade');
+            $table->foreignId('student_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');
+            $table->text('response')->nullable()->default('');
+
+            $table->integer('scores')->nullable()->default(0);
+            $table->text('feedback')->nullable()->default('');
             $table->timestamps();
         });
     }

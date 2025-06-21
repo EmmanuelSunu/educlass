@@ -5,7 +5,28 @@ meta {
 }
 
 post {
-  url: http://educlass.test/api/course
-  body: none
+  url: http://educlass.test/api/submission
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "exam_id": 12,
+    "student_id": 6,
+    "answers": [
+      {
+        "question_id": 101,
+        "response": "Stack"
+      },
+      {
+        "question_id": 102,
+        "response": "Relational databases ensure data integrity and scalability."
+      },
+      {
+        "question_id": 103,
+        "response": "False"
+      }
+    ]
+  }
 }

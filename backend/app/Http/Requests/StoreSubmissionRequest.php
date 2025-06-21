@@ -22,9 +22,11 @@ class StoreSubmissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'exam_id'=> 'required|integer|exists:exams,id',
-            'question_id'=> 'required|integer|exists:questions,id',
-            'answer'=> 'required|string',
+            'exam_id' => 'required|exists:exams,id',
+            'student_id' => 'required',
+            'answers' => 'required|array|min:1',
+            'answers.*.question_id' => 'required|exists:questions,id',
+            'answers.*.response' => 'required|string',
         ];
     }
 }

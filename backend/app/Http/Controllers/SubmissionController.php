@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Submission;
 use App\Http\Requests\StoreSubmissionRequest;
 use App\Http\Requests\UpdateSubmissionRequest;
+use Illuminate\Support\Facades\DB;
 
 class SubmissionController extends Controller
 {
@@ -30,8 +31,22 @@ class SubmissionController extends Controller
     public function store(StoreSubmissionRequest $request)
     {
         $data = $request->validated();
-        $result = Submission::create($data);
-        return response()->json(['message' => 'submission added successfully','data' =>  $result], 201);
+        $submissions = [];
+
+        DB::transaction(function () use ($data) {
+            foreach ($data['answers'] as $subs) {
+                Submission::create([
+                    'student_id' => $data['student_id'],  // auth()->id(), // or $request->student_id
+                    'exam_id' => $data['exam_id'],
+                    'question_id' => $subs['question_id'],
+                    'response' => $subs['response'],
+                ]);
+            }
+        });
+
+        $submissions = Submission::whereIn('id', collect($submissions)->pluck('id'))->with(['question', 'exam'])->get();
+
+        return response()->json(['message' => 'submission added successfully','data' =>  $submissions], 201);
     }
 
     /**

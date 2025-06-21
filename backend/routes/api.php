@@ -24,8 +24,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-
-
 Route::apiResource('/course', CourseController::class);
 Route::apiResource('/program', ProgramController::class);
 Route::apiResource('/exam', ExamController::class);

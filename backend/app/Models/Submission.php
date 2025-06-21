@@ -13,7 +13,9 @@ class Submission extends Model
         'exam_id',
         'question_id',
         'student_id',
-        'answer',
+        'response',
+        'scores',
+        'feedback',
     ];
 
     // Submission.php

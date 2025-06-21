@@ -30,7 +30,7 @@ class StoreUserRequest extends FormRequest
             'semester' => 'nullable|string',
             'role' => 'required|string|in:admin,student,teacher',
             'email' => 'required|email|unique:users',
-//            'password' => 'required|string|min:6',
+            // 'password' => 'required|string|min:6',
         ];
     }
 }
