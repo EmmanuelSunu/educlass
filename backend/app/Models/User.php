@@ -62,4 +62,15 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Program::class, 'program_student', 'student_id', 'program_id');
     }
+
+    // User.php
+    public function createdExams()
+    {
+        return $this->hasMany(Exam::class, 'teacher_id');
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class, 'student_id');
+    }
 }

@@ -23,14 +23,20 @@ class UpdateExamRequest extends FormRequest
     {
         return [
             'id' => 'required|integer|exists:exams,id',
-            'lecturer_id' => 'required|integer',
-            'course_id'=>'required|integer',
-            'type'=>'required|string',
-            'due_date'=>'required|date',
-            'start_time'=>'required|string',
-            'end_time'=>'required|string',
-            'duration'=>'required|string',
-            'description'=> 'required|string',
+            'type' => 'required|string',
+            'due_date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'duration' => 'required|string',
+
+            'description' => 'nullable|string',
+            'questions' => 'required|array|min:1',
+            'questions.*.type' => 'required|string',
+            'questions.*.point' => 'required|numeric|min:0',
+            'questions.*.question' => 'required|string',
+            'questions.*.answer' => 'required|string',
+            'questions.*.other' => 'nullable|string',
+
         ];
     }
 }

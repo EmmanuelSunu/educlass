@@ -1,0 +1,28 @@
+meta {
+  name: get schedules copy copy
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://educlass.test/api/schedule/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id":"1",
+    "title":"somthing",
+    "type":"class",
+    "course_id":"1",
+    "date":"20/09/2025",
+    "start_time":"12:00",
+    "end_time":"13:00",
+    "location":"hall a",
+    "description":"hall a class",
+    "is_recurring":"1",
+    "frequency":"daily",
+    "end":"20/10/2025"
+  }
+}

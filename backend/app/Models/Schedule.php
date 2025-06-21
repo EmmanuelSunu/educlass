@@ -9,4 +9,18 @@ class Schedule extends Model
 {
     /** @use HasFactory<\Database\Factories\ScheduleFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'type',
+        'course_id' ,
+        'date' ,
+        'start_time' ,
+        'end_time' ,
+        'location' ,
+        'description' ,
+        'is_recurring' ,
+        'frequency' ,
+        'end' ,
+    ];
 }

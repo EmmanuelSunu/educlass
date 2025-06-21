@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('point');
             $table->string('question');
             $table->string('answer');
-            $table->string('other');
+            $table->string('other')->nullable();
             $table->timestamps();
         });
     }

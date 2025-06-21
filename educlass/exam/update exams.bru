@@ -1,0 +1,59 @@
+meta {
+  name: update exams
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://educlass.test/api/exam/8
+  body: json
+  auth: inherit
+}
+
+body:json {
+  // {
+  //   "id":"1",
+  //   "lecturer_id":"2",
+  //   "type":"assignment",
+  //   "course_id":"1",
+  //   "due_date":"20/08/2025",
+  //   "start_time":"11:00",
+  //   "end_time":"11:00",
+  //   "duration":"1hr",
+  //   "description":"bbbbb"
+  // }
+  {
+    "id":"8",
+    "lecturer_id": 3,
+    "course_id": 5,
+    "type": "assignment",
+    "due_date": "2025-06-30",
+    "start_time": "09:05",
+    "end_time": "11:00",
+    "duration": "2 hours",
+    "description": "Covers not all topics from weeks 1 to 6.",
+    "questions": [
+      {
+        "type": "multiple_choice",
+        "point": 5,
+        "question": "Which is a data data structure uses LIFO (Last In First Out)?",
+        "answer": "Stack",
+        "other": "Queue, Array, Tree"
+      },
+      {
+        "type": "essay",
+        "point": 10,
+        "question": "Explain the advantages of relational databases over flat-file storage.",
+        "answer": "Relational databases provide data integrity, normalization, scalability, and query efficiency.",
+       "other": "Queue, Array, Tree"
+      },
+      {
+        "type": "true_false",
+        "point": 2,
+        "question": "SQL stands for Structured Query Logic.",
+        "answer": "False",
+        "other": "Queue, Array, Tree"
+      }
+    ]
+  }
+}

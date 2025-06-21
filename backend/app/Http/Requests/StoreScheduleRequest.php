@@ -11,7 +11,7 @@ class StoreScheduleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,7 @@ class StoreScheduleRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'type' => 'required|string',
+            'type' => 'required|string|in:class,exam,study,consultation',
             'course_id' => 'required|string',
             'date' => 'required|string',
             'start_time' => 'required|string',
@@ -31,8 +31,8 @@ class StoreScheduleRequest extends FormRequest
             'location' => 'required|string',
             'description' => 'required|string',
             'is_recurring' => 'required|string',
-            'frequency' => 'required|string',
-            'end' => 'required|string',
+            'frequency' => 'nullable|string|in:class,weekly,daily,month',
+            'end' => 'nullable|string',
         ];
     }
 }

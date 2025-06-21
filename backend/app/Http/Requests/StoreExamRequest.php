@@ -11,7 +11,7 @@ class StoreExamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,12 +24,20 @@ class StoreExamRequest extends FormRequest
         return [
             'lecturer_id' => 'required|integer',
             'course_id'=>'required|integer',
-            'type'=>'required|string',
-            'due_date'=>'required|date',
+            'type'=>'required|string|in:exam,assignment',
+            'due_date'=>'required|string',
             'start_time'=>'required|string',
             'end_time'=>'required|string',
             'duration'=>'required|string',
             'description'=> 'required|string',
+
+            'questions' => 'required|array|min:1',
+            'questions.*.type' => 'required|string',
+            'questions.*.point' => 'required|numeric|min:0',
+            'questions.*.question' => 'required|string',
+            'questions.*.answer' => 'required|string',
+            'questions.*.other' => 'nullable|string',
+
         ];
     }
 }

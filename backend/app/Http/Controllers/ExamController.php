@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Exam;
 use App\Http\Requests\StoreExamRequest;
 use App\Http\Requests\UpdateExamRequest;
+use Illuminate\Support\Facades\DB;
 
 class ExamController extends Controller
 {
@@ -13,7 +14,7 @@ class ExamController extends Controller
      */
     public function index()
     {
-        return Exam::all();
+        return Exam::all()->load('questions');;
     }
 
     /**
@@ -29,9 +30,26 @@ class ExamController extends Controller
      */
     public function store(StoreExamRequest $request)
     {
-        $data = $request->validated();
-        $result = Exam::create($data);
-        return response()->json(['message' => 'program added successfully','data' =>  $result], 201);
+        $validated = $request->validated();
+        $exam = DB::transaction(function () use ($validated) {
+            $exam = Exam::create([
+                'lecturer_id' => $validated['lecturer_id'],
+                'course_id' => $validated['course_id'],
+                'type' => $validated['type'],
+                'due_date' => $validated['due_date'],
+                'start_time' => $validated['start_time'],
+                'end_time' => $validated['end_time'],
+                'duration' => $validated['duration'],
+                'description' => $validated['description'] ?? null,
+            ]);
+
+            foreach ($validated['questions'] as $q) {
+                $exam->questions()->create($q);
+            }
+            return $exam->load('questions');
+        });
+
+        return response()->json(['message' => 'examm added successfully','data' =>  $exam], 201);
     }
 
     /**
@@ -39,7 +57,7 @@ class ExamController extends Controller
      */
     public function show(Exam $exam)
     {
-        return  $exam;
+        return  $exam->load('questions');
     }
 
     /**
@@ -55,9 +73,25 @@ class ExamController extends Controller
      */
     public function update(UpdateExamRequest $request, Exam $exam)
     {
-        $data = $request->validated();
-        $exam->update($data);
-        return response()->json(['message' => 'Exam updated successfully','data' =>  $exam], 201);
+        $validated = $request->validated();
+        DB::transaction(function () use ($exam, $validated) {
+
+            $exam->update([
+                'type' => $validated['type'],
+                'due_date' => $validated['due_date'],
+                'start_time' => $validated['start_time'],
+                'end_time' => $validated['end_time'],
+                'duration' => $validated['duration'],
+                'description' => $validated['description'] ?? null,
+            ]);
+
+            $exam->questions()->delete();
+
+            foreach ($validated['questions'] as $questionData) {
+                $exam->questions()->create($questionData);
+            }
+        });
+        return response()->json(['message' => 'Exam updated successfully','data' =>  $exam->load('questions')], 201);
     }
 
     /**

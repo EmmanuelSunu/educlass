@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
             $table->integer('exam_id');
+            $table->integer('student_id');
             $table->integer('question_id');
             $table->string('answer');
             $table->timestamps();

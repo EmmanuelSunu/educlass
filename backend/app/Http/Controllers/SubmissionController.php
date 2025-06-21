@@ -31,7 +31,7 @@ class SubmissionController extends Controller
     {
         $data = $request->validated();
         $result = Submission::create($data);
-        return response()->json(['message' => 'program added successfully','data' =>  $result], 201);
+        return response()->json(['message' => 'submission added successfully','data' =>  $result], 201);
     }
 
     /**
