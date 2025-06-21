@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('type');
-            $table->integer('course_id');
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->foreignId('lecturer_id')->constrained('users')->onDelete('cascade');
             $table->string('date');
             $table->string('start_time');
             $table->string('end_time');

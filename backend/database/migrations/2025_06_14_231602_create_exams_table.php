@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('exams', function (Blueprint $table) {
             $table->id();
-            $table->integer('lecturer_id');
-            $table->integer('course_id');
+            $table->foreignId('lecturer_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->string('type');
             $table->string('due_date');
             $table->string('start_time');

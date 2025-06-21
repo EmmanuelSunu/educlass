@@ -45,7 +45,7 @@ class SubmissionController extends Controller
         DB::transaction(function () use ($data) {
             foreach ($data['answers'] as $subs) {
                 Submission::create([
-                    'student_id' => $data['student_id'],  // auth()->id(), // or $request->student_id
+                    'student_id' => auth()->id(),  // auth()->id(), // or $request->student_id
                     'exam_id' => $data['exam_id'],
                     'question_id' => $subs['question_id'],
                     'response' => $subs['response'],

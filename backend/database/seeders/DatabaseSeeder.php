@@ -3,7 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Course;
+use App\Models\Exam;
 use App\Models\Program;
+use App\Models\Question;
+use App\Models\Schedule;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -40,6 +43,11 @@ class DatabaseSeeder extends Seeder
             );
         });
 
+        Exam::factory(10)->create()->each(function ($exam) {
+            $exam->questions()->saveMany(Question::factory(rand(3, 6))->make());
+        });
+
+        Schedule::factory(15)->create();
 
     }
 }
