@@ -20,18 +20,28 @@ function Login() {
     setError("");
 
     try {
-      await login(formData.email, formData.password);
-      
+      const { user } = await login(formData.email, formData.password);
+      console.log(user);
       // Redirect based on user role
-      if (formData.email.includes("admin")) {
-        navigate("/admin");
-      } else if (formData.email.includes("lecturer")) {
-        navigate("/user/l/dashboard");
-      } else {
-        navigate("/user/s/dashboard");
+      switch (user.role) {
+        case 'admin':
+          navigate("/admin");
+          break;
+        case 'teacher':
+          navigate("/user/l/dashboard");
+          break;
+        case 'student':
+          navigate("/user/s/dashboard");
+          break;
+        default:
+          setError("Invalid user role");
       }
     } catch (err) {
-      setError("Invalid credentials");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Invalid credentials");
+      }
     }
   };
 
@@ -128,7 +138,7 @@ function Login() {
             <p className="font-medium mb-2">Dummy Users for Testing:</p>
             <ul className="space-y-1">
               <li>Admin: admin@educlass.com / password123</li>
-              <li>Lecturer: lecturer@educlass.com / password123</li>
+              <li>Teacher: teacher@educlass.com / password123</li>
               <li>Student: student@educlass.com / password123</li>
             </ul>
           </div>

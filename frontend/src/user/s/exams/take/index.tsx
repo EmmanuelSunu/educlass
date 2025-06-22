@@ -99,14 +99,14 @@ const ExamTake: React.FC = () => {
   }, [exam, isSubmitting]);
 
   const handleSubmit = async () => {
-    if (!exam || !user || isSubmitting) return;
+    if (!exam || !user || isSubmitting || !user.id) return;
     setIsSubmitting(true);
     try {
       // Create submission object
       const submission = {
         id: Date.now(),
         studentId: user.id,
-        studentName: user.name,
+        studentName: `${user.f_name} ${user.l_name}`,
         examId: exam.id,
         submittedAt: new Date().toISOString(),
         answers: Object.entries(answers).map(([questionId, answer]) => ({

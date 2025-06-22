@@ -112,7 +112,7 @@ const AppRoutes = () => {
       } />
       
       <Route path="/user/l/*" element={
-        <ProtectedRoute allowedRoles={['lecturer']}>
+        <ProtectedRoute allowedRoles={['teacher']}>
           <LecturerRoutes />
         </ProtectedRoute>
       } />

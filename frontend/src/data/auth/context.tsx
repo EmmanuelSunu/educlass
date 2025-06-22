@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import { type AuthState, type AuthContextType, type User } from './types';
+import { authService } from '../../services/api';
 
 // Initial state
 const initialState: AuthState = {
@@ -77,13 +78,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
+        const token = localStorage.getItem('token');
+        if (token) {
+          const userData = await authService.getCurrentUser();
+          const user = userData as User;
           dispatch({ type: 'LOGIN_SUCCESS', payload: user });
         }
       } catch (error) {
         console.error('Error checking auth:', error);
+        localStorage.removeItem('token');
       } finally {
         dispatch({ type: 'SET_LOADING', payload: false });
       }
@@ -92,63 +95,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
-  // Mock login function with dummy users
   const login = useCallback(async (email: string, password: string) => {
     try {
       dispatch({ type: 'LOGIN_START' });
-
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Check for dummy users
-      if (password !== 'password123') {
-        throw new Error('Invalid credentials');
-      }
-
-      let user: User;
-
-      if (email === 'admin@educlass.com') {
-        user = {
-          id: 1,
-          name: 'Admin User',
-          email: email,
-          role: 'admin'
-        };
-      } else if (email === 'lecturer@educlass.com') {
-        user = {
-          id: 2,
-          name: 'John Lecturer',
-          email: email,
-          role: 'lecturer'
-        };
-      } else if (email === 'student@educlass.com') {
-        user = {
-          id: 3,
-          name: 'Jane Student',
-          email: email,
-          role: 'student',
-          program: 'Computer Science',
-          year: '2024'
-        };
-      } else {
-        throw new Error('Invalid credentials');
-      }
-
-      // Store user in localStorage
-      localStorage.setItem('user', JSON.stringify(user));
-      dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+      const response = await authService.login(email, password);
+      dispatch({ type: 'LOGIN_SUCCESS', payload: response.user });
+      return response; // Return the response so we can access user data and token
     } catch (error) {
       dispatch({ type: 'LOGIN_FAILURE', payload: 'Invalid credentials' });
       throw error;
     }
   }, []);
 
-  // Mock logout function
   const logout = useCallback(async () => {
-    dispatch({ type: 'SET_LOADING', payload: true });
-    await new Promise(resolve => setTimeout(resolve, 500));
-    localStorage.removeItem('user');
-    dispatch({ type: 'LOGOUT' });
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      await authService.logout();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    } finally {
+      dispatch({ type: 'LOGOUT' });
+    }
   }, []);
 
   const clearError = useCallback(() => {

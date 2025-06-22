@@ -1,10 +1,11 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../data/auth/context';
 import Loading from './Loading';
+import { UserRole } from '../data/auth/types';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles?: ('admin' | 'lecturer' | 'student')[];
+  allowedRoles?: UserRole[];
 }
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
@@ -25,7 +26,7 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     const redirectPath = 
       user.role === 'admin' ? '/admin' : 
-      user.role === 'lecturer' ? '/user/l/dashboard' : 
+      user.role === 'teacher' ? '/user/l/dashboard' : 
       '/user/s/dashboard';
     return <Navigate to={redirectPath} replace />;
   }

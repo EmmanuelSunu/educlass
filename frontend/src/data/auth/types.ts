@@ -1,12 +1,20 @@
-export type UserRole = "student" | "lecturer" | "admin";
+export type UserRole = "student" | "teacher" | "admin";
 
 export interface User {
   id: number;
-  name: string;
+  f_name: string;
+  l_name: string;
   email: string;
   role: UserRole;
-  program?: string;  // For students
-  year?: string;     // For students
+  other_id?: string;
+  department?: string;
+  level?: string;
+  semester?: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  user: User;
 }
 
 export interface AuthState {
@@ -17,7 +25,7 @@ export interface AuthState {
 }
 
 export interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<LoginResponse>;
   logout: () => Promise<void>;
   clearError: () => void;
 } 
