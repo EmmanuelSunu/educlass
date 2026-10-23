@@ -92,53 +92,88 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, []);
 
-  // Mock login function with dummy users
+  const register = useCallback(async (name: string, email: string, password: string) => {
+    try {
+      dispatch({ type: 'LOGIN_START' });
+
+      const response = await fetch('http://127.0.0.1:8001/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password, password_confirmation: password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      localStorage.setItem('access_token', data.access_token);
+
+      // Fetch user data or use data from registration response
+      const user = {
+        id: 1, // Replace with actual user ID from response
+        name: name,
+        email: email,
+        role: data.role as 'student' | 'lecturer' | 'admin', // Replace with actual role from response
+      };
+
+      localStorage.setItem('user', JSON.stringify(user));
+
+      dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+    } catch (error: any) {
+      dispatch({ type: 'LOGIN_FAILURE', payload: error.message || 'Registration failed' });
+      throw error;
+    }
+  }, []);
+
   const login = useCallback(async (email: string, password: string) => {
     try {
       dispatch({ type: 'LOGIN_START' });
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Check for dummy users
-      if (password !== 'password123') {
-        throw new Error('Invalid credentials');
+      let response;
+      try {
+        response = await fetch('http://127.0.0.1:8001/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+      } catch (error: any) {
+        dispatch({ type: 'LOGIN_FAILURE', payload: 'Network error. Please check your connection.' });
+        throw error;
       }
 
-      let user: User;
-
-      if (email === 'admin@educlass.com') {
-        user = {
-          id: 1,
-          name: 'Admin User',
-          email: email,
-          role: 'admin'
-        };
-      } else if (email === 'lecturer@educlass.com') {
-        user = {
-          id: 2,
-          name: 'John Lecturer',
-          email: email,
-          role: 'lecturer'
-        };
-      } else if (email === 'student@educlass.com') {
-        user = {
-          id: 3,
-          name: 'Jane Student',
-          email: email,
-          role: 'student',
-          program: 'Computer Science',
-          year: '2024'
-        };
-      } else {
-        throw new Error('Invalid credentials');
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        const text = await response.text();
+        throw new Error(text || 'Login failed');
       }
 
-      // Store user in localStorage
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      localStorage.setItem('access_token', data.access_token);
+
+      // Fetch user data or use data from login response
+      const user = {
+        id: 1, // Replace with actual user ID from response
+        name: 'Test User', // Replace with actual user name from response
+        email: email,
+        role: data.role as 'student' | 'lecturer' | 'admin', // Replace with actual role from response
+      };
+
       localStorage.setItem('user', JSON.stringify(user));
+
       dispatch({ type: 'LOGIN_SUCCESS', payload: user });
-    } catch (error) {
-      dispatch({ type: 'LOGIN_FAILURE', payload: 'Invalid credentials' });
+    } catch (error: any) {
+      dispatch({ type: 'LOGIN_FAILURE', payload: error.message || 'Login failed' });
       throw error;
     }
   }, []);
@@ -158,6 +193,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     ...state,
     login,
+    register,
     logout,
     clearError
   };
@@ -176,4 +212,4 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-} 
+}

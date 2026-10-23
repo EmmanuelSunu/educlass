@@ -1,0 +1,138 @@
+# Database Schema
+
+This schema is inferred from the TypeScript interfaces found in `src/data/types.ts`. It represents the potential structure of data entities in the application.
+
+## Entities
+
+### Exam
+- id: number (Primary Key)
+- title: string
+- type: "exam" | "assignment"
+- description: string
+- classId: number (Foreign Key to Class/Course entity - inferred)
+- className: string
+- dueDate: string (ISO date format)
+- startTime: string (HH:mm format)
+- endTime: string (HH:mm format)
+- durationHours: number
+- durationMinutes: number
+- duration: string
+- status: "upcoming" | "ongoing" | "completed"
+- totalPoints: number
+- createdAt: string (ISO datetime)
+- updatedAt: string (ISO datetime)
+
+### Question
+- id: string (Primary Key)
+- examId: number (Foreign Key to Exam entity)
+- type: "essay" | "multi-choice" | "fill-ins"
+- questionText: string
+- points: number
+- modelAnswer?: string (Optional)
+- correctAnswer?: string (Optional)
+- correctAnswerId?: string (Optional - Foreign Key to Option within Question)
+- createdAt: string (ISO datetime)
+- updatedAt: string (ISO datetime)
+
+### RubricCriteria
+- id: string (Primary Key)
+- questionId: string (Foreign Key to Question entity)
+- name: string
+- value: number
+- description: string
+- createdAt: string (ISO datetime)
+- updatedAt: string (ISO datetime)
+
+### Submission
+- id: string (Primary Key)
+- examId: number (Foreign Key to Exam entity)
+- studentId: string (Foreign Key to Student entity)
+- startTime: string (ISO datetime)
+- endTime: string (ISO datetime)
+- status: "submitted"
+- totalScore: number
+- createdAt: string (ISO datetime)
+- updatedAt: string (ISO datetime)
+
+### SubmissionAnswer
+- id: string (Primary Key)
+- submissionId: string (Foreign Key to Submission entity)
+- questionId: string (Foreign Key to Question entity)
+- answer?: string (Optional)
+- selectedOptionId?: string (Optional - Foreign Key to Option within Question)
+- score: number
+- feedback?: string (Optional)
+- createdAt: string (ISO datetime)
+- updatedAt: string (ISO datetime)
+
+### RubricScore
+- id: string (Primary Key)
+- submissionAnswerId: string (Foreign Key to SubmissionAnswer entity)
+- rubricCriteriaId: string (Foreign Key to RubricCriteria entity)
+- score: number
+- feedback?: string (Optional)
+- createdAt: string (ISO datetime)
+- updatedAt: string (ISO datetime)
+
+### Program
+- id: string (Primary Key)
+- name: string
+- description: string
+- duration: string
+- createdAt: string
+- updatedAt: string
+
+### Course
+- id: string (Primary Key)
+- name: string
+- code: string
+- description: string
+- programId: string (Foreign Key to Program entity)
+- lecturerId: string (Foreign Key to Lecturer entity)
+- credits: number
+- duration: string
+- status: 'active' | 'inactive'
+- level: '100' | '200' | '300' | '400'
+- createdAt: string
+- updatedAt: string
+
+### Lecturer
+- id: string (Primary Key)
+- name: string
+- email: string
+- department: string
+- status: 'active' | 'inactive'
+- createdAt: string
+- updatedAt: string
+
+### Student
+- id: string (Primary Key)
+- name: string
+- email: string
+- programId: string (Foreign Key to Program entity)
+- enrollmentYear: number
+- status: 'active' | 'inactive' | 'graduated'
+- createdAt: string
+- updatedAt: string
+
+### AnalyticsData (Likely not a database entity, but a composite data structure)
+- totalStudents: number
+- totalLecturers: number
+- totalCourses: number
+- totalPrograms: number
+- studentEnrollmentTrend: array of { year: number, count: number }
+- courseEnrollmentStats: array of { courseId: string, courseName: string, enrolledStudents: number }
+
+## Relationships (Inferred)
+
+- Exam has many Questions
+- Question has many RubricCriteria
+- Exam has many Submissions
+- Submission has many SubmissionAnswers
+- SubmissionAnswer has many RubricScores
+- Program has many Courses
+- Course is assigned to one Program
+- Course is assigned to one Lecturer
+- Lecturer can be assigned to many Courses
+- Student is enrolled in one Program
+- Student can have many Submissions
